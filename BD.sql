@@ -33,7 +33,7 @@ INSERT INTO users (dni, username, address, email, password, role, created)
 INSERT INTO users (dni, username, address, email, password, role, created)
     VALUES ('22222222','Gestor de contenidos','Direccion','Gestor@gestor.com','$2y$10$R/d9zlAVF0X21yWYYaFSTORV3r7b6UXmWPNA69euZaR5zNau3u.NK','Gestor de contenidos',NOW());
 INSERT INTO users (dni, username, address, email, password, role, created)
-    VALUES ('33333333','Administrator','Direccion','Administrator@Administrator.com','$2y$10$/ryAXZZf5SAOTJsZvILpZOSy0Yo8AdYR6MLxhSt72rMnZpwgCm67e','Administrator',NOW());
+    VALUES ('33333333','Administrador','Direccion','Administrator@Administrator.com','$2y$10$/ryAXZZf5SAOTJsZvILpZOSy0Yo8AdYR6MLxhSt72rMnZpwgCm67e','Administrator',NOW());
 
 UNLOCK TABLES;
 
