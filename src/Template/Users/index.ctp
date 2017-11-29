@@ -171,7 +171,7 @@
 		  	echo $this->Form->input('DNI', ['type' => 'number', 'class' => 'form-control']);
 			echo $this->Form->input('Usuario', ['type' => 'text', 'class' => 'form-control']);
 			echo $this->Form->input('Contraseña', ['type' => 'password', 'class' => 'form-control', 'name'=>'password']);
-			echo $this->Form->input('Email', ['type' => 'email', 'class' => 'form-control']);
+			echo $this->Form->input('Email', ['type' => 'email', 'class' => 'form-control', 'name'=>'email']);
 			echo $this->Form->input('Dirección', ['type' => 'text', 'class' => 'form-control', 'name'=>'address']);
 			echo "<label> Rol:</label>";
 			echo $this->Form->select('role', $roles, ['default' => 'Alumno', 'class' => 'form-control']);
@@ -214,7 +214,7 @@
 					echo $this->Form->input('Contraseña', 
 						['type' => 'password', 'class' => 'form-control', 'name'=>'password', 'value' => $user['dni'] ]);
 					echo $this->Form->input('Email', 
-						['type' => 'email', 'class' => 'form-control', 'value' => $user['email'] ]);
+						['type' => 'email', 'class' => 'form-control', 'name'=>'email', 'value' => $user['email'] ]);
 					echo $this->Form->input('Dirección', 
 						['type' => 'text', 'class' => 'form-control', 'name'=>'address', 'value' => $user['address'] ]);
 					echo "<label> Rol: </label>";
