@@ -1,0 +1,124 @@
+/* ====================================
+   EDUFORM STYLE
+   ==================================== */
+
+.header-video {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 400px;
+  height: auto;
+}
+
+.header-video iframe,
+.header-video video {
+  position: absolute;
+  top: -142px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -2000;
+}
+
+.header-video iframe {
+  height: 100%;
+  width: 100%;
+}
+
+.header-video video {
+  width: 100%;
+}
+
+.header-video__teaser-video {
+  width: 100%;
+  height: auto; 
+}
+
+
+.headerMenuCook{
+            background: rgba(153,153,153,0.6);
+            width: 80%;
+            margin-left: 5%;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            padding-left: 20px;
+            z-index: 2000;
+            list-style: none;
+            border-radius: 4px;
+            margin-top: 5%;}
+
+.headerMenuCook li{display: inline;
+              font: 32px/32px merriweatherLight;
+              margin-right: 5%;
+              text-transform: uppercase;}
+
+
+.headerMenuCook li a{
+          text-decoration: none;
+          color: white;
+          }
+
+.titleEDUFORM{
+          margin-top: 4%;
+          text-align: center;
+          font: 42px/32px merriweatherBold;
+          text-transform: uppercase;
+          margin-bottom: 4%;}
+
+.sentenceEDUFORM{
+    border-top: 1px solid #35CAFC;
+    border-bottom: 1px solid #35CAFC;
+    font: 20px/38px merriweatherLight;
+    width: 60%;
+    text-align: center;
+    margin-left: 20%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.sentenceXilCook p{width:55%;
+  margin-left: 26%;}
+
+#atomImageEDUFORM{margin-left: 2%;}
+
+
+#shelvesImageEDUFORM{margin-left: 2%;}
+
+.indexMenu{
+    border:1px solid #90E2FF;
+    margin-top: 12%;
+    margin-bottom: 12%;
+    border-radius:4px;
+
+}
+
+.indexMenu h2{text-align: center;
+             font: 32px/32px merriweatherLight;}
+
+.indexMenu img{margin-right: 8%;
+            margin-left:7%;}
+
+.indexMenu p{margin-right: 8%;
+            margin-left:8%;
+            font: 18px/25px merriweatherLight;
+            margin-top:8%;
+            text-align: justify;}
+
+footer{height: 300px;
+      width:100%;
+      background-color: #CBE3EB;}
+
+footer p{
+    text-decoration: none;
+    color:black;
+    font: 22px/32px merriweatherLight;
+}
+footer a{
+    text-decoration: none;
+    color:black;
+    font: 22px/32px merriweatherLight;
+}
+
+.footerRight{
+    margin-top:15%;
+}

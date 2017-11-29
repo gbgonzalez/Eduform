@@ -1,0 +1,97 @@
+/* RESTART */
+
+a{ color:black; }
+
+a:hover{color:black;
+		text-decoration: none;}
+
+ul{list-style: none;}
+/* END OF RESTART */
+
+/* TOOLS */
+
+#navbarPublic{
+	margin-top:3%;
+}
+
+footer{
+	top:100px;
+	position: relative;
+	height:200px; 
+	width:100%;
+	background: rgba(168,168,168,0.4);}
+
+.copyrightFooter{margin-top:5%;}
+
+
+#listInformationFooter{ margin-top: 5%; }
+
+#listInformationFooter li{margin-top: 3%; }
+
+.titleFooter{margin-top:5%;
+			margin-left: 10%;}
+#socialMediaFooter{margin-top:5%;}
+#socialMediaFooter li{ display: inline; }
+
+/* END OF TOOLS */
+
+/* INDEX */
+
+.containerPanel{
+	margin-left:5%;
+	border: 1px solid #ACAAA8;
+	margin-top:4%;
+	width: 60%;
+	padding-left:11%;
+	border-radius:4px;
+}
+
+.formSearch{
+	    display: inline;
+    margin-left: 2%;
+}
+
+.linkStudent{color:red;}
+
+
+/* END OF INDEX */
+
+/* MANAGEMENT */
+
+.containerManagement{margin-top: 3%;}
+
+.selectedCss{width: 200px;
+			    margin-left: 19%;}
+
+/* END OF  MANAGEMENT*/
+
+
+/* GENERIC ADMIN STYLE */
+.titleAdmin{ font-size: 24px;
+			font-family: arial;
+			color: #8F8D8D;
+			margin-top: 8%;
+    		margin-left: 5px; 
+    		 margin-bottom: 2%;
+    	}
+
+ .buttonsFooter .submit{display:inline;}
+
+ .buttonsFooter form{display: inline;}
+
+ form label{margin-top:2%;}
+
+ .buttonAddForm{margin-top:5%;}
+
+
+/* END OF GENERIC ADMIN STYLE */
+
+
+
+
+/* INFORMATION */
+
+
+
+
+/* END OF INFORMATION */
