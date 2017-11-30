@@ -6,13 +6,14 @@ var app = angular.module('eduform', []);
 		$scope.showFilter = false;
 		$scope.resultSearch = [];
 
-		$scope.filterSelected = "Todos";
+		$scope.filterSelected = "Nombre";
 		$scope.filterType = {
 		    types: [
-		    	{name: 'Todos'},
-		       {name: 'Administador'},
-		      {name: 'Gestor de contenidos'},
-		      {name: 'Alumno'}
+		    {name: 'Nombre'},
+		    {name: 'DNI'},
+		    {name: 'Tipo'},
+		    {name: 'Email'},
+		    {name: 'Dirección'}
 		    ]
 		   };
 
@@ -25,66 +26,67 @@ var app = angular.module('eduform', []);
 				var j = 0;
 				$scope.resultSearch = [];
 				switch($scope.filterSelected) {
-				    case "Administador":
-				        for ( var i = 0; i<$scope.users.length; i++)
-						{
-						userName = $scope.users[i].username.toLowerCase();
-						role = $scope.users[i].role;
-		                criteria = criteria.toLowerCase();
-		               
-		                if( userName.search( criteria ) != -1 && role == "Administrator")
-		                    {
-		                       	$scope.resultSearch[j] = $scope.users[i];
-		                        j++;
-		                    }
-
-						}// end of for filter
-				        break;
-				    case "Alumno":
-				       for ( var i = 0; i<$scope.users.length; i++)
-						{
-						userName = $scope.users[i].username.toLowerCase();
-						role = $scope.users[i].role;
-		                criteria = criteria.toLowerCase();
-		               
-		                if( userName.search( criteria ) != -1 && role == "Alumno")
-		                    {
-		                       	$scope.resultSearch[j] = $scope.users[i];
-		                        j++;
-		                    }
-
-						}// end of for filter
-				        break;
-				    case "Gestor de contenidos":
-				        for ( var i = 0; i<$scope.users.length; i++)
-						{
-						userName = $scope.users[i].username.toLowerCase();
-						role = $scope.users[i].role;
-		                criteria = criteria.toLowerCase();
-		               
-		                if( userName.search( criteria ) != -1 && role == "Gestor de contenidos")
-		                    {
-		                       	$scope.resultSearch[j] = $scope.users[i];
-		                        j++;
-		                    }
-
-						}// end of for filter
-				        break;
-				    default:
+				    case "Nombre":
 				        for ( var i = 0; i<$scope.users.length; i++)
 						{
 						userName = $scope.users[i].username.toLowerCase();
 		                criteria = criteria.toLowerCase();
-		               
-		                console.log(userName.search(criteria));
-		                if( userName.search( criteria ) != -1)
+		                if( userName.search( criteria ) >= 0)
 		                    {
-		                    	 console.log("entra");
 		                       	$scope.resultSearch[j] = $scope.users[i];
 		                        j++;
 		                    }
-
 						}// end of for filter
+				        break;
+				    case "DNI":
+				        for ( var i = 0; i<$scope.users.length; i++)
+						{
+						dni = $scope.users[i].dni.toString().toLowerCase();
+		                criteria = criteria.toLowerCase();
+		                if( dni.search( criteria ) >= 0)
+		                    {
+		                       	$scope.resultSearch[j] = $scope.users[i];
+		                        j++;
+		                    }
+						}// end of for filter
+				        break;
+				    case "Tipo":
+				        for ( var i = 0; i<$scope.users.length; i++)
+						{
+						typeUser = $scope.users[i].role.toLowerCase();
+		                criteria = criteria.toLowerCase();
+		                if( typeUser.search( criteria ) >= 0)
+		                    {
+		                       	$scope.resultSearch[j] = $scope.users[i];
+		                        j++;
+		                    }
+						}// end of for filter
+				        break;
+				    case "Email":
+				        for ( var i = 0; i<$scope.users.length; i++)
+						{
+						emailUser = $scope.users[i].email.toLowerCase();
+		                criteria = criteria.toLowerCase();
+		                if( emailUser.search( criteria ) >= 0)
+		                    {
+		                       	$scope.resultSearch[j] = $scope.users[i];
+		                        j++;
+		                    }
+						}// end of for filter
+				        break;
+				    case "Dirección":
+				        for ( var i = 0; i<$scope.users.length; i++)
+						{
+						addressUser = $scope.users[i].address.toLowerCase();
+		                criteria = criteria.toLowerCase();
+		                if( addressUser.search( criteria ) >= 0)
+		                    {
+		                       	$scope.resultSearch[j] = $scope.users[i];
+		                        j++;
+		                    }
+						}// end of for filter
+				        break;
+				  
 				}
 			
 
