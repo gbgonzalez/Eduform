@@ -33,7 +33,7 @@ INSERT INTO users (dni, username, address, email, password, role, created)
 INSERT INTO users (dni, username, address, email, password, role, created)
     VALUES ('22222222','Gestor de contenidos','Direccion','Gestor@gestor.com','$2y$10$R/d9zlAVF0X21yWYYaFSTORV3r7b6UXmWPNA69euZaR5zNau3u.NK','Gestor de contenidos',NOW());
 INSERT INTO users (dni, username, address, email, password, role, created)
-    VALUES ('33333333','Administrador','Direccion','Administrator@Administrator.com','$2y$10$/ryAXZZf5SAOTJsZvILpZOSy0Yo8AdYR6MLxhSt72rMnZpwgCm67e','Administrator',NOW());
+    VALUES ('33333333','Administrator','Direccion','Administrator@Administrator.com','$2y$10$/ryAXZZf5SAOTJsZvILpZOSy0Yo8AdYR6MLxhSt72rMnZpwgCm67e','Administrator',NOW());
 
 UNLOCK TABLES;
 
@@ -66,12 +66,23 @@ DROP TABLE IF EXISTS competences;
 
 CREATE TABLE competences (
         id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        mater_id INT(10) NOT NULL,
+        subject_id INT(10) NOT NULL,
         name VARCHAR(50),
 		description VARCHAR(250),
         created DATETIME DEFAULT NULL,
         modified DATETIME DEFAULT NULL
 );
+
+LOCK TABLES `competences` WRITE;
+
+INSERT INTO competences (name, subject_id, description, created)
+    VALUES ('Writing B1', '1', 'Asignatura de Ingles B1',NOW());
+INSERT INTO competences (name, subject_id, description, created)
+    VALUES ('Writing B1', '2','Asignatura de Aleman B1',NOW());
+INSERT INTO competences (name, subject_id, description, created)
+    VALUES ('Cortar B1', '3','Asignatura de Cocina B1',NOW());
+
+UNLOCK TABLES;
 
 /*----------------------------------------------------------*/
 
