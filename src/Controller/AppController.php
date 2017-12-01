@@ -64,11 +64,11 @@ class AppController extends Controller
 
         $this->loadComponent('Auth', [
             'loginRedirect' => [
-                'controller' => 'Eduform', //Como llamemos a la portada
+                'controller' => 'eduform', //Como llamemos a la portada
                 'action' => 'home'
             ],
             'logoutRedirect' => [
-                'controller' => 'Eduform',
+                'controller' => 'eduform',
                 'action' => 'index'
             ]
         ]);

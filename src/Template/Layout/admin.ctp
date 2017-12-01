@@ -43,6 +43,7 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
                 <li class="active"><a href="#">Inicio</a></li>
                 <li><a href="#">Mi perfil</a></li>
                 
+                
                 <?php if( $current_user['role'] == 'Administrador')
                 {
                     ?>
@@ -68,7 +69,13 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
                     );
                     ?>
                 </li>
-                <li><a href="#">Categoria</a></li>
+                <li>                    
+                    <?php
+                    echo $this->Html->link(
+                        'Categorias',
+                        '/categories /'
+                    );
+                    ?>
                 <li><a href="#">Competencias</a></li>
                 <li><a href="#">Contenidos</a></li>
                 <li>

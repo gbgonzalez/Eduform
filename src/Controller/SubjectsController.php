@@ -25,6 +25,7 @@ class SubjectsController extends AppController {
     {
         $this->viewBuilder()->layout('admin');
         $subjects = $this->set('subjects', $this->Subjects->find('all'));
+        $categories = $this->set('categories', $this->Subjects->Categories->find('all'));
     }
 
     public function delete(){
@@ -32,9 +33,9 @@ class SubjectsController extends AppController {
         
         $this->request->allowMethod(['post', 'delete']);
 
-        $matter = $this->Subjects->get($this->request->data['id']);
+        $subject = $this->Subjects->get($this->request->data['id']);
 
-        if ($this->Subjects->delete($matter)) {
+        if ($this->Subjects->delete($subject)) {
             $this->Flash->success(__('La materia ha sido eliminado correctamentes'));
            return $this->redirect(['controller' => 'subjects', 'action' => 'index']);
         }else{

@@ -52,6 +52,14 @@
           <div class="modal-body">
             <p><b>Nombre: </b> <?php echo $subject['name']; ?></p>
             <p><b>Descripcion: </b> <?php echo $subject['description']; ?></p>
+
+            <?php foreach ($categories as $categorie) 
+                  { 
+                  if($subject['id'] == $categorie->subject_id) { ?>
+                <p><b>Nombre Categoria: </b> <?php echo $categorie->name; ?></p>
+            <?php }
+              } ?>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
