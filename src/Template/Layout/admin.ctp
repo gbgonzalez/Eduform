@@ -64,12 +64,26 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
                     <?php
                     echo $this->Html->link(
                         'Materias',
-                        '/subjects /'
+                        '/subjects/'
                     );
                     ?>
                 </li>
-                <li><a href="#">Categoria</a></li>
-                <li><a href="#">Competencias</a></li>
+                <li>
+                    <?php
+                    echo $this->Html->link(
+                        'Categorias',
+                        '/categories/'
+                    );
+                    ?>
+                </li>
+                <li>
+                    <?php
+                    echo $this->Html->link(
+                        'Competencias',
+                        '/competences/'
+                    );
+                    ?>
+                </li>
                 <li><a href="#">Contenidos</a></li>
                 <li>
                          <?php

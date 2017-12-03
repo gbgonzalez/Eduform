@@ -30,8 +30,7 @@ class UsersController extends AppController {
 
     public function add()
     {
-        $user = $this->Users->newEntity();
-        
+        $user = $this->Users->newEntity();       
         
         if ($this->request->is('post')) {
             // Prior to 3.4.0 $this->request->data() was used.

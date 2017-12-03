@@ -29,7 +29,6 @@
     <tbody>
     	
     	<tr ng-repeat="user in users">
-    		<p> {{user}} </p>
     		<td> {{user.username}}</td>
 			<td> {{user.dni}}</td>
 			<td> {{user.role}}</td>
