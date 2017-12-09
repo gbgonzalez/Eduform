@@ -16,6 +16,7 @@
     <thead>
       <tr>
         <th>Nombre </th>
+        <th>Categoria asignada </th>
         <th>Materia asignada </th>
         <th>Mostrar </th>
         <th>Modificar </th>
@@ -25,7 +26,12 @@
     <tbody>
       <tr ng-repeat="competence in competences">
       <td> {{competence.name}}</td>
-      <td> {{getNameSubject(competence.subject_id)}}</td>
+      <td>
+          <p ng-repeat="category in competence.categories">
+            {{ category.name  }}
+          </p>
+      </td>
+      <td> {{ competence.subject.name }}</td>
       <td>
         <button class="btn btn-info" data-toggle="modal" data-target="#competence{{competence.id}}">Mostrar </button>
       </td>
@@ -44,6 +50,7 @@
     <thead>
       <tr>
         <th>Nombre </th>
+        <th>Categoria asignada </th>
         <th>Materia asignada </th>
         <th>Mostrar </th>
         <th>Modificar </th>
@@ -53,6 +60,7 @@
     <tbody>
       <tr ng-repeat="competence in resultSearch">
       <td> {{competence.name}}</td>
+      <td> {{getNameCategory(competence.id)}}</td>
       <td> {{getNameSubject(competence.subject_id)}}</td>
       <td>
         <button class="btn btn-info" data-toggle="modal" data-target="#competence{{competence.id}}">Mostrar </button>
@@ -114,14 +122,18 @@
 
 		  	echo $this->Form->input('Nombre', ['type' => 'text', 'class' => 'form-control'
 		  			, 'name' => 'name']);
-		  	?>
-    		<?php
+
+        echo $this->Form->input('category_id',['options' => $categoriesForms , 
+            'label' => 'Categoria: ', 'class' => '', 'multiple' => 'checkbox']);
+
     		echo $this->Form->input('subject_id',['options' => $subjectsForms , 
-    				'label' => 'Materia: ', 'class' => 'form-control']) ; 
-			echo $this->Form->input('Descripción', ['type' => 'textarea', 'class' => 'form-control'
+    				'label' => 'Materia: ', 'class' => 'form-control']);
+
+			  echo $this->Form->input('Descripción', ['type' => 'textarea', 'class' => 'form-control'
 				, 'name' => 'description']);
-			echo $this->Form->submit('Crear Competencia', ['class' => 'btn btn-success buttonAddForm']) ;
-			echo $this->Form->end() 
+		  	echo $this->Form->submit('Crear Competencia', ['class' => 'btn btn-success buttonAddForm']) ;
+
+			  echo $this->Form->end() 
 
 		?>
       </div>
@@ -185,9 +197,25 @@
 
             echo $this->Form->input('name', 
               ['type' => 'text', 'class' => 'form-control', 'value' => $competence['name'] ]);
-          	echo $this->Form->input('subject_id',['options' => $subjectsForms , 
+          	
+           // print_r( $competence['categories'] );
+            $arrayId = array();
+            $j = 0;
+            for ( $i = 0; $i < count( $competence['categories'] ) ; $i++)
+            {
+              $arrayId[$j] = $competence['categories'][$i]['id'];
+              $j++;
+            }
+
+            echo $this->Form->input('category_id',['options' => $categoriesForms , 
+            'label' => 'Categoria: ', 'class' => '', 'multiple' => 'checkbox',
+            'value' => $arrayId ]);
+
+            
+            echo $this->Form->input('subject_id',['options' => $subjectsForms , 
     				'label' => 'Materia: ', 'class' => 'form-control', 'value' => $competence['subject_id']]) ; 
-          	echo $this->Form->input('description', 
+          	
+            echo $this->Form->input('description', 
             ['type' => 'textarea', 'class' => 'form-control', 'value' => $competence['description'] ]);
          	
          	echo $this->Form->submit('Modificar Competencia', ['class' => 'btn btn-default buttonAddForm']) ;
@@ -206,13 +234,13 @@
     </div>
 <?php } ?>
 
-
 </div>
 <script>
-  var competences = <?php echo json_encode(compact('competences')); ?>
+  var competences = <?php echo json_encode(compact('competences')); ?>;
+
+  var categoriesCompetences = <?php echo json_encode(compact('categoriesCompetences')); ?>;
+
 </script>
-<script type="text/javascript">
-	var subjects = <?php echo json_encode(compact('subjects')); ?>
-</script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 <?= $this->Html->script('competences.js'); ?>

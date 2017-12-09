@@ -3,7 +3,8 @@ var app = angular.module('eduform', []);
 	app.controller('AppCtrl',function($scope, $http) {
 
 		$scope.competences = competences.competences;
-		$scope.subjects = subjects.subjects;
+
+		$scope.categoriesCompetences = categoriesCompetences.categoriesCompetences;
 
 		$scope.showFilter = false;
 		$scope.resultSearch = [];
@@ -16,16 +17,6 @@ var app = angular.module('eduform', []);
 		    ]
 		   };
 
-		$scope.getNameSubject = function(subjectsId){
-			for ( var i = 0; i< $scope.subjects.length; i++ )
-			{
-				if( $scope.subjects[i].id == subjectsId)
-				{
-					return $scope.subjects[i].name;
-				}
-			}
-
-		}
 
 		$scope.searchCompetence = function(criteria){
 			if ( criteria != ''){

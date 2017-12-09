@@ -6,6 +6,8 @@ var app = angular.module('eduform', []);
 		$scope.showFilter = false;
 		$scope.resultSearch = [];
 
+		$scope.competences = competences.competences;
+
 		$scope.filterSelected = "Nombre";
 		$scope.filterType = {
 		    types: [
@@ -16,9 +18,6 @@ var app = angular.module('eduform', []);
 		    {name: 'Dirección'}
 		    ]
 		   };
-
-		
-
 		
 		$scope.searchUser = function(criteria){
 			if ( criteria != ''){

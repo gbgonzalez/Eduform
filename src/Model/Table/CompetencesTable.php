@@ -18,6 +18,18 @@ class CompetencesTable extends Table
             'foreignKey' => 'subject_id',
             'joinType' => 'INNER'
         ]);
+
+        $this->belongsToMany('Categories', [
+            'foreignKey' => 'competence_id',
+            'targetForeignKey' => 'category_id',
+            'joinTable' => 'Categoriescompetences',
+        ]);
+
+        $this->belongsToMany('Users', [
+            'foreignKey' => 'competence_id',
+            'targetForeignKey' => 'user_id',
+            'joinTable' => 'Userscompetences',
+        ]);
     }
     public function validationDefault(Validator $validator)
     {

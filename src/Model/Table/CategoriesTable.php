@@ -16,13 +16,17 @@ class CategoriesTable extends Table
 
     public function initialize(array $config)
     {
-     $this->addBehavior('Timestamp');//
-     //$this->table('customers'); *u can also specify ur table like this 
-
-        $this->belongsTo('Subjects', [
-            'foreignKey' => 'subject_id',
-            'joinType' => 'INNER'
+        $this->addBehavior('Timestamp');//
+        //$this->table('customers'); *u can also specify ur table like this 
+        $this->belongsToMany('Competences', [
+            'foreignKey' => 'category_id',
+            'targetForeignKey' => 'competence_id',
+            'joinTable' => 'Categoriescompetences',
         ]);
+     
+
+
+
 
     }
     
@@ -30,8 +34,7 @@ class CategoriesTable extends Table
     {
         return $validator
             ->notEmpty('name', 'A name is required')
-            ->notEmpty('description', 'A description is required')
-            ->notEmpty('subject_id', 'A subject_id is required');
+            ->notEmpty('description', 'A description is required');
     }
 
      public function buildRules(RulesChecker $rules)

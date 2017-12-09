@@ -26,39 +26,67 @@ class CompetencesController extends AppController {
     public function index()
     {
         $this->viewBuilder()->layout('admin');
-        $competences = $this->set('competences', $this->Competences->find('all'));
+
+
         $subjects = TableRegistry::get('Subjects')->find();
         
         $subjectsForms = TableRegistry::get('Subjects')->find('list',array('fields' => ['Subjects.id','Subjects.name']));
 
-        $this->set('subjects', $subjects);
+        $categories = TableRegistry::get('Categories')->find();
+        
+        $categoriesForms = TableRegistry::get('Categories')->find('list',array('fields' => ['Categories.id','Categories.name']));
+
+       // $Competencias = TableRegistry::get('Competences'); 
+        
+        $categoriesCompetences = TableRegistry::get('Categoriescompetences')->find();       
+
+
+        $competences = TableRegistry::get('Competences')->find('all', ['contain' => ['Categories', 'Subjects']]);
+ 
+        $this->set('competences', $competences);
+ 
         $this->Set('subjectsForms', $subjectsForms);
 
+        $this->Set('categoriesForms', $categoriesForms);
 
-
-        
+        $this->Set('categoriesCompetences', $categoriesCompetences);
+    
     }
+
+
     public function add()
     {
-        $competences = $this->Competences->newEntity();
+       
         //debug($this->Competences);
         if ($this->request->is('post')) {
             // Prior to 3.4.0 $this->request->data() was used.
             
             $dataForm = $this->request->getData();
+            
+            for ( $i = 0; $i < count($dataForm["category_id"]); $i++ )
+            {
 
+                $array[$i] = $dataForm["category_id"][$i];
+            }
             
             $formatData = [
              "name" => $dataForm["name"], 
              "description" =>  $dataForm["description"],
-             "subject_id" =>  $dataForm["subject_id"]
+             "subject_id" =>  $dataForm["subject_id"],
+             "categories" => [ '_ids' => $array ]
+            
              ];
 
+         
 
-            $competences = $this->Competences->patchEntity($competences,  $formatData);
+            $competences = $this->Competences->newEntity();
+            $competences = $this->Competences->patchEntity($competences, $formatData, ['associated' => ['Categories']]);
+
             if ( $this->Competences->save($competences))
             {
+            
                 $this->Flash->success('La competencia ha sido creado correctamente');
+               
                 return $this->redirect(['controller' => 'competences', 'action' => 'index']);
             }else{
                 $this->Flash->error('Problema');
@@ -91,10 +119,18 @@ class CompetencesController extends AppController {
         
         $competence = $this->Competences->get($this->request->data['id']);
 
+        $dataForm = $this->request->getData();
+        $array = array();
+        for ( $i = 0; $i < count($dataForm["category_id"]); $i++ )
+        {
+            $array[$i] = $dataForm["category_id"][$i];
+        }
+
         $formatData = [
          "name" => $this->request->data["name"], 
          "description" =>  $this->request->data["description"],
-         "subject_id" =>  $this->request->data["subject_id"]
+         "subject_id" =>  $this->request->data["subject_id"],
+         "categories" => [ '_ids' => $array ]
          ];
    
         // Prior to 3.4.0 $this->request->data() was used.
@@ -108,5 +144,6 @@ class CompetencesController extends AppController {
         }
             
     } // end of function update 
+
 
 }

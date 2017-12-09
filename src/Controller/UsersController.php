@@ -6,6 +6,9 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\Validation\Validation;
+use Cake\ORM\TableRegistry;
+use Cake\Datasource\ConnectionManager;
+
 
 class UsersController extends AppController {
 
@@ -24,7 +27,15 @@ class UsersController extends AppController {
     public function index()
     {
         $this->viewBuilder()->layout('admin');
-        $users = $this->set('users', $this->Users->find('all'));
+        $users = $this->set('users', $this->Users->find('all', ['contain' => ['Competences']]));
+
+        $competences = TableRegistry::get('Competences')->find('all', ['contain' => ['Users', 'Subjects']]);
+
+        $subjectsForm = TableRegistry::get('Subjects')->find('list',array('fields' => ['Subjects.id','Subjects.name']));
+
+        $this->set('competences', $competences);
+
+        $this->set('subjectsForm', $subjectsForm);
      
     }
 
@@ -105,6 +116,106 @@ class UsersController extends AppController {
     }
 
 
+    // add subject
+    public function addSubject(){
+
+        //$user = $this->Users->newEntity();    
+
+        
+        if ($this->request->is('post')) {
+            // Prior to 3.4.0 $this->request->data() was used.
+            
+            $dataForm = $this->request->getData();
+
+            $connection = ConnectionManager::get('default');
+            $results = $connection->execute("SELECT id FROM competences 
+            WHERE subject_id = " .$dataForm['subject_id']. "");
+            $j = 0;
+            $formatDatas = array();
+            foreach ($results as $result)
+            {
+                $formatDatas[$j] = [
+                    'user_id' => $dataForm['id'],
+                    'competence_id' => $result['id'],
+
+                ];
+                $j++;
+            }
+
+            $usersCompetencesTable = TableRegistry::get('Userscompetences');
+
+            for ( $k = 0; $k< count($formatDatas); $k++ ) {
+                $usersCompetences = $usersCompetencesTable->newEntity();
+                $usersCompetences->user_id = $formatDatas[$k]['user_id'];
+                $usersCompetences->competence_id = $formatDatas[$k]['competence_id'];
+                $usersCompetencesTable->save($usersCompetences);
+            }
+
+            $this->Flash->success(__('El la materia se ha asignado correctamente.'));
+            return $this->redirect(['controller' => 'users', 'action' => 'index']); 
+
+        }// end of if post 
+
+
+    }// end of function addSubject
+
+    public function deleteSubject(){
+        if ($this->request->is('post')) {
+            // Prior to 3.4.0 $this->request->data() was used.
+            
+            $dataForm = $this->request->getData();
+
+            $connection = ConnectionManager::get('default');
+            $results = $connection->execute("SELECT id FROM competences 
+            WHERE subject_id = " .$dataForm['subject_id']. "");
+
+            $j = 0;
+            $formatDatas = array();
+            foreach ($results as $result)
+            {
+                $deleteArray[$j] = [
+                    'user_id' => $dataForm['user_id'],
+                    'competence_id' => $result['id']
+                ];
+                $j++;
+            }
+
+            $k = 0;
+            for ( $i=0; $i < count($deleteArray); $i++ )
+            {
+                $resultsIdCompetences[$k] = $connection->execute("SELECT id FROM userscompetences 
+                WHERE competence_id = " .$deleteArray[$i]['competence_id']. "
+                AND user_id = " .$deleteArray[$i]['user_id']. "");   
+                $k++;
+            }
+            $usersCompetencesTable = TableRegistry::get('Userscompetences');
+            for ($l = 0; $l< count($resultsIdCompetences); $l++)
+            {
+                foreach($resultsIdCompetences[$l] as $competencesID)
+                {
+                    $entity = $usersCompetencesTable->get( $competencesID['id'] );
+                    $deleteResult =  $usersCompetencesTable->delete($entity);
+                }
+            }
+            
+            if($deleteResult)
+            {
+                
+                $this->Flash->success(__('El usuario ya no pertenece a esa materia.'));
+                return $this->redirect(['controller' => 'users', 'action' => 'index']);
+            
+            }else{
+                
+                $this->Flash->error(__('Erorr al eliminar la materia'));
+                return $this->redirect(['controller' => 'users', 'action' => 'index']);
+            }
+
+
+       
+
+        }//end of if post
+
+    }//end of function delete subject
 
 
     public function login()
@@ -124,7 +235,7 @@ class UsersController extends AppController {
             }
 
 //EMAIL
-            /*
+         
             if (Validation::email($this->request->data['username'])) {
                 $this->Auth->config('authenticate', [
                     'Form' => [
@@ -137,7 +248,7 @@ class UsersController extends AppController {
                 $this->set('current_user', $this->Auth->user());
             }
 
-*/
+
             $user = $this->Auth->identify();
 
             if ($user) {

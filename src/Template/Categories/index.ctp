@@ -15,7 +15,6 @@
     <thead>
       <tr>
         <th>Nombre </th>
-        <th>Materia asignada </th>
         <th>Mostrar </th>
         <th>Modificar </th>
         <th>Eliminar </th>
@@ -24,7 +23,6 @@
     <tbody>
       <tr ng-repeat="category in categories">
       <td> {{category.name}}</td>
-      <td> {{getNameSubject(category.subject_id)}}</td>
       <td>
         <button class="btn btn-info" data-toggle="modal" data-target="#category{{category.id}}">Mostrar </button>
       </td>
@@ -43,7 +41,6 @@
     <thead>
       <tr>
         <th>Nombre </th>
-        <th>Materia asignada </th>
         <th>Mostrar </th>
         <th>Modificar </th>
         <th>Eliminar </th>
@@ -52,7 +49,6 @@
     <tbody>
       <tr ng-repeat="category in resultSearch">
       <td> {{category.name}}</td>
-      <td> {{getNameSubject(category.subject_id)}}</td>
       <td>
         <button class="btn btn-info" data-toggle="modal" data-target="#category{{category.id}}">Mostrar </button>
       </td>
@@ -82,13 +78,6 @@
           </div>
           <div class="modal-body">
             <p><b>Nombre: </b> <?php echo $category['name']; ?></p>
-            <?php foreach ($subjects as $subject){
-              if ($subject['id'] == $category['subject_id']){ ?>
-                    
-                 <p><b>Nombre Materia: </b> <?php echo $subject->name; ?></p>
-              <?php
-              }
-            }?>
             <p><b>Descripcion: </b> <?php echo $category['description']; ?></p>
           </div>
 
@@ -121,9 +110,6 @@
 		  			, 'name' => 'name']);
 
 			  echo $this->Form->input('Descripción', ['type' => 'textarea', 'class' => 'form-control', 'name' => 'description']);
-
-        echo $this->Form->input('subject_id',['options' => $subjectsForms , 
-            'label' => 'Materia: ', 'class' => 'form-control', 'value' => $category['subject_id']]) ;
 
 			  echo $this->Form->submit('Crear Categoria', ['class' => 'btn btn-success buttonAddForm']);
 
@@ -193,8 +179,6 @@
             echo $this->Form->input('name', 
               ['type' => 'text', 'class' => 'form-control', 'value' => $category['name'] ]);
             
-            echo $this->Form->input('subject_id',['options' => $subjectsForms , 
-            'label' => 'Materia: ', 'class' => 'form-control', 'value' => $category['subject_id']]) ; 
 
             echo $this->Form->input('description', 
             ['type' => 'textarea', 'class' => 'form-control', 'value' => $category['description'] ]);
@@ -219,9 +203,6 @@
 </div> <!-- end of angular controller div -->
 <script>
   var categories = <?php echo json_encode(compact('categories')); ?>
-</script>
-<script type="text/javascript">
-  var subjects = <?php echo json_encode(compact('subjects')); ?>
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>

@@ -27,12 +27,7 @@ class CategoriesController extends AppController {
     {
         $this->viewBuilder()->layout('admin');
         $categories = $this->set('categories', $this->Categories->find('all'));
-        $subjects = TableRegistry::get('Subjects')->find();
         
-        $subjectsForms = TableRegistry::get('Subjects')->find('list',array('fields' => ['Subjects.id','Subjects.name']));
-
-        $this->set('subjects', $subjects);
-        $this->Set('subjectsForms', $subjectsForms);
     }
 
     public function delete(){
@@ -65,7 +60,6 @@ class CategoriesController extends AppController {
             $formatData = [
              "name" => $dataForm["name"], 
              "description" =>  $dataForm["description"],
-             "subject_id" =>   $dataForm["subject_id"],
              ];
              
            
@@ -92,7 +86,6 @@ class CategoriesController extends AppController {
         $formatData = [
          "name" => $this->request->data["name"], 
          "description" =>  $this->request->data["description"],
-         "subject_id" => $this->request->data["subject_id"]
          ];
    
         // Prior to 3.4.0 $this->request->data() was used.
