@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-12-2017 a las 17:24:16
+-- Tiempo de generación: 10-12-2017 a las 15:57:20
 -- Versión del servidor: 5.6.24
 -- Versión de PHP: 5.6.8
 
@@ -103,12 +103,21 @@ INSERT INTO `competences` (`id`, `subject_id`, `name`, `description`, `created`,
 
 CREATE TABLE IF NOT EXISTS `contents` (
   `id` int(10) unsigned NOT NULL,
-  `competency_id` int(10) NOT NULL,
+  `competence_id` int(10) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
   `description` varchar(250) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `contents`
+--
+
+INSERT INTO `contents` (`id`, `competence_id`, `name`, `description`, `created`, `modified`) VALUES
+(1, 6, 'Contenido 1', 'DEscripción 1', NULL, NULL),
+(2, 36, 'Contenido 2', 'DEscripción 2', NULL, NULL),
+(4, 36, 'Contenido 3', 'patata', NULL, '2017-12-10 12:34:38');
 
 -- --------------------------------------------------------
 
@@ -191,7 +200,7 @@ CREATE TABLE IF NOT EXISTS `userscompetences` (
   `numericnote` int(4) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `userscompetences`
@@ -277,7 +286,7 @@ ALTER TABLE `competences`
 -- AUTO_INCREMENT de la tabla `contents`
 --
 ALTER TABLE `contents`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT de la tabla `files`
 --
@@ -297,7 +306,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `userscompetences`
 --
 ALTER TABLE `userscompetences`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=30;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=31;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
