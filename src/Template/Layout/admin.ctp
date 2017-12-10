@@ -84,7 +84,14 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
                     );
                     ?>
                 </li>
-                <li><a href="#">Contenidos</a></li>
+                <li>
+                    <?php
+                    echo $this->Html->link(
+                        'Contenidos',
+                        '/contents/'
+                    );
+                    ?>
+                </li>
                 <li>
                          <?php
                         echo $this->Html->link(
@@ -92,7 +99,7 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
                             '/users/logout'
                         );
                         ?>
-                    </li>
+                </li>
             </ul>
           </nav>
         </div>

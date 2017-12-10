@@ -20,7 +20,7 @@
         <th>DNI</th>
         <th>Tipo</th>
         <th>Email </th>
-        <th>Masterias </th>
+        <th>Materias </th>
         <th>Mostrar </th>
         <th>Modificar </th>
         <th>Eliminar </th>
@@ -58,7 +58,7 @@
         <th>DNI</th>
         <th>Tipo</th>
         <th>Email </th>
-        <th>Masterias </th>
+        <th>Materias </th>
         <th>Mostrar </th>
         <th>Modificar </th>
         <th>Eliminar </th>

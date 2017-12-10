@@ -110,9 +110,6 @@ class UsersController extends AppController {
             return $this->redirect(['controller' => 'users', 'action' => 'index']);
         }
             
-        
-
-        //$this->set('user', $article);
     }
 
 
