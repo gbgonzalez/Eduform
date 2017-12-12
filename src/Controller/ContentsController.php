@@ -22,6 +22,11 @@ class ContentsController extends AppController {
         $this->Auth->allow(['add', 'logout']);
     }
 
+    public function initialize()  {
+          parent::initialize();
+          $this->loadComponent('Upload');    ## Load upload component for uploading images
+    }
+
     public function index()
     {
     	$this->viewBuilder()->layout('admin');
@@ -31,8 +36,11 @@ class ContentsController extends AppController {
 
     	$competencesForm = TableRegistry::get('Competences')->find('list',array('fields' => ['Competences.id','Competences.name']));
 
+    	$files = TableRegistry::get('Files')->find('all');
+
 
     	$this->set('competencesForm', $competencesForm);
+    	$this->set('files', $files);
 
     }
 
@@ -104,6 +112,81 @@ class ContentsController extends AppController {
         }
             
     }// end of function update
+
+
+    public function uploadFile(){
+   		
+    	$filesTable = TableRegistry::get('Files');
+   		$file = $filesTable->newEntity();
+   		$fileUpload = $this->request->data;
+
+    	
+    	
+    	if(!empty( $fileUpload['contents']['files']['name']) )
+    	{
+            $this->Upload->upload($fileUpload['contents']['files']);
+           
+        
+           
+	        if($this->Upload->uploaded) {
+
+
+	                $name= $fileUpload['contents']['files']['name'];
+	                $this->Upload->file_new_name_body = $name;
+
+	                $process = 'uploads/'.$fileUpload['id'].'/';
+
+	                $this->Upload->process($process);
+	                
+	                $file->name = $name;
+                	$file->content_id = $fileUpload['id'];
+
+
+                	$filesTable->save($file);
+
+                	$this->Flash->success(__('El archivos se ha subido correctamente.'));
+            		return $this->redirect(['controller' => 'contents', 'action' => 'index']);
+	                
+					
+				}
+			  } else {
+				unset($this->request->data['user_detail']["profile_image"]); 
+				$this->Flash->error(__('Problema con la subida del archivo.'));
+            	return $this->redirect(['controller' => 'contents', 'action' => 'index']);
+			  }
+       	
+       		
+       
+
+   		}
+
+    public function deleteFile(){
+        if ($this->request->is('post')) {
+            // Prior to 3.4.0 $this->request->data() was used.
+            
+            $dataForm = $this->request->getData();
+
+            $filesTable = TableRegistry::get('Files');
+            $entity = $filesTable->get( $dataForm['id'] );
+            
+            $deleteResult =  $filesTable->delete($entity);
+
+            if($deleteResult)
+            {
+                
+                $this->Flash->success(__('Se ha borrado el archivo de este contenido.'));
+                return $this->redirect(['controller' => 'contents', 'action' => 'index']);
+            
+            }else{
+                
+                $this->Flash->error(__('Erorr al el archivo'));
+                return $this->redirect(['controller' => 'contents', 'action' => 'index']);
+            }
+
+
+
+        }// end of if post
+    }
 
 
 }

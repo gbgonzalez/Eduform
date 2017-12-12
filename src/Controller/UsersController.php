@@ -17,7 +17,6 @@ class UsersController extends AppController {
         parent::beforeFilter($event);
         /**/
         $this->set('current_user', $this->Auth->user());
-
         /**/
         // Allow users to register and logout.
         // You should not add the "login" action to allow list. Doing so would
@@ -111,9 +110,6 @@ class UsersController extends AppController {
             return $this->redirect(['controller' => 'users', 'action' => 'index']);
         }
             
-        
-
-        //$this->set('user', $article);
     }
 
 
@@ -257,8 +253,7 @@ class UsersController extends AppController {
                 /**/
                 $this->set('current_user', $this->Auth->user());
                 /**/
-                return $this->redirect('/eduform/home');
-                /*return $this->redirect($this->Auth->redirectUrl());*/
+                return $this->redirect($this->Auth->redirectUrl());
             }
 
             $this->Flash->error(__('Invalid username or password, try again'));
@@ -270,15 +265,5 @@ class UsersController extends AppController {
         return $this->redirect($this->Auth->logout());
     }
 
-    public function isAuthorized($user)
-    {
-
-        // Admin can access every action
-        if (($user['role'] === 'Administrador')) {
-            return true;
-        }
-
-        return false;
-    }
 
 }

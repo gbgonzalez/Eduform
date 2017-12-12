@@ -95,6 +95,10 @@ footer{
     		font-size: 11px;
  }
 
+ .showFile form{display:inline;}
+
+ .showFile .submit{display: inherit;}
+
 
 
 /* END OF GENERIC ADMIN STYLE */

@@ -1,6 +1,6 @@
 <!-- File: /app/View/User/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
-<h1 class="titleAdmin"> Administración de contenidos </h1>
+<h1 class="titleAdmin"> Administración de contenidos</h1>
 <button class="btn btn-success" data-toggle="modal" data-target="#addContent">Añadir Contenido </button>
 <form class="form-inline formSearch">
   <div class="form-group">
@@ -223,9 +223,73 @@
 		</div>
 <?php } ?>
 
+<!-- Modal upload file-->
+<?php foreach ($contents as $content) 
+{ ?>
+		<div id="files<?php echo $content['id']; ?>" class="modal fade" role="dialog">
+		  <div class="modal-dialog">
+
+		    <!-- Modal content-->
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal">&times;</button>
+		        <h4 class="modal-title">Archivos asociados</h4>
+		      </div>
+		    	<div class="modal-body">
+		    	<p> Archivos asociados </p>
+		    	<?php foreach ($files as $file)
+		    	{
+		    		if ( $content['id'] == $file['content_id'])
+		    		{
+		    			$url =  WWW_ROOT.$file['content_id']."/".$file['name'];
+		    			
+		    			echo "<div class='showFile' >";
+
+		    			echo "<a target='_blank' href='".$url."' >";
+		    				
+		    			echo $file['name'];
+		    			echo "</a>";
+		    			echo $this->Form->create('Post', array('url' => '/contents/deleteFile'));
+				  	
+					  	echo $this->Form->hidden('id', ['value' => $file['id']]);
+						
+						echo $this->Form->submit('X', ['class' => 'buttonDeleteSubject']) ;
+
+						echo $this->Form->end(); 
+
+						echo "</div>";
+
+		    		}
+		    		
+		    	}
+		    	?>
+		        <?php 
+		        	
+				  	echo $this->Form->create($content, ['type'=> 'file', 'url' => '/contents/uploadFile']);
+				  	
+				  	echo $this->Form->hidden('id', ['value' => $content['id']]);
+					
+				  	echo $this->Form->input('contents.files', ['type' => 'file', 
+				  				'label'=> 'Añadir Archivo']);
+
+					echo $this->Form->submit('Subir Archivo', ['class' => 'btn btn-success buttonAddForm']) ;
+
+					echo $this->Form->end() 
+
+				?>
+      		</div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+    	</div>
+
+		  </div>
+		</div>
+<?php } ?>
+
 </div>
 <script>
-	var contents = <?php echo json_encode(compact('contents')) ?>;
+	var contents = <?php echo json_encode(compact('contents')); ?>;
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 <?= $this->Html->script('contents.js') ?>

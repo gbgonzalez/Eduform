@@ -84,7 +84,7 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
                     );
                     ?>
                 </li>
-                 <li>
+                <li>
                     <?php
                     echo $this->Html->link(
                         'Contenidos',
