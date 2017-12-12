@@ -53,15 +53,6 @@ Router::scope('/', function (RouteBuilder $routes) {
 
     $routes->connect('/', ['controller' => 'Eduform', 'action' => 'index']);
 
-    $routes->connect('/', ['controller' => 'Users', 'action' => 'index']);
-
-    $routes->connect('/', ['controller' => 'Subjects', 'action' => 'index']);
-
-    $routes->connect('/', ['controller' => 'Competences', 'action' => 'index']);
-
-    $routes->connect('/', ['controller' => 'Categories', 'action' => 'index']);
-
-
     //$routes->connect('/users/add', ['controller' => 'Users', 'action' => 'index']);
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
