@@ -253,7 +253,9 @@ class UsersController extends AppController {
                 /**/
                 $this->set('current_user', $this->Auth->user());
                 /**/
-                return $this->redirect($this->Auth->redirectUrl());
+                
+                return $this->redirect('/eduform/home');
+                /*return $this->redirect($this->Auth->redirectUrl());*/
             }
 
             $this->Flash->error(__('Invalid username or password, try again'));
@@ -263,6 +265,16 @@ class UsersController extends AppController {
     public function logout()
     {
         return $this->redirect($this->Auth->logout());
+    }
+    
+    public function isAuthorized($user)
+    {
+        // Admin can access every action
+        if (($user['role'] === 'Administrador')) {
+            return true;
+        }
+
+        return false;
     }
 
 
