@@ -31,7 +31,7 @@ class AppController extends Controller
 
     public function beforeFilter(Event $event)
     {
-        $this->Auth->allow(['index', 'view', 'display']);
+        $this->Auth->allow(['view', 'display']);
     }
 
 
@@ -69,7 +69,7 @@ class AppController extends Controller
             ],
             'logoutRedirect' => [
                 'controller' => 'Eduform',
-                'action' => 'index'
+                'action' => ' '
             ]
         ]);
 
@@ -92,6 +92,12 @@ class AppController extends Controller
         ) {
             $this->set('_serialize', true);
         }
+    }
+    
+    public function isAuthorized($user)
+    {
+
+        return true;
     }
 
 }
