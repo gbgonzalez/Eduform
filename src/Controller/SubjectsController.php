@@ -18,7 +18,7 @@ class SubjectsController extends AppController {
         // Allow users to register and logout.
         // You should not add the "login" action to allow list. Doing so would
         // cause problems with normal functioning of AuthComponent.
-        $this->Auth->allow(['add', 'logout']);
+        $this->Auth->allow(['logout']);
     }
 
     public function index()
@@ -95,6 +95,17 @@ class SubjectsController extends AppController {
         
 
         //$this->set('user', $article);
+    }
+
+    public function isAuthorized($user)
+    {
+
+        // Admin can access every action
+        if (($user['role'] === 'Administrador')) {
+            return true;
+        }
+       
+        return false;
     }
 
 }
