@@ -39,6 +39,66 @@ class UsersController extends AppController {
      
     }
 
+    public function view()
+    {
+        $this->viewBuilder()->layout('admin');
+       
+        $this->set( 'current_user', $this->Auth->user() );;
+        $userProfile = $this->Auth->user();
+
+        $connection = ConnectionManager::get('default');
+        $results = $connection->execute("SELECT competence_id FROM userscompetences 
+            WHERE user_id = " .$userProfile['id']. "");
+        $i=0;
+        foreach ( $results as $result )
+        {
+
+            $subjectsResult[$i] = $connection->execute("SELECT subject_id FROM competences 
+            WHERE id = " .$result['competence_id']. "");
+            $i++;
+
+        }
+        $k =0;
+        for ( $j=0; $j< count($subjectsResult); $j++ )
+        {
+            foreach ( $subjectsResult[$j] as $subjectResult )
+            {
+                $subjects_id[$k] = $subjectResult['subject_id'];
+                $k++;
+            }
+        }
+
+        $subjects_id = array_unique($subjects_id);
+
+        $competences = TableRegistry::get('Competences');
+        $subjects = TableRegistry::get('Subjects');
+        
+        $keys = array_keys($subjects_id);
+        
+
+        for ( $l = 0; $l < count($keys); $l++ ){
+            
+            $usersData[$l] = $competences->find('all', ['contain' => ['Subjects']])
+                ->where( [ 'subject_id' => $subjects_id[$keys[$l]] ] );
+            $userSubjects[$l] = $subjects->find()
+                ->where( [ 'id' => $subjects_id[$keys[$l]] ] );
+
+            
+        }
+
+    
+
+        $this->set('usersData', $usersData);
+        $this->set('userSubjects', $userSubjects);
+
+
+       
+
+
+        
+     
+    }
+
     public function add()
     {
         $user = $this->Users->newEntity();       

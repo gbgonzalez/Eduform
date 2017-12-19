@@ -41,7 +41,14 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
           <nav id="navbarPublic">
             <ul class="nav nav-tabs" role="tablist">
                 <li class="active"><a href="#">Inicio</a></li>
-                <li><a href="#">Mi perfil</a></li>
+                <li>
+                    <?php
+                    echo $this->Html->link(
+                        'Mi perfil',
+                        '/users/view'
+                    );
+                    ?>
+                </li>
                 
                 <?php if( $current_user['role'] == 'Administrador')
                 {
