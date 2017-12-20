@@ -16,7 +16,7 @@
             // Allow users to register and logout.
             // You should not add the "login" action to allow list. Doing so would
             // cause problems with normal functioning of AuthComponent.
-            $this->Auth->allow(['index', 'logout']);
+            $this->Auth->allow(['index', 'login', 'logout']);
         }
 
     	public function index()
@@ -65,7 +65,15 @@
         }
 
         public function home(){
+        
+        if($this->Auth->user()['role'] == "Administrador"){
+
             $this->viewBuilder()->layout('admin');
+        }
+        if($this->Auth->user()['role'] == "Alumno"){
+
+            $this->viewBuilder()->layout('alumno');
+        }
 
 
         }

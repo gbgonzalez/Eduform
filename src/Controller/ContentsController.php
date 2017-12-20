@@ -7,6 +7,7 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\Validation\Validation;
 use Cake\ORM\TableRegistry;
+use Cake\Datasource\ConnectionManager;
 
 class ContentsController extends AppController {
 
@@ -29,19 +30,38 @@ class ContentsController extends AppController {
 
     public function index()
     {
-    	$this->viewBuilder()->layout('admin');
+        if($this->Auth->user()['role'] == "Administrador"){
 
-    	$contents = $this->set('contents', $this->Contents
-    				->find('all', ['contain' => ['Competences']]));
+        	$this->viewBuilder()->layout('admin');
 
-    	$competencesForm = TableRegistry::get('Competences')->find('list',array('fields' => ['Competences.id','Competences.name']));
+        	$contents = $this->set('contents', $this->Contents
+        				->find('all', ['contain' => ['Competences']]));
 
-    	$files = TableRegistry::get('Files')->find('all');
+        	$competencesForm = TableRegistry::get('Competences')->find('list',array('fields' => ['Competences.id','Competences.name']));
+
+        	$files = TableRegistry::get('Files')->find('all');
 
 
-    	$this->set('competencesForm', $competencesForm);
-    	$this->set('files', $files);
+        	$this->set('competencesForm', $competencesForm);
+        	$this->set('files', $files);
+        }
 
+        if($this->Auth->user()['role'] == "Alumno"){
+
+            $this->viewBuilder()->layout('alumno');
+
+            $contents = $this->set('contents', $this->Contents
+                        ->find('all', ['contain' => ['Competences']]));
+
+            $competencesForm = TableRegistry::get('Competences')->find('list',array('fields' => ['Competences.id','Competences.name']));
+
+            $files = TableRegistry::get('Files')->find('all');
+
+
+            $this->set('competencesForm', $competencesForm);
+            $this->set('files', $files);
+
+        }
     }
 
     public function add(){
@@ -192,10 +212,10 @@ class ContentsController extends AppController {
     {
 
         // Admin can access every action
-        if (($user['role'] === 'Administrador')) {
+        if (($user['role'] === 'Administrador' || $user['role'] === 'Alumno' || $user['role'] === 'Gestor de Contenidos')) {
             return true;
         }
-       
+        
         return false;
     }
 

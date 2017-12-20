@@ -21,81 +21,170 @@ class UsersController extends AppController {
         // Allow users to register and logout.
         // You should not add the "login" action to allow list. Doing so would
         // cause problems with normal functioning of AuthComponent.
-        $this->Auth->allow(['add', 'logout']);
+        $this->Auth->allow(['login','logout']);
     }
 
     public function index()
     {
-        $this->viewBuilder()->layout('admin');
-        $users = $this->set('users', $this->Users->find('all', ['contain' => ['Competences']]));
+        if($this->Auth->user()['role'] == "Administrador"){
 
-        $competences = TableRegistry::get('Competences')->find('all', ['contain' => ['Users', 'Subjects']]);
+            $this->viewBuilder()->layout('admin');
 
-        $subjectsForm = TableRegistry::get('Subjects')->find('list',array('fields' => ['Subjects.id','Subjects.name']));
+            $users = $this->set('users', $this->Users->find('all', ['contain' => ['Competences']]));
 
-        $this->set('competences', $competences);
+            $competences = TableRegistry::get('Competences')->find('all', ['contain' => ['Users', 'Subjects']]);
 
-        $this->set('subjectsForm', $subjectsForm);
+            $subjectsForm = TableRegistry::get('Subjects')->find('list',array('fields' => ['Subjects.id','Subjects.name']));
+
+            $this->set('competences', $competences);
+
+            $this->set('subjectsForm', $subjectsForm);
+
+        }
+        if($this->Auth->user()['role'] == "Alumno"){
+
+            $this->viewBuilder()->layout('alumno');
+
+            return $this->redirect(['controller' => 'users', 'action' => 'view']);
+        }
      
     }
 
     public function view()
     {
-        $this->viewBuilder()->layout('admin');
-       
-        $this->set( 'current_user', $this->Auth->user() );;
-        $userProfile = $this->Auth->user();
 
-        $connection = ConnectionManager::get('default');
-        $results = $connection->execute("SELECT competence_id FROM userscompetences 
-            WHERE user_id = " .$userProfile['id']. "");
-        $i=0;
-        foreach ( $results as $result )
-        {
+        $this->set( 'current_user', $this->Auth->user() );
 
-            $subjectsResult[$i] = $connection->execute("SELECT subject_id FROM competences 
-            WHERE id = " .$result['competence_id']. "");
-            $i++;
+        if($this->Auth->user()['role'] == "Administrador"){
 
-        }
-        $k =0;
-        for ( $j=0; $j< count($subjectsResult); $j++ )
-        {
-            foreach ( $subjectsResult[$j] as $subjectResult )
+            $this->viewBuilder()->layout('admin');
+
+            
+            $userProfile = $this->Auth->user();
+
+            $connection = ConnectionManager::get('default');
+            $results = $connection->execute("SELECT competence_id FROM userscompetences 
+                WHERE user_id = " .$userProfile['id']. "");
+
+            $w =0;
+            $i =0;
+
+            foreach ( $results as $result )
             {
-                $subjects_id[$k] = $subjectResult['subject_id'];
-                $k++;
+                //Se coje aqui el id de competencia Contents
+                $competences_id[$i] = $result['competence_id'];
+
+                $subjectsResult[$i] = $connection->execute("SELECT subject_id FROM competences 
+                WHERE id = " .$result['competence_id']. "");
+                $i++;
+
             }
+
+
+            $k =0;
+            for ( $j=0; $j< count($subjectsResult); $j++ )
+            {
+                foreach ( $subjectsResult[$j] as $subjectResult )
+                {
+                    $subjects_id[$k] = $subjectResult['subject_id'];
+                    $k++;
+                }
+            }
+
+            $subjects_id = array_unique($subjects_id);
+
+            $competences = TableRegistry::get('Competences');
+            $subjects = TableRegistry::get('Subjects');
+            
+            $keys = array_keys($subjects_id);
+
+            //Contends
+            $contents = TableRegistry::get('Contents');
+
+            $competences_id = array_unique($competences_id);
+
+            $keys2 = array_keys($competences_id);
+            
+
+            for ( $l = 0; $l < count($keys); $l++ ){
+                
+                $usersData[$l] = $competences->find('all', ['contain' => ['Subjects']])
+                    ->where( [ 'subject_id' => $subjects_id[$keys[$l]] ] );
+                $userSubjects[$l] = $subjects->find()
+                    ->where( [ 'id' => $subjects_id[$keys[$l]] ] );
+                
+            }
+        
+
+            $this->set('usersData', $usersData);
+            $this->set('userSubjects', $userSubjects);
+
+
+            //Contents
+        for ( $l = 0; $l < count($keys2); $l++ ){
+
+            $userContents[$l] = $contents->find()->where( [ 'competence_id' => $competences_id[$keys2[$l]] ] );
         }
 
-        $subjects_id = array_unique($subjects_id);
+            $this->set('userContents', $userContents);
 
-        $competences = TableRegistry::get('Competences');
-        $subjects = TableRegistry::get('Subjects');
-        
-        $keys = array_keys($subjects_id);
-        
-
-        for ( $l = 0; $l < count($keys); $l++ ){
-            
-            $usersData[$l] = $competences->find('all', ['contain' => ['Subjects']])
-                ->where( [ 'subject_id' => $subjects_id[$keys[$l]] ] );
-            $userSubjects[$l] = $subjects->find()
-                ->where( [ 'id' => $subjects_id[$keys[$l]] ] );
-
-            
         }
 
-    
+        if($this->Auth->user()['role'] == "Alumno"){
 
-        $this->set('usersData', $usersData);
-        $this->set('userSubjects', $userSubjects);
+            $this->viewBuilder()->layout('alumno');
+
+            $userProfile = $this->Auth->user();
+
+            $connection = ConnectionManager::get('default');
+            $results = $connection->execute("SELECT competence_id FROM userscompetences 
+                WHERE user_id = " .$userProfile['id']. "");
+            $i=0;
+            foreach ( $results as $result )
+            {
+
+                $subjectsResult[$i] = $connection->execute("SELECT subject_id FROM competences 
+                WHERE id = " .$result['competence_id']. "");
+                $i++;
+
+            }
 
 
-       
+            $k =0;
+            for ( $j=0; $j< count($subjectsResult); $j++ )
+            {
+                foreach ( $subjectsResult[$j] as $subjectResult )
+                {
+                    $subjects_id[$k] = $subjectResult['subject_id'];
+                    $k++;
+                }
+            }
 
+            $subjects_id = array_unique($subjects_id);
+
+            $competences = TableRegistry::get('Competences');
+            $subjects = TableRegistry::get('Subjects');
+            
+            $keys = array_keys($subjects_id);
+            
+
+            for ( $l = 0; $l < count($keys); $l++ ){
+                
+                $usersData[$l] = $competences->find('all', ['contain' => ['Subjects']])
+                    ->where( [ 'subject_id' => $subjects_id[$keys[$l]] ] );
+                $userSubjects[$l] = $subjects->find()
+                    ->where( [ 'id' => $subjects_id[$keys[$l]] ] );
+
+                
+            }
 
         
+
+            $this->set('usersData', $usersData);
+            $this->set('userSubjects', $userSubjects);
+            $this->set('userContents', $contends_id);
+
+        }
      
     }
 

@@ -7,7 +7,7 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\Validation\Validation;
 use Cake\ORM\TableRegistry;
-
+use Cake\Datasource\ConnectionManager;
 
 class CompetencesController extends AppController {
 
@@ -25,31 +25,64 @@ class CompetencesController extends AppController {
 
     public function index()
     {
-        $this->viewBuilder()->layout('admin');
 
+        if($this->Auth->user()['role'] == "Administrador"){
 
-        $subjects = TableRegistry::get('Subjects')->find();
+            $this->viewBuilder()->layout('admin');
+
+            $subjects = TableRegistry::get('Subjects')->find();
         
-        $subjectsForms = TableRegistry::get('Subjects')->find('list',array('fields' => ['Subjects.id','Subjects.name']));
+            $subjectsForms = TableRegistry::get('Subjects')->find('list',array('fields' => ['Subjects.id','Subjects.name']));
 
-        $categories = TableRegistry::get('Categories')->find();
+            $categories = TableRegistry::get('Categories')->find();
+            
+            $categoriesForms = TableRegistry::get('Categories')->find('list',array('fields' => ['Categories.id','Categories.name']));
+
+           // $Competencias = TableRegistry::get('Competences'); 
+            
+            $categoriesCompetences = TableRegistry::get('Categoriescompetences')->find();       
+
+
+            $competences = TableRegistry::get('Competences')->find('all', ['contain' => ['Categories', 'Subjects']]);
+     
+            $this->set('competences', $competences);
+     
+            $this->Set('subjectsForms', $subjectsForms);
+
+            $this->Set('categoriesForms', $categoriesForms);
+
+            $this->Set('categoriesCompetences', $categoriesCompetences);
+
+        }
+        if($this->Auth->user()['role'] == "Alumno"){
+
+            $this->viewBuilder()->layout('alumno');
+
+            $subjects = TableRegistry::get('Subjects')->find();
         
-        $categoriesForms = TableRegistry::get('Categories')->find('list',array('fields' => ['Categories.id','Categories.name']));
+            $subjectsForms = TableRegistry::get('Subjects')->find('list',array('fields' => ['Subjects.id','Subjects.name']));
 
-       // $Competencias = TableRegistry::get('Competences'); 
-        
-        $categoriesCompetences = TableRegistry::get('Categoriescompetences')->find();       
+            $categories = TableRegistry::get('Categories')->find();
+            
+            $categoriesForms = TableRegistry::get('Categories')->find('list',array('fields' => ['Categories.id','Categories.name']));
 
+            
+           /* $UserCompetences = TableRegistry::get('Userscompetences')->find('all',['contain' => ['Competences']],array('fields' => ['UsersCompetences.competence_id']))->where( [ 'user_id' => $this->Auth->user()['id'] ] );
+            */
 
-        $competences = TableRegistry::get('Competences')->find('all', ['contain' => ['Categories', 'Subjects']]);
- 
-        $this->set('competences', $competences);
- 
-        $this->Set('subjectsForms', $subjectsForms);
+            $categoriesCompetences = TableRegistry::get('Categoriescompetences')->find();       
 
-        $this->Set('categoriesForms', $categoriesForms);
+            $competences = TableRegistry::get('Competences')->find('all', ['contain' => ['Categories', 'Subjects']]);
+     
+            $this->set('competences', $competences);
+     
+            $this->Set('subjectsForms', $subjectsForms);
 
-        $this->Set('categoriesCompetences', $categoriesCompetences);
+            $this->Set('categoriesForms', $categoriesForms);
+
+            $this->Set('categoriesCompetences', $categoriesCompetences);
+
+        }
     
     }
 
@@ -149,10 +182,10 @@ class CompetencesController extends AppController {
     {
 
         // Admin can access every action
-        if (($user['role'] === 'Administrador')) {
+        if (($user['role'] === 'Administrador' || $user['role'] === 'Alumno' || $user['role'] === 'Gestor de Contenidos')) {
             return true;
         }
-
+        
         return false;
     }
 

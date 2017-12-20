@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\Validation\Validation;
+use Cake\Datasource\ConnectionManager;
 
 class SubjectsController extends AppController {
 
@@ -23,8 +24,21 @@ class SubjectsController extends AppController {
 
     public function index()
     {
-        $this->viewBuilder()->layout('admin');
-        $subjects = $this->set('subjects', $this->Subjects->find('all'));
+
+        if($this->Auth->user()['role'] == "Administrador"){
+
+            $this->viewBuilder()->layout('admin');
+            $subjects = $this->set('subjects', $this->Subjects->find('all'));
+        }
+
+        if($this->Auth->user()['role'] == "Alumno"){
+
+            $this->viewBuilder()->layout('alumno');
+
+            $subjects = $this->set('subjects', $this->Subjects->find('all'));
+        }
+
+
     }
 
     public function delete(){
@@ -101,10 +115,10 @@ class SubjectsController extends AppController {
     {
 
         // Admin can access every action
-        if (($user['role'] === 'Administrador')) {
+        if (($user['role'] === 'Administrador' || $user['role'] === 'Alumno' || $user['role'] === 'Gestor de Contenidos')) {
             return true;
         }
-       
+        
         return false;
     }
 
