@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `contents` (
   `id` int(10) unsigned NOT NULL,
   `competence_id` int(10) NOT NULL,
   `name` varchar(50) DEFAULT NULL,
-  `description` varchar(250) DEFAULT NULL,
+  `description` varchar(2000) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `modified` datetime DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
