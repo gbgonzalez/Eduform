@@ -305,7 +305,6 @@
 		    			echo $file['name'];
 		    			echo "</a>";
 
-          if( $current_user['role'] == 'Administrador'){
 
 		    			echo $this->Form->create('Post', array('url' => '/contents/deleteFile'));
 				  	
@@ -314,8 +313,6 @@
 						echo $this->Form->submit('X', ['class' => 'buttonDeleteSubject']) ;
 
 						echo $this->Form->end(); 
-          }
-
 
 						echo "</div>";
 
