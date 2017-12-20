@@ -86,6 +86,45 @@ class CompetencesController extends AppController {
     
     }
 
+    public function view($id){
+
+        $this->viewBuilder()->layout('admin');
+
+        $competence = $this->Competences->get($id);
+
+
+    
+        
+        $contentTable = TableRegistry::get('Contents');
+
+        $fileTable = TableRegistry::get('Files');
+
+        $contents = $contentTable->find('all')->where( [ 'competence_id' => $id ] );
+
+
+        $files = $fileTable->find('all');
+
+
+
+
+
+
+       
+
+        $this->Set('competence', $competence);
+
+        $this->Set('contents', $contents);
+
+
+        $this->Set('files', $files);
+
+
+        
+
+    
+
+    }
+
 
     public function add()
     {

@@ -295,9 +295,13 @@
 		    			$url =  WWW_ROOT.$file['content_id']."/".$file['name'];
 		    			
 		    			echo "<div class='showFile' >";
-
+		    			/*
 		    			echo "<a target='_blank' href='".$url."' >";
 		    				
+		    			echo $file['name'];
+		    			echo "</a>";*/
+
+		    			echo "<a target='_blank' href='/Eduform/contents/download/".$file['content_id']."/".$file['name']."' >";		    				
 		    			echo $file['name'];
 		    			echo "</a>";
 

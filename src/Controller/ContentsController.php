@@ -135,50 +135,50 @@ class ContentsController extends AppController {
 
 
     public function uploadFile(){
-   		
-    	$filesTable = TableRegistry::get('Files');
-   		$file = $filesTable->newEntity();
-   		$fileUpload = $this->request->data;
+        
+        $filesTable = TableRegistry::get('Files');
+        $file = $filesTable->newEntity();
+        $fileUpload = $this->request->data;
 
-    	
-    	
-    	if(!empty( $fileUpload['contents']['files']['name']) )
-    	{
+        
+        
+        if(!empty( $fileUpload['contents']['files']['name']) )
+        {
             $this->Upload->upload($fileUpload['contents']['files']);
            
         
            
-	        if($this->Upload->uploaded) {
+            if($this->Upload->uploaded) {
 
 
-	                $name= $fileUpload['contents']['files']['name'];
-	                $this->Upload->file_new_name_body = $name;
+                    $name= $fileUpload['contents']['files']['name'];
+                    $this->Upload->file_new_name_body = $name;
 
-	                $process = 'uploads/'.$fileUpload['id'].'/';
+                    $process = 'uploads/'.$fileUpload['id'].'/';
 
-	                $this->Upload->process($process);
-	                
-	                $file->name = $name;
-                	$file->content_id = $fileUpload['id'];
+                    $this->Upload->process($process);
+                    
+                    $file->name = $name;
+                    $file->content_id = $fileUpload['id'];
 
 
-                	$filesTable->save($file);
+                    $filesTable->save($file);
 
-                	$this->Flash->success(__('El archivos se ha subido correctamente.'));
-            		return $this->redirect(['controller' => 'contents', 'action' => 'index']);
-	                
-					
-				}
-			  } else {
-				unset($this->request->data['user_detail']["profile_image"]); 
-				$this->Flash->error(__('Problema con la subida del archivo.'));
-            	return $this->redirect(['controller' => 'contents', 'action' => 'index']);
-			  }
-       	
-       		
+                    $this->Flash->success(__('El archivos se ha subido correctamente.'));
+                    return $this->redirect(['controller' => 'contents', 'action' => 'index']);
+                    
+                    
+                }
+              } else {
+                unset($this->request->data['user_detail']["profile_image"]); 
+                $this->Flash->error(__('Problema con la subida del archivo.'));
+                return $this->redirect(['controller' => 'contents', 'action' => 'index']);
+              }
+        
+            
        
 
-   		}
+        }
 
     public function deleteFile(){
         if ($this->request->is('post')) {
@@ -207,7 +207,16 @@ class ContentsController extends AppController {
 
         }// end of if post
     }
+
+    public function download($content_id, $name){
+
+        $filePath = WWW_ROOT .'uploads'. DS . $content_id. DS. $name;
+        $this->response->file($filePath , array('download'=> true, 'name'=> $name));
+        return $this->redirect(['controller' => 'contents', 'action' => 'index']);
         
+    }
+        
+
     public function isAuthorized($user)
     {
 

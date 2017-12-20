@@ -25,7 +25,7 @@
 		<ul>
 
 			<li ng-repeat="competence in competences[0]">
-				<a href="/eduform/competences/view/{{competence.id}}"> {{ competence.name }} </a>
+				<a href="/Eduform/competences/view/{{competence.id}}"> {{ competence.name }} </a>
 			</li>
 
 		</ul>
