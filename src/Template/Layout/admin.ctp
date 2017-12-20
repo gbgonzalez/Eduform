@@ -44,7 +44,7 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
                 <li>
                     <?php
                     echo $this->Html->link(
-                        'Mi perfil',
+                        'Mi perfil Administrador',
                         '/users/view'
                     );
                     ?>
@@ -100,12 +100,12 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
                     ?>
                 </li>
                 <li>
-                         <?php
-                        echo $this->Html->link(
-                            'Desconectar',
-                            '/users/logout'
-                        );
-                        ?>
+                     <?php
+                    echo $this->Html->link(
+                        'Desconectar',
+                        '/users/logout'
+                    );
+                    ?>
                 </li>
             </ul>
           </nav>

@@ -1,7 +1,13 @@
 <!-- File: /app/View/User/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
 <h1 class="titleAdmin"> Administración de contenidos</h1>
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <button class="btn btn-success" data-toggle="modal" data-target="#addContent">Añadir Contenido </button>
+<?php
+}
+?>
 <form class="form-inline formSearch">
   <div class="form-group">
     <label for="email">Buscar:</label>
@@ -20,8 +26,15 @@
         <th>Competencia</th>
         <th>Archivos Adjuntos</th>
         <th>Mostrar </th>
+        <?php if( $current_user['role'] == 'Administrador')
+        {
+        ?>
         <th>Modificar </th>
         <th>Eliminar </th>
+        <?php
+        }
+        ?>
+
       </tr>
     </thead>
     <tbody>
@@ -35,12 +48,19 @@
 			<td>
 				<button class="btn btn-info" data-toggle="modal" data-target="#content{{content.id}}">Mostrar </button>
 			</td>
+      <?php if( $current_user['role'] == 'Administrador')
+      {
+      ?>
 			<td>
 				<button class="btn btn-default" data-toggle="modal" data-target="#updateContent{{content.id}}">Modificar </button>
 			</td>
 			<td>
 				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteContent{{content.id}}">Eliminar </button>
-			</td> 
+			</td>
+      <?php
+      }
+      ?> 
+
     	</tr>
     	
      
@@ -53,8 +73,14 @@
         <th>Competencia</th>
         <th>Archivos Adjuntos</th>
         <th>Mostrar </th>
+        <?php if( $current_user['role'] == 'Administrador')
+        {
+        ?>
         <th>Modificar </th>
         <th>Eliminar </th>
+        <?php
+        }
+        ?> 
       </tr>
     </thead>
     <tbody>
@@ -68,12 +94,18 @@
 			<td>
 				<button class="btn btn-info" data-toggle="modal" data-target="#content{{content.id}}">Mostrar </button>
 			</td>
+      <?php if( $current_user['role'] == 'Administrador')
+      {
+      ?>
 			<td>
 				<button class="btn btn-default" data-toggle="modal" data-target="#updateContent{{content.id}}">Modificar </button>
 			</td>
 			<td>
 				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteContent{{content.id}}">Eliminar </button>
 			</td> 
+      <?php
+      }
+      ?> 
     	</tr>
     	
      
@@ -105,6 +137,10 @@
 		</div>
 <?php } ?>
 
+
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <!-- modal add user -->
 <div id="addContent" class="modal fade" role="dialog">
   <div class="modal-dialog">
@@ -142,8 +178,14 @@
 
   </div>
 </div>
+<?php
+}
+?>
 
 <!-- Modal Delete-->
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <?php foreach ($contents as $content) 
 { ?>
 		<div id="deleteContent<?php echo $content['id']; ?>" class="modal fade" role="dialog">
@@ -174,8 +216,14 @@
 		  </div>
 		</div>
 <?php } ?>
+<?php
+}
+?>
 
 <!-- Modal Update-->
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <?php foreach ($contents as $content) 
 { ?>
 		<div id="updateContent<?php echo $content['id']; ?>" class="modal fade" role="dialog">
@@ -222,6 +270,9 @@
 		  </div>
 		</div>
 <?php } ?>
+<?php
+}
+?>
 
 <!-- Modal upload file-->
 <?php foreach ($contents as $content) 
@@ -249,6 +300,9 @@
 		    				
 		    			echo $file['name'];
 		    			echo "</a>";
+
+          if( $current_user['role'] == 'Administrador'){
+
 		    			echo $this->Form->create('Post', array('url' => '/contents/deleteFile'));
 				  	
 					  	echo $this->Form->hidden('id', ['value' => $file['id']]);
@@ -256,6 +310,8 @@
 						echo $this->Form->submit('X', ['class' => 'buttonDeleteSubject']) ;
 
 						echo $this->Form->end(); 
+          }
+
 
 						echo "</div>";
 
@@ -263,8 +319,10 @@
 		    		
 		    	}
 		    	?>
+
 		        <?php 
-		        	
+		      if( $current_user['role'] == 'Administrador'){
+
 				  	echo $this->Form->create($content, ['type'=> 'file', 'url' => '/contents/uploadFile']);
 				  	
 				  	echo $this->Form->hidden('id', ['value' => $content['id']]);
@@ -274,7 +332,9 @@
 
 					echo $this->Form->submit('Subir Archivo', ['class' => 'btn btn-success buttonAddForm']) ;
 
-					echo $this->Form->end() 
+					echo $this->Form->end();
+
+          }
 
 				?>
       		</div>

@@ -1,7 +1,13 @@
 <!-- File: /app/View/Competences/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
 <h1 class="titleAdmin"> Administración de Competencia </h1>
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <button class="btn btn-success" data-toggle="modal" data-target="#addCompetence">Añadir Competencia </button>
+<?php
+}
+?>
 <form class="form-inline formSearch">
   <div class="form-group">
     <label for="email">Buscar:</label>
@@ -19,8 +25,14 @@
         <th>Categoria asignada </th>
         <th>Materia asignada </th>
         <th>Mostrar </th>
+        <?php if( $current_user['role'] == 'Administrador')
+        {
+        ?>
         <th>Modificar </th>
         <th>Eliminar </th>
+        <?php
+        }
+        ?>
       </tr>
     </thead>
     <tbody>
@@ -35,12 +47,20 @@
       <td>
         <button class="btn btn-info" data-toggle="modal" data-target="#competence{{competence.id}}">Mostrar </button>
       </td>
+
+      <?php if( $current_user['role'] == 'Administrador')
+      {
+      ?>
       <td>
         <button class="btn btn-default" data-toggle="modal" data-target="#updateCompetence{{competence.id}}">Modificar </button>
       </td>
       <td>
         <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCompetence{{competence.id}}">Eliminar </button>
       </td> 
+      <?php
+      }
+      ?>
+
       </tr>
       
      
@@ -53,8 +73,15 @@
         <th>Categoria asignada </th>
         <th>Materia asignada </th>
         <th>Mostrar </th>
+        <?php if( $current_user['role'] == 'Administrador')
+        {
+        ?>
         <th>Modificar </th>
         <th>Eliminar </th>
+        <?php
+        }
+        ?>
+
       </tr>
     </thead>
     <tbody>
@@ -65,12 +92,20 @@
       <td>
         <button class="btn btn-info" data-toggle="modal" data-target="#competence{{competence.id}}">Mostrar </button>
       </td>
+
+      <?php if( $current_user['role'] == 'Administrador')
+      {
+      ?>
       <td>
         <button class="btn btn-default" data-toggle="modal" data-target="#updateCompetence{{competence.id}}">Modificar </button>
       </td>
       <td>
         <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCompetence{{competence.id}}">Eliminar </button>
       </td> 
+      <?php
+      }
+      ?>
+
       </tr>
       
      
@@ -105,6 +140,9 @@
 <?php } ?>
 
 <!-- modal add competence -->
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <div id="addCompetence" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
@@ -143,9 +181,15 @@
     </div>
   </div>
 </div>
+<?php
+}
+?>
 
 
 <!-- Modal Delete-->
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <?php foreach ($competences as $competence) 
 { ?>
     <div id="deleteCompetence<?php echo $competence['id']; ?>" class="modal fade" role="dialog">
@@ -176,8 +220,14 @@
       </div>
     </div>
 <?php } ?>
+<?php
+}
+?>
 
 <!-- Modal Update-->
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <?php foreach ($competences as $competence) 
 { ?>
     <div id="updateCompetence<?php echo $competence['id']; ?>" class="modal fade" role="dialog">
@@ -233,6 +283,9 @@
       </div>
     </div>
 <?php } ?>
+<?php
+}
+?>
 
 </div>
 <script>

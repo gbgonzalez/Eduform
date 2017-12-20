@@ -1,7 +1,13 @@
 <!-- File: /app/View/Materia/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
 <h1 class="titleAdmin"> Administración de Materia </h1>
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <button class="btn btn-success" data-toggle="modal" data-target="#addSubject">Añadir Materia </button>
+<?php
+}
+?>
 <form class="form-inline formSearch">
   <div class="form-group">
     <label for="email">Buscar:</label>
@@ -16,8 +22,16 @@
       <tr>
         <th>Nombre </th>
         <th>Mostrar </th>
-        <th>Modificar </th>
-        <th>Eliminar </th>
+
+        <?php if( $current_user['role'] == 'Administrador')
+        {
+        ?>
+          <th>Modificar </th>
+          <th>Eliminar </th>
+        <?php
+        }
+        ?>
+
       </tr>
     </thead>
     <tbody>
@@ -26,12 +40,19 @@
       <td>
         <button class="btn btn-info" data-toggle="modal" data-target="#subject{{subject.id}}">Mostrar </button>
       </td>
+
+      <?php if( $current_user['role'] == 'Administrador')
+      {
+      ?>
       <td>
         <button class="btn btn-default" data-toggle="modal" data-target="#updateSubject{{subject.id}}">Modificar </button>
       </td>
       <td>
         <button class="btn btn-danger" data-toggle="modal" data-target="#deleteSubject{{subject.id}}">Eliminar </button>
       </td> 
+      <?php
+      }
+      ?>
       </tr>
       
      
@@ -42,8 +63,14 @@
       <tr>
         <th>Nombre </th>
         <th>Mostrar </th>
+        <?php if( $current_user['role'] == 'Administrador')
+        {
+        ?>
         <th>Modificar </th>
         <th>Eliminar </th>
+        <?php
+        }
+        ?>
       </tr>
     </thead>
     <tbody>
@@ -53,12 +80,18 @@
       <td>
         <button class="btn btn-info" data-toggle="modal" data-target="#subject{{subject.id}}">Mostrar </button>
       </td>
+      <?php if( $current_user['role'] == 'Administrador')
+        {
+        ?>
       <td>
         <button class="btn btn-default" data-toggle="modal" data-target="#updateSubject{{subject.id}}">Modificar </button>
       </td>
       <td>
         <button class="btn btn-danger" data-toggle="modal" data-target="#deleteSubject{{subject.id}}">Eliminar </button>
       </td> 
+        <?php
+        }
+        ?>
       </tr>
       
      
@@ -90,7 +123,11 @@
     </div>
 <?php } ?>
 
+
 <!-- modal add subjects -->
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <div id="addSubject" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
@@ -120,8 +157,15 @@
 
   </div>
 </div>
+<?php
+}
+?>
+
 
 <!-- Modal Delete-->
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <?php foreach ($subjects as $subject) 
 { ?>
     <div id="deleteSubject<?php echo $subject['id']; ?>" class="modal fade" role="dialog">
@@ -152,9 +196,15 @@
       </div>
     </div>
 <?php } ?>
+<?php
+}
+?>
 
 
 <!-- Modal Update-->
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <?php foreach ($subjects as $subject) 
 { ?>
     <div id="updateSubject<?php echo $subject['id']; ?>" class="modal fade" role="dialog">
@@ -192,6 +242,9 @@
       </div>
     </div>
 <?php } ?>
+<?php
+}
+?>
 </div>
 <script>
   var subjects = <?php echo json_encode(compact('subjects')) ?>

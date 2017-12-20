@@ -1,7 +1,13 @@
 <!-- File: /app/View/Categorie/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
 <h1 class="titleAdmin"> Administración de Categoria </h1>
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <button class="btn btn-success" data-toggle="modal" data-target="#addCategory">Añadir Categoria </button>
+<?php
+}
+?>
 <form class="form-inline formSearch">
   <div class="form-group">
     <label for="email">Buscar:</label>
@@ -16,8 +22,15 @@
       <tr>
         <th>Nombre </th>
         <th>Mostrar </th>
+        <?php if( $current_user['role'] == 'Administrador')
+        {
+        ?>
         <th>Modificar </th>
         <th>Eliminar </th>
+        <?php
+        }
+        ?>
+
       </tr>
     </thead>
     <tbody>
@@ -26,12 +39,18 @@
       <td>
         <button class="btn btn-info" data-toggle="modal" data-target="#category{{category.id}}">Mostrar </button>
       </td>
+      <?php if( $current_user['role'] == 'Administrador')
+      {
+      ?>
       <td>
         <button class="btn btn-default" data-toggle="modal" data-target="#updateCategory{{category.id}}">Modificar </button>
       </td>
       <td>
         <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCategory{{category.id}}">Eliminar </button>
       </td> 
+      <?php
+      }
+      ?>
       </tr>
       
      
@@ -42,8 +61,15 @@
       <tr>
         <th>Nombre </th>
         <th>Mostrar </th>
+        <?php if( $current_user['role'] == 'Administrador')
+        {
+        ?>
         <th>Modificar </th>
         <th>Eliminar </th>
+        <?php
+        }
+        ?>
+
       </tr>
     </thead>
     <tbody>
@@ -52,12 +78,18 @@
       <td>
         <button class="btn btn-info" data-toggle="modal" data-target="#category{{category.id}}">Mostrar </button>
       </td>
+        <?php if( $current_user['role'] == 'Administrador')
+        {
+        ?>
       <td>
         <button class="btn btn-default" data-toggle="modal" data-target="#updateCategory{{category.id}}">Modificar </button>
       </td>
       <td>
         <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCategory{{category.id}}">Eliminar </button>
       </td> 
+        <?php
+        }
+        ?>
       </tr>
       
      
@@ -91,6 +123,9 @@
 <?php } ?>
 
   <!-- modal add categories -->
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <div id="addCategory" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
@@ -124,8 +159,14 @@
 
   </div>
 </div>
+<?php
+}
+?>
 
 <!-- Modal Delete-->
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <?php foreach ($categories as $category) 
 { ?>
     <div id="deleteCategory<?php echo $category['id']; ?>" class="modal fade" role="dialog">
@@ -156,9 +197,15 @@
       </div>
     </div>
 <?php } ?>
+<?php
+}
+?>
 
 
 <!-- Modal Update-->
+<?php if( $current_user['role'] == 'Administrador')
+{
+?>
 <?php foreach ($categories as $category) 
 { ?>
     <div id="updateCategory<?php echo $category['id']; ?>" class="modal fade" role="dialog">
@@ -200,6 +247,9 @@
       </div>
     </div>
 <?php } ?>
+<?php
+}
+?>
 </div> <!-- end of angular controller div -->
 <script>
   var categories = <?php echo json_encode(compact('categories')); ?>
