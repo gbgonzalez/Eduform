@@ -21,7 +21,7 @@ class UsersTable extends Table
      $this->belongsToMany('Competences', [
           'foreignKey' => 'user_id',
           'targetForeignKey' => 'competence_id',
-          'joinTable' => 'Userscompetences',
+          'joinTable' => 'userscompetences',
       ]);
     }
     

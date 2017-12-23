@@ -66,9 +66,7 @@ class CompetencesController extends AppController {
             
             $categoriesForms = TableRegistry::get('Categories')->find('list',array('fields' => ['Categories.id','Categories.name']));
 
-            
-           /* $UserCompetences = TableRegistry::get('Userscompetences')->find('all',['contain' => ['Competences']],array('fields' => ['UsersCompetences.competence_id']))->where( [ 'user_id' => $this->Auth->user()['id'] ] );
-            */
+        
 
             $categoriesCompetences = TableRegistry::get('Categoriescompetences')->find();       
 
@@ -92,36 +90,39 @@ class CompetencesController extends AppController {
 
         $competence = $this->Competences->get($id);
 
+        $competencesContentFile = ['name' => $competence['name']];
 
-    
-        
-        $contentTable = TableRegistry::get('Contents');
+        $connection = ConnectionManager::get('default');
+        $contents = $connection->execute("
+            SELECT * FROM Contents
+            WHERE competence_id= " .$id. "");
 
+      
         $fileTable = TableRegistry::get('Files');
-
-        $contents = $contentTable->find('all')->where( [ 'competence_id' => $id ] );
-
-
         $files = $fileTable->find('all');
+        $i=0;
+
+        foreach ( $contents as $content )
+        {
+            $competencesContentFile['contents'][$i]['name'] = $content['name'];
+            $competencesContentFile['contents'][$i]['id'] = $content['id'];
+            $competencesContentFile['contents'][$i]['description'] = $content['description'];      
+            $j=0;      
+            foreach ( $files as $file )
+            {
+                if ($file['content_id'] == $content['id'] ){
+                    $competencesContentFile['contents'][$i]['files'][$j]['name'] = $file['name'];
+                }
+                $j++;
+
+            }
+
+            $i++;
+        }
 
 
+        $this->Set('competencesContentFile', $competencesContentFile);
 
-
-
-
-       
-
-        $this->Set('competence', $competence);
-
-        $this->Set('contents', $contents);
-
-
-        $this->Set('files', $files);
-
-
-        
-
-    
 
     }
 

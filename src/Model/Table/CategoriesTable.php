@@ -21,7 +21,7 @@ class CategoriesTable extends Table
         $this->belongsToMany('Competences', [
             'foreignKey' => 'category_id',
             'targetForeignKey' => 'competence_id',
-            'joinTable' => 'Categoriescompetences',
+            'joinTable' => 'categoriescompetences',
         ]);
      
 

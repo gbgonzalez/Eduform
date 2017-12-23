@@ -9,12 +9,21 @@
 	</div>
 </div>
 <div class="col-md-12">
-	<p> Mis Materias </p>
+	<p class="headSubjects"> Mis Materias </p>
 	<ul>
-		<li ng-repeat="userSubject in userSubjects">
-			<a href="#" ng-click="showCompetences(userSubject[0].id)"> {{ userSubject[0].name }} </a>
+		<li ng-repeat="dataUser in dataUsers" class="subjectMenu">
+			<p class="titleSubjects"> {{ dataUser.SubjectName }} </p>
+			<ul>
+				<p> Competencias </p>
+				<div ng-repeat="competences in dataUser.Competences">
+					<li ng-repeat="competence in competences">
+
+						<a href="/Eduform/competences/view/{{competence.id}}"> {{ competence.name }} </a>
+					</li>
+				</div>
+			</ul>
 		</li>
-		
+
 	</ul>
 
 </div>
@@ -25,7 +34,7 @@
 		<ul>
 
 			<li ng-repeat="competence in competences[0]">
-				<a href="/Eduform/competences/view/{{competence.id}}"> {{ competence.name }} </a>
+				<a href="/competences/view/{{competence.id}}"> {{ competence.name }} </a>
 			</li>
 
 		</ul>
@@ -34,9 +43,7 @@
 
 </div>
 <script>
-	var userData = <?php echo json_encode(compact('usersData')) ?>;
-	var userSubjects = <?php echo json_encode(compact('userSubjects')) ?>;
-
+	var dataUsers = <?php echo json_encode(compact('dataUsers')) ?>;
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 <?= $this->Html->script('usersProfile.js') ?>

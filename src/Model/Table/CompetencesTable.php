@@ -22,13 +22,13 @@ class CompetencesTable extends Table
         $this->belongsToMany('Categories', [
             'foreignKey' => 'competence_id',
             'targetForeignKey' => 'category_id',
-            'joinTable' => 'Categoriescompetences',
+            'joinTable' => 'categoriescompetences',
         ]);
 
         $this->belongsToMany('Users', [
             'foreignKey' => 'competence_id',
             'targetForeignKey' => 'user_id',
-            'joinTable' => 'Userscompetences',
+            'joinTable' => 'userscompetences',
         ]);
     }
     public function validationDefault(Validator $validator)

@@ -8,6 +8,7 @@ use Cake\Event\Event;
 use Cake\Validation\Validation;
 use Cake\ORM\TableRegistry;
 use Cake\Datasource\ConnectionManager;
+use Cake\Filesystem\Folder;
 
 class ContentsController extends AppController {
 
@@ -140,40 +141,41 @@ class ContentsController extends AppController {
         $file = $filesTable->newEntity();
         $fileUpload = $this->request->data;
 
-        
-        
         if(!empty( $fileUpload['contents']['files']['name']) )
         {
-            $this->Upload->upload($fileUpload['contents']['files']);
-           
-        
-           
+            $this->Upload->upload($fileUpload['contents']['files']); 
             if($this->Upload->uploaded) {
 
+                $name= $fileUpload['contents']['files']['name'];
+                $this->Upload->file_new_name_body = $name;
 
-                    $name= $fileUpload['contents']['files']['name'];
-                    $this->Upload->file_new_name_body = $name;
+                $process = WWW_ROOT .'uploads'. DS . $fileUpload['id'];
 
-                    $process = 'uploads/'.$fileUpload['id'].'/';
 
-                    $this->Upload->process($process);
+                $folder = new Folder($process, true, 0755);
+                
+                $process = $process. DS.  $name;
+                move_uploaded_file($fileUpload['contents']['files']['tmp_name'], $process);
+
+                $this->Upload->process($process);
+                
+                $file->name = $name;
+                $file->content_id = $fileUpload['id'];
+
+
+                $filesTable->save($file);
+
+
+                $this->Flash->success(__('El archivos se ha subido correctamente.'));
+               return $this->redirect(['controller' => 'contents', 'action' => 'index']);
                     
-                    $file->name = $name;
-                    $file->content_id = $fileUpload['id'];
-
-
-                    $filesTable->save($file);
-
-                    $this->Flash->success(__('El archivos se ha subido correctamente.'));
-                    return $this->redirect(['controller' => 'contents', 'action' => 'index']);
                     
-                    
-                }
-              } else {
-                unset($this->request->data['user_detail']["profile_image"]); 
-                $this->Flash->error(__('Problema con la subida del archivo.'));
-                return $this->redirect(['controller' => 'contents', 'action' => 'index']);
-              }
+            }
+        } else {
+            unset($this->request->data['user_detail']["profile_image"]); 
+            $this->Flash->error(__('Problema con la subida del archivo.'));
+            return $this->redirect(['controller' => 'contents', 'action' => 'index']);
+        }
         
             
        
@@ -211,8 +213,9 @@ class ContentsController extends AppController {
     public function download($content_id, $name){
 
         $filePath = WWW_ROOT .'uploads'. DS . $content_id. DS. $name;
+        
         $this->response->file($filePath , array('download'=> true, 'name'=> $name));
-        return $this->redirect(['controller' => 'contents', 'action' => 'index']);
+        return $this->response;
         
     }
         

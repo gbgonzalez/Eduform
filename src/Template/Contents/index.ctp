@@ -288,31 +288,42 @@
 		      </div>
 		    	<div class="modal-body">
 		    	<p> Archivos asociados </p>
+		    	<table class="table">
+		    		<thead>
+		    		<tr>
+			    		<th> Archivo </th>
+			    		<th> Descargar </th>
+			    		<th> Borrar </th>
+			    	</tr>
+			    	</thead>
+			    	<tbody>
+
 		    	<?php foreach ($files as $file)
 		    	{
 		    		if ( $content['id'] == $file['content_id'])
 		    		{
 		    			$url =  WWW_ROOT.$file['content_id']."/".$file['name'];
-		    			
+		    			echo "<tr>";
 		    			echo "<div class='showFile' >";
-		    			/*
-		    			echo "<a target='_blank' href='".$url."' >";
-		    				
-		    			echo $file['name'];
-		    			echo "</a>";*/
 
-		    			echo "<a target='_blank' href='/Eduform/contents/download/".$file['content_id']."/".$file['name']."' >";		    				
-		    			echo $file['name'];
-		    			echo "</a>";
+		    			$link = '/contents/download/'.$file['content_id'].'/'.$file['name'];
+		    			echo "<td>". $file['name']. "</td>";
+
+
+		    			echo "<td>";
+		    			echo $this->Html->link( 'Descargar', $link, ['target' =>'_blank', 
+		    				'class' => 'btn btn-default'] );
+		    			echo "</td>";
 
 
 		    			echo $this->Form->create('Post', array('url' => '/contents/deleteFile'));
 				  	
 					  	echo $this->Form->hidden('id', ['value' => $file['id']]);
-						
-						echo $this->Form->submit('X', ['class' => 'buttonDeleteSubject']) ;
-
+						echo "<td>";
+						echo $this->Form->submit('Eliminar', ['class' => 'btn btn-danger']) ;
+						echo "</td>";
 						echo $this->Form->end(); 
+
 
 						echo "</div>";
 
@@ -320,7 +331,8 @@
 		    		
 		    	}
 		    	?>
-
+		    	</tbody>
+		    	</table>
 		        <?php 
 		      if( $current_user['role'] == 'Administrador'){
 

@@ -108,6 +108,21 @@ footer{
 
 
 
+.headSubjects{font-size: 24px;
+			font-weight: bold;
+			margin-top:1%;}
+
+.subjectMenu{background: #CFCFCF;
+    padding: 2%;
+    border-radius: 4px;
+    margin-bottom: 2%;
+}
+
+.titleSubjects{font-size:18px;}
+
+.subjectMenu ul li{margin-left:2%;
+					margin-bottom:1%;}
+
 /* END OF GENERIC ADMIN STYLE */
 
 
