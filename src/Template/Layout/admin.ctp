@@ -50,55 +50,60 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
                     ?>
                 </li>
                 
-                <?php if( $current_user['role'] == 'Administrador')
+                <?php 
+                if( $current_user['role'] == 'Administrador')
                 {
-                    ?>
+                ?>
 
                     <li>
-                         <?php
+                        <?php
+                            echo $this->Html->link(
+                                'Usuarios',
+                                '/users/'
+                            );
+                        ?>
+                    </li>
+                    <li>
+                        <?php
                         echo $this->Html->link(
-                            'Usuarios',
-                            '/users/'
+                            'Categorias',
+                            '/categories/'
+                        );
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+
+                        echo $this->Html->link(
+                            'Materias',
+                            '/subjects/'
                         );
                         ?>
                     </li>
                 <?php
                 }
+                if( $current_user['role'] != 'Alumno')
+                {
                 ?>
-            
-                
-                <li>
-                    <?php
-                    echo $this->Html->link(
-                        'Materias',
-                        '/subjects/'
-                    );
-                    ?>
-                </li>
-                <li>
-                    <?php
-                    echo $this->Html->link(
-                        'Categorias',
-                        '/categories/'
-                    );
-                    ?>
-                </li>
-                <li>
-                    <?php
-                    echo $this->Html->link(
-                        'Competencias',
-                        '/competences/'
-                    );
-                    ?>
-                </li>
-                <li>
-                    <?php
-                    echo $this->Html->link(
-                        'Contenidos',
-                        '/contents/'
-                    );
-                    ?>
-                </li>
+                    <li>
+                        <?php
+                        echo $this->Html->link(
+                            'Competencias',
+                            '/competences/'
+                        );
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        echo $this->Html->link(
+                            'Contenidos',
+                            '/contents/'
+                        );
+                        ?>
+                    </li>
+                <?php } ?>
+              
+
                 <li>
                      <?php
                     echo $this->Html->link(
@@ -132,6 +137,6 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
 
 </body>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-     <?= $this->Html->script('bootstrap.min.js') ?>
+     <?= $this->Html->script('bootstrap.min.js'); ?>
 </html>
 

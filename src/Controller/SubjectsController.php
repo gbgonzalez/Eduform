@@ -24,23 +24,9 @@ class SubjectsController extends AppController {
 
     public function index()
     {
-
-        if($this->Auth->user()['role'] == "Administrador"){
-
-            $this->viewBuilder()->layout('admin');
-            $subjects = $this->set('subjects', $this->Subjects->find('all'));
-        }
-
-        if($this->Auth->user()['role'] == "Alumno"){
-
-            $this->viewBuilder()->layout('alumno');
-
-            $subjects = $this->set('subjects', $this->Subjects->find('all'));
-        }
-
-
+        $this->viewBuilder()->layout('admin');
+        $subjects = $this->set('subjects', $this->Subjects->find('all'));
     }
-
     public function delete(){
 
         

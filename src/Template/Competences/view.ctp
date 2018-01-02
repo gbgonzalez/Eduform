@@ -9,6 +9,7 @@
 			<tr>
 				<th> Contenido </th>
 				<th> Información </th>
+				<th> Calificaciones </th>
 				<th> Adjuntos </th>
 			</tr>
 		</thead>
@@ -16,6 +17,7 @@
 			<tr ng-repeat="content in competencesContentFile.contents"> 
 				<td> {{ content.name }}</td>
 				<td> <button class="btn btn-info" data-toggle="modal" data-target="#info{{content.id}}">Información </button> </td>
+				<td>Nota </td>
 				<td>
 					<ul>
 						<li ng-repeat="file in content.files">

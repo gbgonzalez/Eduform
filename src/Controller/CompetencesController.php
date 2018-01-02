@@ -26,61 +26,80 @@ class CompetencesController extends AppController {
     public function index()
     {
 
-        if($this->Auth->user()['role'] == "Administrador"){
+        $this->viewBuilder()->layout('admin');
+        $user = $this->Auth->user();
 
-            $this->viewBuilder()->layout('admin');
+        $subjects = TableRegistry::get('Subjects')->find();
+    
+        $subjectsForms = TableRegistry::get('Subjects')->find('list',array('fields' => ['Subjects.id','Subjects.name']));
 
-            $subjects = TableRegistry::get('Subjects')->find();
+        $categories = TableRegistry::get('Categories')->find();
         
-            $subjectsForms = TableRegistry::get('Subjects')->find('list',array('fields' => ['Subjects.id','Subjects.name']));
+        $categoriesForms = TableRegistry::get('Categories')->find('list',array('fields' => ['Categories.id','Categories.name']));
+        
+        $categoriesCompetences = TableRegistry::get('Categoriescompetences')->find();       
 
-            $categories = TableRegistry::get('Categories')->find();
-            
-            $categoriesForms = TableRegistry::get('Categories')->find('list',array('fields' => ['Categories.id','Categories.name']));
-
-           // $Competencias = TableRegistry::get('Competences'); 
-            
-            $categoriesCompetences = TableRegistry::get('Categoriescompetences')->find();       
-
-
+        if ( $user['role'] == 'Administrador' )
+        {
             $competences = TableRegistry::get('Competences')->find('all', ['contain' => ['Categories', 'Subjects']]);
+        }else{
      
-            $this->set('competences', $competences);
-     
-            $this->Set('subjectsForms', $subjectsForms);
 
-            $this->Set('categoriesForms', $categoriesForms);
-
-            $this->Set('categoriesCompetences', $categoriesCompetences);
-
-        }
-        if($this->Auth->user()['role'] == "Alumno"){
-
-            $this->viewBuilder()->layout('alumno');
-
-            $subjects = TableRegistry::get('Subjects')->find();
-        
-            $subjectsForms = TableRegistry::get('Subjects')->find('list',array('fields' => ['Subjects.id','Subjects.name']));
-
-            $categories = TableRegistry::get('Categories')->find();
+            $connection = ConnectionManager::get('default');
+            $queryCompetences = $connection->execute("
+                SELECT C.id, C.name, C.description, S.name as subjectName,C.subject_id
+                FROM competences AS C
+                INNER JOIN userscompetences AS UC ON C.id = UC.competence_id
+                INNER JOIN subjects AS S ON S.id = C.subject_id
+                WHERE UC.user_id = " .$user['id']. "
+                ");
+            $queryCategories = $connection->execute("
+                SELECT CAC.competence_id, CA.name, CA.description, CA.id
+                FROM categories AS CA
+                INNER JOIN categoriescompetences AS CAC ON CAC.category_id = CA.id
+                ");
             
-            $categoriesForms = TableRegistry::get('Categories')->find('list',array('fields' => ['Categories.id','Categories.name']));
+            $competences = array();
+            $i = 0;
+            foreach ( $queryCompetences as $competence )
+            {
+                $competences[$i] = array(
+                    'id' => $competence['id'],
+                    'name' => $competence['description'],
+                    'description' => $competence['id'],
+                    'subjectName' => $competence['subjectName'],
+                    'subject_id' => $competence['subject_id'],
+                    'categories' => array(),
+                    );  
+                $j=0;
 
-        
+                foreach ( $queryCategories as $category )
+                {
+                     
+                    if ( $competence['id'] == $category['competence_id'])
+                    {
+                        $competences[$i]['categories'][$j]= array(
+                                                'id' => $category['id'],
+                                                'name' => $category['name'],
+                                                'description' => $category['description'] 
+                                                );
 
-            $categoriesCompetences = TableRegistry::get('Categoriescompetences')->find();       
 
-            $competences = TableRegistry::get('Competences')->find('all', ['contain' => ['Categories', 'Subjects']]);
-     
-            $this->set('competences', $competences);
-     
-            $this->Set('subjectsForms', $subjectsForms);
-
-            $this->Set('categoriesForms', $categoriesForms);
-
-            $this->Set('categoriesCompetences', $categoriesCompetences);
-
+                         $j++;
+                    }
+                }
+                
+                $i++;
+            }
         }
+ 
+        $this->set('competences', $competences);
+ 
+        $this->Set('subjectsForms', $subjectsForms);
+
+        $this->Set('categoriesForms', $categoriesForms);
+
+        $this->Set('categoriesCompetences', $categoriesCompetences);
     
     }
 
@@ -129,11 +148,9 @@ class CompetencesController extends AppController {
 
     public function add()
     {
-       
         //debug($this->Competences);
         if ($this->request->is('post')) {
             // Prior to 3.4.0 $this->request->data() was used.
-            
             $dataForm = $this->request->getData();
             
             for ( $i = 0; $i < count($dataForm["category_id"]); $i++ )
@@ -149,9 +166,6 @@ class CompetencesController extends AppController {
              "categories" => [ '_ids' => $array ]
             
              ];
-
-         
-
             $competences = $this->Competences->newEntity();
             $competences = $this->Competences->patchEntity($competences, $formatData, ['associated' => ['Categories']]);
 

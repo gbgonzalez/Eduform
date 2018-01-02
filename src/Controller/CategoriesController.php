@@ -26,20 +26,8 @@ class CategoriesController extends AppController {
 
     public function index()
     {
-
-        if($this->Auth->user()['role'] == "Administrador"){
-
-            $this->viewBuilder()->layout('admin');
-            $categories = $this->set('categories', $this->Categories->find('all'));
-
-        }
-        if($this->Auth->user()['role'] == "Alumno"){
-                        
-            $this->viewBuilder()->layout('alumno');
-            $categories = $this->set('categories', $this->Categories->find('all'));
-            
-        }
-
+        $this->viewBuilder()->layout('admin');
+        $categories = $this->set('categories', $this->Categories->find('all'));
     }
 
     public function delete(){

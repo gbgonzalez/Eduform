@@ -66,14 +66,18 @@
 
         public function home(){
         
-        if($this->Auth->user()['role'] == "Administrador"){
+            if($this->Auth->user()['role'] == "Administrador"){
 
-            $this->viewBuilder()->layout('admin');
-        }
-        if($this->Auth->user()['role'] == "Alumno"){
+                $this->viewBuilder()->layout('admin');
+            }
+            if($this->Auth->user()['role'] == "Alumno"){
 
-            $this->viewBuilder()->layout('alumno');
-        }
+                $this->viewBuilder()->layout('admin');
+            }
+            if($this->Auth->user()['role'] == "Gestor de contenidos"){
+
+                $this->viewBuilder()->layout('admin');
+            }
 
 
         }

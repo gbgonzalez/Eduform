@@ -31,38 +31,20 @@ class ContentsController extends AppController {
 
     public function index()
     {
-        if($this->Auth->user()['role'] == "Administrador"){
 
-        	$this->viewBuilder()->layout('admin');
+    	$this->viewBuilder()->layout('admin');
 
-        	$contents = $this->set('contents', $this->Contents
-        				->find('all', ['contain' => ['Competences']]));
+    	$contents = $this->set('contents', $this->Contents
+    				->find('all', ['contain' => ['Competences']]));
 
-        	$competencesForm = TableRegistry::get('Competences')->find('list',array('fields' => ['Competences.id','Competences.name']));
+    	$competencesForm = TableRegistry::get('Competences')->find('list',array('fields' => ['Competences.id','Competences.name']));
 
-        	$files = TableRegistry::get('Files')->find('all');
-
-
-        	$this->set('competencesForm', $competencesForm);
-        	$this->set('files', $files);
-        }
-
-        if($this->Auth->user()['role'] == "Alumno"){
-
-            $this->viewBuilder()->layout('alumno');
-
-            $contents = $this->set('contents', $this->Contents
-                        ->find('all', ['contain' => ['Competences']]));
-
-            $competencesForm = TableRegistry::get('Competences')->find('list',array('fields' => ['Competences.id','Competences.name']));
-
-            $files = TableRegistry::get('Files')->find('all');
+    	$files = TableRegistry::get('Files')->find('all');
 
 
-            $this->set('competencesForm', $competencesForm);
-            $this->set('files', $files);
+    	$this->set('competencesForm', $competencesForm);
+    	$this->set('files', $files);
 
-        }
     }
 
     public function add(){
