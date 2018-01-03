@@ -1,6 +1,7 @@
 <!-- File: /app/View/Categorie/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
 <h1 class="titleAdmin"> Administración de Categoria </h1>
+<?= $this->Flash->render() ?>
 <?php if( $current_user['role'] == 'Administrador')
 {
 ?>
@@ -137,7 +138,6 @@
       </div>
       <div class="modal-body">
         <?php 
-
 
 		  	echo $this->Form->create('Post', array('url' => '/categories/add'));
 		  	

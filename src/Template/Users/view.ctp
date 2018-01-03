@@ -1,6 +1,7 @@
 <!-- File: /app/View/User/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
 <h1 class="titleAdmin"> Bienvenido, <?php echo $current_user['username']; ?> </h1>
+<?= $this->Flash->render() ?>
 
 <div class="col-md-12">
 	<div class="buttonMenuProfile">

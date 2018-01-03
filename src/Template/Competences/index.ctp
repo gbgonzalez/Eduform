@@ -1,6 +1,7 @@
 <!-- File: /app/View/Competences/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
 <h1 class="titleAdmin"> Administración de Competencia </h1>
+<?= $this->Flash->render() ?>
   <button class="btn btn-success" data-toggle="modal" data-target="#addCompetence">
   Añadir Competencia </button>
 <form class="form-inline formSearch">

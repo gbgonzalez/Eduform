@@ -30,10 +30,6 @@ class UsersTable extends Table
         return $validator
             ->notEmpty('dni', 'A dni is required')
             ->notEmpty('username', 'A username is required')
-            ->add('username', 'validFormat',[
-                'rule' => array('custom', '/([a-zA-Z]+)/i'),
-                'message' => 'Please enter a valid serial number.'
-            ])
             ->notEmpty('password', 'A password is required')
             ->notEmpty('role', 'A role is required')
             ->add('role', 'inList', [

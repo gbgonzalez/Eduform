@@ -17,7 +17,6 @@ var app = angular.module('eduform', []);
 		
 
 		$scope.searchCategory = function(criteria){
-			console.log("entra");
 			if ( criteria != ''){
 				$scope.showFilter = true;
 				var j = 0;

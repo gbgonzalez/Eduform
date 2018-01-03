@@ -103,7 +103,7 @@ class CompetencesController extends AppController {
     
     }
 
-    public function view($id){
+     public function view($id){
 
         $this->viewBuilder()->layout('admin');
 
@@ -124,23 +124,13 @@ class CompetencesController extends AppController {
       
         $fileTable = TableRegistry::get('Files');
         $files = $fileTable->find('all');
-        $i=0;
+        
 
-        $a = 0;
         foreach ($userscompetences as $userscompetence) {
-
-            $competencesContentFile['userscompetences'][$a]['id'] = $userscompetence['id'];
-            $competencesContentFile['userscompetences'][$a]['booleannote'] = $userscompetence['booleannote'];
-            $competencesContentFile['userscompetences'][$a]['numericnote'] = $userscompetence['numericnote'];
-
-            //Borrar al chekearlo final
-            $competencesContentFile['userscompetences'][$a]['user_id'] = $userscompetence['user_id'];
-            $competencesContentFile['userscompetences'][$a]['competence_id'] = $userscompetence['competence_id'];
-
-            $a++;  
-     
+            $competencesContentFile['userscompetences']['competence'] = $userscompetence;
         }
-
+        
+        $i=0;
         foreach ( $contents as $content )
         {
             $competencesContentFile['contents'][$i]['name'] = $content['name'];
@@ -166,6 +156,145 @@ class CompetencesController extends AppController {
 
 
     }
+
+    public function evaluation(){
+        $this->viewBuilder()->layout('admin');
+
+        $user = $this->Auth->user();
+
+
+        if ($user['role'] == 'Administrador' )
+        {
+            $connection = ConnectionManager::get('default');
+            $queryEvaluation = $connection->execute("
+                SELECT UC.id, C.name, U.username, U.email, UC.booleannote, UC.numericnote
+                FROM competences AS C
+                INNER JOIN userscompetences AS UC ON C.id = UC.competence_id
+                INNER JOIN users AS U ON U.id = UC.user_id
+                ");
+            $i = 0;
+            foreach ( $queryEvaluation as $evaluation )
+            {
+                $evaluations[$i] = $evaluation;
+                $i++;
+            }
+            $this->set('evaluations', $evaluations);
+        }
+
+        if ( $user['role'] == 'Gestor de contenidos' )
+        {
+            $connection = ConnectionManager::get('default');
+            $queryCompetences = $connection->execute("
+                SELECT C.id
+                FROM competences AS C
+                INNER JOIN userscompetences AS UC ON C.id = UC.competence_id
+                WHERE UC.user_id = " .$user['id']. "
+                ");
+            $queryEvaluation = array();
+            $i = 0;
+            foreach ( $queryCompetences as $queryCompetence)
+            {
+                $queryEvaluations[$i]= $connection->execute("
+                SELECT UC.id, C.name, U.username, U.email, UC.booleannote, UC.numericnote
+                FROM competences AS C
+                INNER JOIN userscompetences AS UC ON C.id = UC.competence_id
+                INNER JOIN users AS U ON U.id = UC.user_id
+                WHERE C.id  = " . $queryCompetence['id']."
+                ");
+                $i++;
+            }
+            $evaluations = array();
+            $k=0;
+            for ( $j = 0; $j < count($queryEvaluations); $j++)
+            {
+                foreach ($queryEvaluations[$j] as $queryEvaluation) {
+
+                    $evaluations[$k] = $queryEvaluation;
+                    $k++;
+                    
+                }
+            }
+            $this->set('evaluations', $evaluations);
+            
+
+        }
+
+
+    }
+
+    public function addEvaluation(){
+        if ($this->request->is('post')) {
+            $dataForm = $this->request->getData();
+
+
+            $booleanNote = $dataForm['dualNote'];
+            $numericNote = $dataForm['numericNote'];
+
+            if ($numericNote == '' && $booleanNote == 'c')
+            {
+                $this->Flash->error('Por favor introduce algún sistema de calificación');
+                return $this->redirect(['controller' => 'competences', 'action' => 'evaluation']);
+            }
+
+            if ($numericNote != '' && $booleanNote != 'c')
+            {
+                $this->Flash->error('Por favor introduce un único sistema de calificación');
+                return $this->redirect(['controller' => 'competences', 'action' => 'evaluation']);
+            }
+
+            $usersCompetencesTable = TableRegistry::get('Userscompetences');    
+
+            $userCompetence = $usersCompetencesTable->get($dataForm['id']);
+            if ( $numericNote != 0)
+            {
+                $userCompetence->numericnote = $numericNote;
+                $userCompetence->booleannote = '';
+            }else{ 
+                $userCompetence->numericnote = '';
+                if ( $booleanNote == 'a')
+                {
+                    $userCompetence->booleannote = 'Aprobado';
+                }else{
+                    $userCompetence->booleannote = 'Suspenso';
+                }
+                
+            }
+
+            if( $usersCompetencesTable->save($userCompetence) ){
+                $this->Flash->success('Calificado correctamente');
+                return $this->redirect(['controller' => 'competences', 'action' => 'evaluation']); 
+            }else{
+                $this->Flash->error('Ha habido un error al subir la calificación');
+                return $this->redirect(['controller' => 'competences', 'action' => 'evaluation']);
+            }
+
+        }
+
+    }
+
+    public function deleteEvaluation(){
+        if ($this->request->is('post')) {
+            $dataForm = $this->request->getData();
+
+            $usersCompetencesTable = TableRegistry::get('Userscompetences');    
+
+            $userCompetence = $usersCompetencesTable->get($dataForm['id']);
+
+            $userCompetence->numericnote = '';
+
+            $userCompetence->booleannote = '';
+
+            if( $usersCompetencesTable->save($userCompetence) ){
+                $this->Flash->success('Calificación eliminada correctamente');
+                return $this->redirect(['controller' => 'competences', 'action' => 'evaluation']); 
+            }else{
+                $this->Flash->error('Ha habido un error al eliminar la calificación');
+                return $this->redirect(['controller' => 'competences', 'action' => 'evaluation']);
+            }
+        }
+
+    }
+
 
     public function add()
     {

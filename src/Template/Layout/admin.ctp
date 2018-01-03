@@ -89,7 +89,7 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
                         <?php
                         echo $this->Html->link(
                             'Competencias',
-                            '/competences/'
+                            '/competences'
                         );
                         ?>
                     </li>
@@ -98,6 +98,14 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
                         echo $this->Html->link(
                             'Contenidos',
                             '/contents/'
+                        );
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        echo $this->Html->link(
+                            'Evaluaciones',
+                            '/competences/evaluation'
                         );
                         ?>
                     </li>
@@ -115,7 +123,7 @@ $cakeDescription = 'EDUFORM - Zona administrativa';
             </ul>
           </nav>
         </div>
-        <?= $this->Flash->render() ?>
+        
         <div class="container clearfix">
             <?= $this->fetch('content') ?>
         </div>

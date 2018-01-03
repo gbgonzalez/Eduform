@@ -123,6 +123,41 @@ footer{
 .subjectMenu ul li{margin-left:2%;
 					margin-bottom:1%;}
 
+
+.noteModal{text-align: center;
+			margin-top:5%;}	
+
+.evaluationFormDelete form{ display:inline; }
+
+.evaluationFormDelete p{ display:inline; }
+
+.evaluationFormDelete .submit{ display:inline;
+								margin-left:2%; }
+
+.failed {background-color: #D7696B;
+	    padding: 5px;
+   		border-radius: 6px;
+		}
+
+.passed {background-color: #C1F1B7;
+	    padding: 5px;
+   		border-radius: 6px;
+		}
+
+.success{background-color: #64B154;
+    border-radius: 4px;
+    width: 60%;
+    padding: 4px;
+    margin-bottom: 2%;
+}
+
+.error{background-color: #F18181;
+    border-radius: 4px;
+    width: 60%;
+    padding: 4px;
+    margin-bottom: 2%;
+}
+
 /* END OF GENERIC ADMIN STYLE */
 
 

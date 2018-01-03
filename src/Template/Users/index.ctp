@@ -1,6 +1,7 @@
 <!-- File: /app/View/User/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
 <h1 class="titleAdmin"> Administración de usuario </h1>
+<?= $this->Flash->render() ?>
 
 <button class="btn btn-success" data-toggle="modal" data-target="#addUser">Añadir Usuario </button>
 <form class="form-inline formSearch">

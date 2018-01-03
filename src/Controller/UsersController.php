@@ -101,18 +101,10 @@ class UsersController extends AppController {
             }
             $k++;
         }
-
-        
-        $this->set('dataUsers', $dataUsers );
-        
-
-
-  
+        $this->set('dataUsers', $dataUsers ); 
     }
      
      
-   
-
     public function add()
     {
         $user = $this->Users->newEntity();       

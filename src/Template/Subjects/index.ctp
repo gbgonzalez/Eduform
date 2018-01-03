@@ -1,6 +1,8 @@
 <!-- File: /app/View/Materia/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
 <h1 class="titleAdmin"> Administración de Materia </h1>
+<?= $this->Flash->render() ?>
+
 <?php if( $current_user['role'] == 'Administrador')
 {
 ?>

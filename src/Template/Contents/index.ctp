@@ -1,6 +1,8 @@
 <!-- File: /app/View/User/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
 <h1 class="titleAdmin"> Administración de contenidos</h1>
+<?= $this->Flash->render() ?>
+
 <?php if( $current_user['role'] == 'Administrador')
 {
 ?>
