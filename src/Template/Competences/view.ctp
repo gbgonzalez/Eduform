@@ -3,13 +3,18 @@
 <h1 class="titleAdmin"> {{ competenceContentFile.name }}</h1>
 
 <div class="col-md-12">
-	<h2> Contenido </h2>
+	<h2> Contenido </h2> 
+	<h3>Nota :</h3>
+					<h4><ul ng-repeat="userscompetence in competencesContentFile.userscompetences">
+						<li ng-if="userscompetence.booleannote == null && userscompetence.numericnote == null">Sin nota</li>
+						<li ng-if="userscompetence.booleannote != null">Nota escrita: {{ userscompetence.booleannote }}</li>
+						<li ng-if="userscompetence.numericnote != null">Nota numerica: {{ userscompetence.numericnote }}</li>
+					</ul></h4>
 	<table class ="table table-zebra">
 		<thead>
 			<tr>
 				<th> Contenido </th>
 				<th> Información </th>
-				<th> Calificaciones </th>
 				<th> Adjuntos </th>
 			</tr>
 		</thead>
@@ -17,7 +22,6 @@
 			<tr ng-repeat="content in competencesContentFile.contents"> 
 				<td> {{ content.name }}</td>
 				<td> <button class="btn btn-info" data-toggle="modal" data-target="#info{{content.id}}">Información </button> </td>
-				<td>Nota </td>
 				<td>
 					<ul>
 						<li ng-repeat="file in content.files">
@@ -36,7 +40,6 @@
 
 </div>
 
-<!-- Modal show info-->
 <?php for ( $i=0; $i<count($competencesContentFile['contents']); $i++) 
 { 
 	$content =  $competencesContentFile['contents'][$i];	
