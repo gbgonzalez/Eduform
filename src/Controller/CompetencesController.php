@@ -116,16 +116,37 @@ class CompetencesController extends AppController {
             SELECT * FROM Contents
             WHERE competence_id= " .$id. "");
 
+        $connection = ConnectionManager::get('default');
+        $userscompetences= $connection->execute("
+            SELECT * FROM UsersCompetences
+            WHERE competence_id= " .$id. " AND user_id= " .$this->Auth->user()['id']. "");
+        
       
         $fileTable = TableRegistry::get('Files');
         $files = $fileTable->find('all');
         $i=0;
 
+        $a = 0;
+        foreach ($userscompetences as $userscompetence) {
+
+            $competencesContentFile['userscompetences'][$a]['id'] = $userscompetence['id'];
+            $competencesContentFile['userscompetences'][$a]['booleannote'] = $userscompetence['booleannote'];
+            $competencesContentFile['userscompetences'][$a]['numericnote'] = $userscompetence['numericnote'];
+
+            //Borrar al chekearlo final
+            $competencesContentFile['userscompetences'][$a]['user_id'] = $userscompetence['user_id'];
+            $competencesContentFile['userscompetences'][$a]['competence_id'] = $userscompetence['competence_id'];
+
+            $a++;  
+     
+        }
+
         foreach ( $contents as $content )
         {
             $competencesContentFile['contents'][$i]['name'] = $content['name'];
             $competencesContentFile['contents'][$i]['id'] = $content['id'];
-            $competencesContentFile['contents'][$i]['description'] = $content['description'];      
+            $competencesContentFile['contents'][$i]['description'] = $content['description']; 
+              
             $j=0;      
             foreach ( $files as $file )
             {
@@ -139,12 +160,12 @@ class CompetencesController extends AppController {
             $i++;
         }
 
-
+        
         $this->Set('competencesContentFile', $competencesContentFile);
+        //$this->Set('notacontents', $notacontents);
 
 
     }
-
 
     public function add()
     {
