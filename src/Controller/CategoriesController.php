@@ -38,10 +38,10 @@ class CategoriesController extends AppController {
         $category = $this->Categories->get($this->request->data['id']);
 
         if ($this->Categories->delete($category)) {
-            $this->Flash->success(__('La categoria ha sido eliminado correctamentes'));
+            $this->Flash->success(__('La categoria ha sido eliminada correctamentes'));
            return $this->redirect(['controller' => 'categories', 'action' => 'index']);
         }else{
-            $this->Flash->error(__('La categoria no ha podido ser borrado'));
+            $this->Flash->error(__('Problema al borrar la categoria'));
             return $this->redirect(['controller' => 'categories', 'action' => 'index']);
         }
         
@@ -71,7 +71,9 @@ class CategoriesController extends AppController {
                 $this->Flash->success('La categoria ha sido creado correctamente');
                 return $this->redirect(['controller' => 'categories', 'action' => 'index']);
             }else{
-                $this->Flash->error('Problema');
+
+                $this->Flash->error('Problema al crear la categoria');
+                return $this->redirect(['controller' => 'categories', 'action' => 'index']);
             }
 
         }// end of if post 
@@ -94,7 +96,7 @@ class CategoriesController extends AppController {
             $this->Flash->success(__('La categoria ha sido modificada ha sido modificado.'));
             return $this->redirect(['controller' => 'categories', 'action' => 'index']);
         }else{
-            $this->Flash->error(__('Erorr al modificar'));
+            $this->Flash->error(__('Problema al modificar la categoria'));
             return $this->redirect(['controller' => 'categories', 'action' => 'index']);
         }
             
@@ -105,10 +107,11 @@ class CategoriesController extends AppController {
     public function isAuthorized($user)
     {
         // Admin can access every action
-        if (($user['role'] === 'Administrador' || $user['role'] === 'Alumno' || $user['role'] === 'Gestor de Contenidos')) {
+        if (($user['role'] === 'Administrador')) {
             return true;
         }
         
+        $this->Flash->error(__('No esta autorizado a acceder a este panel'));
         return false;
     }
 

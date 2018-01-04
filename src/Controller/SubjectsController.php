@@ -35,10 +35,10 @@ class SubjectsController extends AppController {
         $matter = $this->Subjects->get($this->request->data['id']);
 
         if ($this->Subjects->delete($matter)) {
-            $this->Flash->success(__('La materia ha sido eliminado correctamentes'));
+            $this->Flash->success(__('La materia ha sido eliminado correctamente'));
            return $this->redirect(['controller' => 'subjects', 'action' => 'index']);
         }else{
-            $this->Flash->error(__('La materia no ha podido ser borrado'));
+            $this->Flash->error(__('Problema al eliminar la materia'));
             return $this->redirect(['controller' => 'subjects', 'action' => 'index']);
         }
         
@@ -62,10 +62,11 @@ class SubjectsController extends AppController {
             $subjects = $this->Subjects->patchEntity($subjects,  $formatData);
             if ( $this->Subjects->save($subjects))
             {
-                $this->Flash->success('La materia ha sido creado correctamente');
+                $this->Flash->success('La materia ha sido creada correctamente');
                 return $this->redirect(['controller' => 'subjects', 'action' => 'index']);
             }else{
-                $this->Flash->error('Problema');
+                $this->Flash->error('Problema al crear la materia');
+                return $this->redirect(['controller' => 'subjects', 'action' => 'index']);
             }
 
         }// end of if post 
@@ -85,10 +86,10 @@ class SubjectsController extends AppController {
         // Prior to 3.4.0 $this->request->data() was used.
         $this->Subjects->patchEntity($subjects, $formatData);
         if ($this->Subjects->save($subjects)) {
-            $this->Flash->success(__('La materia ha sido modificada ha sido modificado.'));
+            $this->Flash->success(__('La materia ha sido modificada'));
             return $this->redirect(['controller' => 'subjects', 'action' => 'index']);
         }else{
-            $this->Flash->error(__('Erorr al modificar'));
+            $this->Flash->error(__('Problema al modificar la materia'));
             return $this->redirect(['controller' => 'subjects', 'action' => 'index']);
         }
             
@@ -101,10 +102,11 @@ class SubjectsController extends AppController {
     {
 
         // Admin can access every action
-        if (($user['role'] === 'Administrador' || $user['role'] === 'Alumno' || $user['role'] === 'Gestor de Contenidos')) {
+        if (($user['role'] === 'Administrador')) {
             return true;
         }
         
+        $this->Flash->error(__('No esta autorizado a acceder a este panel'));
         return false;
     }
 

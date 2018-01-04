@@ -67,7 +67,8 @@ class ContentsController extends AppController {
                 $this->Flash->success('El contenido ha sido creado correctamente');
                 return $this->redirect(['controller' => 'contents', 'action' => 'index']);
             }else{
-                $this->Flash->error('Problema');
+                $this->Flash->error('Problema al crear el contenido');
+                return $this->redirect(['controller' => 'contents', 'action' => 'index']);
             }
 
         }// end of if post 
@@ -84,7 +85,7 @@ class ContentsController extends AppController {
             $this->Flash->success(__('El contenido ha sido eliminado correctamentes'));
            return $this->redirect(['controller' => 'contents', 'action' => 'index']);
         }else{
-            $this->Flash->error(__('El contenido no ha podido ser borrado'));
+            $this->Flash->error(__('Problema al borrar el contenido'));
             return $this->redirect(['controller' => 'contents', 'action' => 'index']);
         }
         
@@ -107,10 +108,10 @@ class ContentsController extends AppController {
         $this->Contents->patchEntity($content, $formatData);
 
         if ($this->Contents->save($content)) {
-            $this->Flash->success(__('El contenido ha sido modificado.'));
+            $this->Flash->success(__('El contenido ha sido modificado'));
             return $this->redirect(['controller' => 'contents', 'action' => 'index']);
         }else{
-            $this->Flash->error(__('Erorr al modificar'));
+            $this->Flash->error(__('Problema al modificar el contenido'));
             return $this->redirect(['controller' => 'contents', 'action' => 'index']);
         }
             
@@ -148,19 +149,16 @@ class ContentsController extends AppController {
                 $filesTable->save($file);
 
 
-                $this->Flash->success(__('El archivos se ha subido correctamente.'));
+                $this->Flash->success(__('El archivos se ha subido correctamente'));
                return $this->redirect(['controller' => 'contents', 'action' => 'index']);
                     
                     
             }
-        } else {
-            unset($this->request->data['user_detail']["profile_image"]); 
-            $this->Flash->error(__('Problema con la subida del archivo.'));
-            return $this->redirect(['controller' => 'contents', 'action' => 'index']);
-        }
-        
-            
-       
+            } else {
+                unset($this->request->data['user_detail']["profile_image"]); 
+                $this->Flash->error(__('Problema con la subida del archivo'));
+                return $this->redirect(['controller' => 'contents', 'action' => 'index']);
+            }
 
         }
 
@@ -178,12 +176,12 @@ class ContentsController extends AppController {
             if($deleteResult)
             {
                 
-                $this->Flash->success(__('Se ha borrado el archivo de este contenido.'));
+                $this->Flash->success(__('Se ha borrado el archivo de este contenido'));
                 return $this->redirect(['controller' => 'contents', 'action' => 'index']);
             
             }else{
                 
-                $this->Flash->error(__('Erorr al el archivo'));
+                $this->Flash->error(__('Erorr al borrar el archivo'));
                 return $this->redirect(['controller' => 'contents', 'action' => 'index']);
             }
 
@@ -206,10 +204,11 @@ class ContentsController extends AppController {
     {
 
         // Admin can access every action
-        if (($user['role'] === 'Administrador' || $user['role'] === 'Alumno' || $user['role'] === 'Gestor de Contenidos')) {
+        if (($user['role'] === 'Administrador' || $user['role'] === 'Gestor de Contenidos')) {
             return true;
         }
         
+        $this->Flash->error(__('No esta autorizado a acceder a este panel'));
         return false;
     }
 

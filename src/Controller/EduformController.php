@@ -60,25 +60,14 @@
                 }
                 
 
-                $this->Flash->error(__('Invalid username or password, try again'));
+                $this->Flash->error(__('Usuario o contraseña incorrecta, intentelo de nuevo'));
+                return $this->redirect($this->Auth->redirectUrl());
             }
         }
 
         public function home(){
         
-            if($this->Auth->user()['role'] == "Administrador"){
-
-                $this->viewBuilder()->layout('admin');
-            }
-            if($this->Auth->user()['role'] == "Alumno"){
-
-                $this->viewBuilder()->layout('admin');
-            }
-            if($this->Auth->user()['role'] == "Gestor de contenidos"){
-
-                $this->viewBuilder()->layout('admin');
-            }
-
+            $this->viewBuilder()->layout('admin');
 
         }
 
@@ -94,6 +83,7 @@
                 return true;
             }
             
+            $this->Flash->error(__('No esta autorizado a acceder a este panel'));
             return false;
         }
 
