@@ -128,7 +128,8 @@ class UsersController extends AppController {
                 $this->Flash->success('El usuario ha sido creado correctamente');
                 return $this->redirect(['controller' => 'users', 'action' => 'index']);
             }else{
-                $this->Flash->error('Problema');
+                $this->Flash->error('Problema al crear el usuario');
+                return $this->redirect(['controller' => 'users', 'action' => 'index']);
             }
 
         }// end of if post 
@@ -146,10 +147,9 @@ class UsersController extends AppController {
             $this->Flash->success(__('El usuario ha sido eliminado correctamentes'));
            return $this->redirect(['controller' => 'users', 'action' => 'index']);
         }else{
-            $this->Flash->error(__('El usuario no ha podido ser borrado'));
+            $this->Flash->error(__('Problema al borrar el usuario'));
             return $this->redirect(['controller' => 'users', 'action' => 'index']);
         }
-        
 
     }// end of function delete
 
@@ -172,7 +172,7 @@ class UsersController extends AppController {
             $this->Flash->success(__('El usuario ha sido modificado.'));
             return $this->redirect(['controller' => 'users', 'action' => 'index']);
         }else{
-            $this->Flash->error(__('Erorr al modificar'));
+            $this->Flash->error(__('Problema al modificar el usuario'));
             return $this->redirect(['controller' => 'users', 'action' => 'index']);
         }
             
@@ -213,8 +213,8 @@ class UsersController extends AppController {
                 $usersCompetences->competence_id = $formatDatas[$k]['competence_id'];
                 $usersCompetencesTable->save($usersCompetences);
             }
-
-            $this->Flash->success(__('El la materia se ha asignado correctamente.'));
+            
+            $this->Flash->success(__('La materia se ha asignado correctamente.'));
             return $this->redirect(['controller' => 'users', 'action' => 'index']); 
 
         }// end of if post 
@@ -269,8 +269,8 @@ class UsersController extends AppController {
             
             }else{
                 
-                $this->Flash->error(__('Erorr al eliminar la materia'));
-                return $this->redirect(['controller' => 'users', 'action' => 'index']);
+                $this->Flash->error(__('Problema al eliminar la asignacion del usuario a la materia'));
+                $this->redirect(['controller' => 'users', 'action' => 'index']);
             }
 
 
@@ -302,7 +302,7 @@ class UsersController extends AppController {
                 $this->Flash->success('Datos modificados correctamente');
                 return $this->redirect(['controller' => 'users', 'action' => 'view']); 
             }else{
-                $this->Flash->error('Ha habido un error al modificar los datos');
+                $this->Flash->error('Problema al modificar los datos');
                 return $this->redirect(['controller' => 'users', 'action' => 'view']);
             }
         }
@@ -369,6 +369,7 @@ class UsersController extends AppController {
             return true;
         }
 
+        $this->Flash->error(__('No esta autorizado a acceder a este panel'));
         return false;
     }
 
