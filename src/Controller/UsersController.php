@@ -281,6 +281,35 @@ class UsersController extends AppController {
     }//end of function delete subject
 
 
+    public function profileUpdate(){
+
+
+        $user = $this->Users->get($this->request->data['id']);
+        if ($this->request->is('post')) {
+
+            $usersTable = TableRegistry::get('Users');    
+
+            $user = $usersTable->get($this->request->data["id"]);
+
+            $user->username = $this->request->data["username"];
+            $user->dni = $this->request->data["DNI"];
+            $user->address = $this->request->data["address"];
+            if ( $this->request->data["password"] != '' )
+            {
+                $user->password = $this->request->data["password"];
+            }
+            if( $usersTable->save($user) ){
+                $this->Flash->success('Datos modificados correctamente');
+                return $this->redirect(['controller' => 'users', 'action' => 'view']); 
+            }else{
+                $this->Flash->error('Ha habido un error al modificar los datos');
+                return $this->redirect(['controller' => 'users', 'action' => 'view']);
+            }
+        }
+
+    }
+
+
     public function login()
     {
         if ($this->request->is('post')) {

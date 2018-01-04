@@ -17,8 +17,10 @@
       <tr>
         <th>Nombre Usuario </th>
         <th>Email</th>
-        <th>Nombre Competencia </th>
+        <th>Competencia </th>
+        <th>Calificación </th>
         <th>Evaluar </th>
+
       </tr>
     </thead>
     <tbody>
@@ -26,6 +28,7 @@
 	      <td> {{evaluation.username}}</td>
 	      <td> {{evaluation.email}}</td>
 	      <td> {{evaluation.name}}</td>
+        <td> {{evaluation.numericnote}}{{evaluation.booleannote}}</td>
 	      <td>
 	        <button class="btn btn-success" data-toggle="modal" data-target="#evaluation{{evaluation.id}}">Evaluar </button>
 	      </td>
@@ -39,7 +42,8 @@
       <tr>
         <th>Nombre Usuario </th>
         <th>Email</th>
-        <th>Nombre Competencia </th>
+        <th>Competencia </th>
+        <th>Calificación </th>
         <th>Evaluar </th>
       </tr>
     </thead>
@@ -48,6 +52,7 @@
 	      <td> {{evaluation.username}}</td>
 	      <td> {{evaluation.email}}</td>
 	      <td> {{evaluation.name}}</td>
+        <td> {{evaluation.numericnote}}{{evaluation.booleannote}}</td>
 	      <td>
 	        <button class="btn btn-success" data-toggle="modal" data-target="#evaluation{{evaluation.id}}">Evaluar </button>
 	      </td>
