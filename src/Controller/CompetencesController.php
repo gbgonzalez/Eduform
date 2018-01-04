@@ -264,7 +264,7 @@ class CompetencesController extends AppController {
                 $this->Flash->success('Calificado correctamente');
                 return $this->redirect(['controller' => 'competences', 'action' => 'evaluation']); 
             }else{
-                $this->Flash->error('Ha habido un error al subir la calificación');
+                $this->Flash->error('Problema al insertar la calificación');
                 return $this->redirect(['controller' => 'competences', 'action' => 'evaluation']);
             }
 
@@ -288,7 +288,7 @@ class CompetencesController extends AppController {
                 $this->Flash->success('Calificación eliminada correctamente');
                 return $this->redirect(['controller' => 'competences', 'action' => 'evaluation']); 
             }else{
-                $this->Flash->error('Ha habido un error al eliminar la calificación');
+                $this->Flash->error('Problema al modificar la clasificación');
                 return $this->redirect(['controller' => 'competences', 'action' => 'evaluation']);
             }
         }
@@ -322,11 +322,12 @@ class CompetencesController extends AppController {
             if ( $this->Competences->save($competences))
             {
             
-                $this->Flash->success('La competencia ha sido creado correctamente');
+                $this->Flash->success('La competencia ha sido creada correctamente');
                
                 return $this->redirect(['controller' => 'competences', 'action' => 'index']);
             }else{
-                $this->Flash->error('Problema');
+                $this->Flash->error('Problema al crear la competencia');
+                return $this->redirect(['controller' => 'competences', 'action' => 'index']);
             }
 
         }// end of if post 
@@ -341,10 +342,10 @@ class CompetencesController extends AppController {
         $competence = $this->Competences->get($this->request->data['id']);
 
         if ($this->Competences->delete($competence)) {
-            $this->Flash->success(__('La competencia ha sido eliminada correctamentes'));
+            $this->Flash->success(__('La competencia ha sido eliminada correctamente'));
            return $this->redirect(['controller' => 'competences', 'action' => 'index']);
         }else{
-            $this->Flash->error(__('La competencia no ha podido ser borrada'));
+            $this->Flash->error(__('Problema al borrar la competencia'));
             return $this->redirect(['controller' => 'competences', 'action' => 'index']);
         }
         
@@ -373,10 +374,10 @@ class CompetencesController extends AppController {
         // Prior to 3.4.0 $this->request->data() was used.
         $this->Competences->patchEntity($competence, $formatData);
         if ($this->Competences->save($competence)) {
-            $this->Flash->success(__('La competencia ha sido modificada.'));
+            $this->Flash->success(__('La competencia ha sido modificada'));
             return $this->redirect(['controller' => 'competences', 'action' => 'index']);
         }else{
-            $this->Flash->error(__('Erorr al modificar'));
+            $this->Flash->error(__('Problema al modificar la competencia'));
             return $this->redirect(['controller' => 'competences', 'action' => 'index']);
         }
             
@@ -390,6 +391,7 @@ class CompetencesController extends AppController {
             return true;
         }
         
+        $this->Flash->error(__('No esta autorizado a acceder a este panel'));
         return false;
     }
 
