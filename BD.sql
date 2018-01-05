@@ -167,6 +167,12 @@ INSERT INTO userscompetences (user_id, competence_id, created)
 	VALUES(1,3,NOW());	
 INSERT INTO userscompetences (user_id, competence_id, numericnote, created) 
 	VALUES(1,6,'3',NOW());
+INSERT INTO userscompetences (user_id, competence_id, created) 
+	VALUES(2,1,,NOW());
+INSERT INTO userscompetences (user_id, competence_id, created) 
+	VALUES(2,2,NOW());
+INSERT INTO userscompetences (user_id, competence_id, created) 
+	VALUES(2,3,NOW());	
 	
 
 UNLOCK TABLES;
