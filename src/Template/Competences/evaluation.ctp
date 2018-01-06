@@ -16,9 +16,9 @@
     <thead>
       <tr>
         <th>Nombre Usuario </th>
-        <th>Email</th>
+        <th class="visible-lg">Email</th>
         <th>Competencia </th>
-        <th>Calificación </th>
+        <th>Nota </th>
         <th>Evaluar </th>
 
       </tr>
@@ -26,11 +26,14 @@
     <tbody>
       <tr ng-repeat="evaluation in evaluations">
 	      <td> {{evaluation.username}}</td>
-	      <td> {{evaluation.email}}</td>
+	      <td class="visible-lg"> {{evaluation.email}}</td>
 	      <td> {{evaluation.name}}</td>
         <td> {{evaluation.numericnote}}{{evaluation.booleannote}}</td>
 	      <td>
-	        <button class="btn btn-success" data-toggle="modal" data-target="#evaluation{{evaluation.id}}">Evaluar </button>
+	        <button class="btn btn-success" data-toggle="modal" data-target="#evaluation{{evaluation.id}}">
+              <span class="visible-lg">Evaluar </span> 
+              <span class="hidden-lg"> · </span>
+          </button>
 	      </td>
       </tr>    
     </tbody>
@@ -41,21 +44,25 @@
     <thead>
       <tr>
         <th>Nombre Usuario </th>
-        <th>Email</th>
+        <th class="visible-lg">Email</th>
         <th>Competencia </th>
-        <th>Calificación </th>
+        <th>Nota </th>
         <th>Evaluar </th>
+
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="evaluation in resultSearch">
-	      <td> {{evaluation.username}}</td>
-	      <td> {{evaluation.email}}</td>
-	      <td> {{evaluation.name}}</td>
+        <td> {{evaluation.username}}</td>
+        <td class="visible-lg"> {{evaluation.email}}</td>
+        <td> {{evaluation.name}}</td>
         <td> {{evaluation.numericnote}}{{evaluation.booleannote}}</td>
-	      <td>
-	        <button class="btn btn-success" data-toggle="modal" data-target="#evaluation{{evaluation.id}}">Evaluar </button>
-	      </td>
+        <td>
+          <button class="btn btn-success" data-toggle="modal" data-target="#evaluation{{evaluation.id}}">
+              <span class="visible-lg">Evaluar </span> 
+              <span class="hidden-lg"> · </span>
+          </button>
+        </td>
       </tr>    
     </tbody>
 </table>

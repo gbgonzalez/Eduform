@@ -3,6 +3,8 @@
     use App\Controller\AppController;
     use Cake\Event\Event;
     use Cake\Validation\Validation;
+    use Cake\ORM\TableRegistry;
+
 
 
     class EduformController extends AppController
@@ -16,7 +18,7 @@
             // Allow users to register and logout.
             // You should not add the "login" action to allow list. Doing so would
             // cause problems with normal functioning of AuthComponent.
-            $this->Auth->allow(['index', 'login', 'logout']);
+            $this->Auth->allow(['index', 'login', 'logout', 'information', 'contact']);
         }
 
     	public function index()
@@ -65,10 +67,42 @@
             }
         }
 
+        public function information(){
+            $this->viewBuilder()->layout('information');
+        }
+        public function contact(){
+            $this->viewBuilder()->layout('information');
+        }
+
         public function home(){
         
             $this->viewBuilder()->layout('admin');
+            $user = $this->Auth->user();
 
+            if ($user['role'] == 'Administrador')
+            {
+                $usersTable = TableRegistry::get('Users');
+                $totalUsers = $usersTable->find()->count();
+                $categoriesTable = TableRegistry::get('Categories');
+                $totalCategories = $categoriesTable->find()->count();
+                $competencesTable = TableRegistry::get('Competences');
+                $totalCompetences = $competencesTable->find()->count();
+                $subjectsTable = TableRegistry::get('Subjects');
+                $totalSubjects = $subjectsTable->find()->count();
+                $contentsTable = TableRegistry::get('Contents');
+                $totalContents = $contentsTable->find()->count();
+                $totals = array (
+                            'users' => $totalUsers,
+                            'categories' => $totalCategories,
+                            'competences' => $totalCompetences,
+                            'contents' => $totalContents,
+                            'subjects' => $totalSubjects
+                    );
+
+            }else{
+                return $this->redirect(['controller' => 'users', 'action' => 'view']);   
+            }
+            $this->Set('totals', $totals);
         }
 
         public function logout()

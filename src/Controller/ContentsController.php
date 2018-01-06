@@ -34,6 +34,8 @@ class ContentsController extends AppController {
 
     	$this->viewBuilder()->layout('admin');
 
+        
+
     	$contents = $this->set('contents', $this->Contents
     				->find('all', ['contain' => ['Competences']]));
 

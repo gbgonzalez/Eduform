@@ -40,17 +40,26 @@
       <tr ng-repeat="subject in subjects">
         <td> {{subject.name}}</td>
       <td>
-        <button class="btn btn-info" data-toggle="modal" data-target="#subject{{subject.id}}">Mostrar </button>
+        <button class="btn btn-info" data-toggle="modal" data-target="#subject{{subject.id}}">
+          <span class="visible-lg">Mostrar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td>
 
       <?php if( $current_user['role'] == 'Administrador')
       {
       ?>
       <td>
-        <button class="btn btn-default" data-toggle="modal" data-target="#updateSubject{{subject.id}}">Modificar </button>
+        <button class="btn btn-default" data-toggle="modal" data-target="#updateSubject{{subject.id}}">
+          <span class="visible-lg">Modificar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td>
       <td>
-        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteSubject{{subject.id}}">Eliminar </button>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteSubject{{subject.id}}">
+          <span class="visible-lg">Eliminar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td> 
       <?php
       }
@@ -80,16 +89,25 @@
         <td> {{subject.name}}</td>
     
       <td>
-        <button class="btn btn-info" data-toggle="modal" data-target="#subject{{subject.id}}">Mostrar </button>
+        <button class="btn btn-info" data-toggle="modal" data-target="#subject{{subject.id}}">
+          <span class="visible-lg">Mostrar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td>
       <?php if( $current_user['role'] == 'Administrador')
         {
         ?>
       <td>
-        <button class="btn btn-default" data-toggle="modal" data-target="#updateSubject{{subject.id}}">Modificar </button>
+        <button class="btn btn-default" data-toggle="modal" data-target="#updateSubject{{subject.id}}">
+          <span class="visible-lg">Modificar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td>
       <td>
-        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteSubject{{subject.id}}">Eliminar </button>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteSubject{{subject.id}}">
+          <span class="visible-lg">Eliminar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td> 
         <?php
         }

@@ -18,12 +18,12 @@
     <thead>
       <tr>
         <th>Nombre </th>
-        <th>DNI</th>
-        <th>Tipo</th>
-        <th>Email </th>
+        <th class="visible-lg">DNI</th>
+        <th class="visible-lg">Tipo</th>
+        <th class="visible-lg">Email </th>
         <th>Materias </th>
         <th>Mostrar </th>
-        <th>Modificar </th>
+        <th class="visible-lg">Modificar </th>
         <th>Eliminar </th>
       </tr>
     </thead>
@@ -31,21 +31,31 @@
     	
     	<tr ng-repeat="user in users">
     		<td> {{user.username}}</td>
-			<td> {{user.dni}}</td>
-			<td> {{user.role}}</td>
-			<td> {{user.email}}</td>
+			<td class="visible-lg"> {{user.dni}}</td>
+			<td class="visible-lg"> {{user.role}}</td>
+			<td class="visible-lg"> {{user.email}}</td>
 		
 			<td>
-				<button class="btn btn-warning" data-toggle="modal" data-target="#subjects{{user.id}}">Materias </button>
+				<button class="btn btn-warning" data-toggle="modal" data-target="#subjects{{user.id}}">
+					<span class="visible-lg">Materias </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
 			</td>
 			<td>
-				<button class="btn btn-info" data-toggle="modal" data-target="#user{{user.id}}">Mostrar </button>
+				<button class="btn btn-info" data-toggle="modal" data-target="#user{{user.id}}">
+					<span class="visible-lg">Mostrar </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
+			</td>
+			<td class="visible-lg">
+				<button class="btn btn-default" data-toggle="modal" data-target="#updateUser{{user.id}}">
+					<span>Modificar </span> 
+				</button>
 			</td>
 			<td>
-				<button class="btn btn-default" data-toggle="modal" data-target="#updateUser{{user.id}}">Modificar </button>
-			</td>
-			<td>
-				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteUser{{user.id}}">Eliminar </button>
+				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteUser{{user.id}}">	<span class="visible-lg">Eliminar </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
 			</td> 
     	</tr>
     	
@@ -56,35 +66,44 @@
     <thead>
       <tr>
         <th>Nombre </th>
-        <th>DNI</th>
-        <th>Tipo</th>
-        <th>Email </th>
+        <th class="visible-lg">DNI</th>
+        <th class="visible-lg">Tipo</th>
+        <th class="visible-lg">Email </th>
         <th>Materias </th>
         <th>Mostrar </th>
-        <th>Modificar </th>
+        <th class="visible-lg">Modificar </th>
         <th>Eliminar </th>
       </tr>
     </thead>
     <tbody>
     	
     	<tr ng-repeat="user in resultSearch">
-    		<p> {{user}} </p>
     		<td> {{user.username}}</td>
-			<td> {{user.dni}}</td>
-			<td> {{user.role}}</td>
-			<td> {{user.email}}</td>
+			<td class="visible-lg"> {{user.dni}}</td>
+			<td class="visible-lg"> {{user.role}}</td>
+			<td class="visible-lg"> {{user.email}}</td>
 		
 			<td>
-				<button class="btn btn-warning" data-toggle="modal" data-target="#subjects{{user.id}}">Materias </button>
+				<button class="btn btn-warning" data-toggle="modal" data-target="#subjects{{user.id}}">
+					<span class="visible-lg">Materias </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
 			</td>
 			<td>
-				<button class="btn btn-info" data-toggle="modal" data-target="#user{{user.id}}">Mostrar </button>
+				<button class="btn btn-info" data-toggle="modal" data-target="#user{{user.id}}">
+					<span class="visible-lg">Mostrar </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
+			</td>
+			<td class="visible-lg">
+				<button class="btn btn-default" data-toggle="modal" data-target="#updateUser{{user.id}}">
+					<span>Modificar </span> 
+				</button>
 			</td>
 			<td>
-				<button class="btn btn-default" data-toggle="modal" data-target="#updateUser{{user.id}}">Modificar </button>
-			</td>
-			<td>
-				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteUser{{user.id}}">Eliminar </button>
+				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteUser{{user.id}}">	<span class="visible-lg">Eliminar </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
 			</td> 
     	</tr>
     	

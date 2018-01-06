@@ -21,8 +21,8 @@
       <thead>
         <tr>
           <th>Nombre </th>
-          <th>Categoria asignada </th>
-          <th>Materia asignada </th>
+          <th class="visible-lg">Categoria asignada </th>
+          <th class="visible-lg">Materia asignada </th>
           <th>Mostrar </th>
           <th>Modificar </th>
           <th>Eliminar </th>
@@ -31,20 +31,29 @@
       <tbody>
         <tr ng-repeat="competence in competences">
           <td> {{competence.name}}</td>
-          <td>
+          <td class="visible-lg">
               <p ng-repeat="category in competence.categories">
                 {{ category.name  }}
               </p>
           </td>
-          <td> {{ competence.subject.name }}</td>
+          <td class="visible-lg"> {{ competence.subject.name }}</td>
           <td>
-            <button class="btn btn-info" data-toggle="modal" data-target="#competence{{competence.id}}">Mostrar </button>
+            <button class="btn btn-info" data-toggle="modal" data-target="#competence{{competence.id}}">
+              <span class="visible-lg">Mostrar </span> 
+              <span class="hidden-lg"> · </span>
+            </button>
           </td>
           <td>
-            <button class="btn btn-default" data-toggle="modal" data-target="#updateCompetence{{competence.id}}">Modificar </button>
+            <button class="btn btn-default" data-toggle="modal" data-target="#updateCompetence{{competence.id}}"> 
+              <span class="visible-lg">Modificar </span> 
+              <span class="hidden-lg"> · </span>
+            </button>
           </td>
           <td>
-            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCompetence{{competence.id}}">Eliminar </button>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCompetence{{competence.id}}"> 
+              <span class="visible-lg">Eliminar </span> 
+              <span class="hidden-lg"> · </span>
+            </button>
           </td> 
         </tr>
         
@@ -55,8 +64,8 @@
       <thead>
         <tr>
           <th>Nombre </th>
-          <th>Categoria asignada </th>
-          <th>Materia asignada </th>
+          <th class="visible-lg">Categoria asignada </th>
+          <th class="visible-lg">Materia asignada </th>
           <th>Mostrar </th>
           <th>Modificar </th>
           <th>Eliminar </th>
@@ -65,16 +74,29 @@
       <tbody>
         <tr ng-repeat="competence in resultSearch">
           <td> {{competence.name}}</td>
-          <td> {{getNameCategory(competence.id)}}</td>
-          <td> {{getNameSubject(competence.subject_id)}}</td>
+          <td class="visible-lg">
+              <p ng-repeat="category in competence.categories">
+                {{ category.name  }}
+              </p>
+          </td>
+          <td class="visible-lg"> {{ competence.subject.name }}</td>
           <td>
-            <button class="btn btn-info" data-toggle="modal" data-target="#competence{{competence.id}}">Mostrar </button>
+            <button class="btn btn-info" data-toggle="modal" data-target="#competence{{competence.id}}">
+              <span class="visible-lg">Mostrar </span> 
+              <span class="hidden-lg"> · </span>
+            </button>
           </td>
           <td>
-            <button class="btn btn-default" data-toggle="modal" data-target="#updateCompetence{{competence.id}}">Modificar </button>
+            <button class="btn btn-default" data-toggle="modal" data-target="#updateCompetence{{competence.id}}"> 
+              <span class="visible-lg">Modificar </span> 
+              <span class="hidden-lg"> · </span>
+            </button>
           </td>
           <td>
-            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCompetence{{competence.id}}">Eliminar </button>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCompetence{{competence.id}}"> 
+              <span class="visible-lg">Eliminar </span> 
+              <span class="hidden-lg"> · </span>
+            </button>
           </td> 
         </tr>
         

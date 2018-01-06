@@ -25,13 +25,13 @@
     <thead>
       <tr>
         <th>Nombre </th>
-        <th>Competencia</th>
+        <th class="visible-lg">Competencia</th>
         <th>Archivos Adjuntos</th>
         <th>Mostrar </th>
         <?php if( $current_user['role'] == 'Administrador')
         {
         ?>
-        <th>Modificar </th>
+        <th class="visible-lg">Modificar </th>
         <th>Eliminar </th>
         <?php
         }
@@ -40,24 +40,32 @@
       </tr>
     </thead>
     <tbody>
-    	
     	<tr ng-repeat="content in contents">
     		<td> {{content.name}}</td>
-			<td> {{content.competence.name}}</td>		
+			<td class="visible-lg"> {{content.competence.name}}</td>		
 			<td>
-				<button class="btn btn-warning" data-toggle="modal" data-target="#files{{content.id}}">Archivos </button>
+				<button class="btn btn-warning" data-toggle="modal" data-target="#files{{content.id}}">
+					<span class="visible-lg">Archivos </span> 
+					<span class="hidden-lg"> · </span>
+				</button>
 			</td>
 			<td>
-				<button class="btn btn-info" data-toggle="modal" data-target="#content{{content.id}}">Mostrar </button>
+				<button class="btn btn-info" data-toggle="modal" data-target="#content{{content.id}}">
+					<span class="visible-lg">Mostrar </span> 
+					<span class="hidden-lg"> · </span>
+				</button>
 			</td>
       <?php if( $current_user['role'] == 'Administrador')
       {
       ?>
-			<td>
+			<td class="visible-lg">
 				<button class="btn btn-default" data-toggle="modal" data-target="#updateContent{{content.id}}">Modificar </button>
 			</td>
 			<td>
-				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteContent{{content.id}}">Eliminar </button>
+				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteContent{{content.id}}">
+					<span class="visible-lg">Eliminar </span> 
+					<span class="hidden-lg"> · </span>
+				</button>
 			</td>
       <?php
       }
@@ -72,45 +80,52 @@
     <thead>
       <tr>
         <th>Nombre </th>
-        <th>Competencia</th>
+        <th class="visible-lg">Competencia</th>
         <th>Archivos Adjuntos</th>
         <th>Mostrar </th>
         <?php if( $current_user['role'] == 'Administrador')
         {
         ?>
-        <th>Modificar </th>
+        <th class="visible-lg">Modificar </th>
         <th>Eliminar </th>
         <?php
         }
-        ?> 
+        ?>
+
       </tr>
     </thead>
     <tbody>
-    	
     	<tr ng-repeat="content in resultSearch">
     		<td> {{content.name}}</td>
-			<td> {{content.competence.name}}</td>		
+			<td class="visible-lg"> {{content.competence.name}}</td>		
 			<td>
-				<button class="btn btn-warning" data-toggle="modal" data-target="#files{{content.id}}">Archivos </button>
+				<button class="btn btn-warning" data-toggle="modal" data-target="#files{{content.id}}">
+					<span class="visible-lg">Archivos </span> 
+					<span class="hidden-lg"> · </span>
+				</button>
 			</td>
 			<td>
-				<button class="btn btn-info" data-toggle="modal" data-target="#content{{content.id}}">Mostrar </button>
+				<button class="btn btn-info" data-toggle="modal" data-target="#content{{content.id}}">
+					<span class="visible-lg">Mostrar </span> 
+					<span class="hidden-lg"> · </span>
+				</button>
 			</td>
       <?php if( $current_user['role'] == 'Administrador')
       {
       ?>
-			<td>
+			<td class="visible-lg">
 				<button class="btn btn-default" data-toggle="modal" data-target="#updateContent{{content.id}}">Modificar </button>
 			</td>
 			<td>
-				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteContent{{content.id}}">Eliminar </button>
-			</td> 
+				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteContent{{content.id}}">
+					<span class="visible-lg">Eliminar </span> 
+					<span class="hidden-lg"> · </span>
+				</button>
+			</td>
       <?php
       }
       ?> 
     	</tr>
-    	
-     
     </tbody>
 </table>
 

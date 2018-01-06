@@ -38,16 +38,25 @@
       <tr ng-repeat="category in categories">
       <td> {{category.name}}</td>
       <td>
-        <button class="btn btn-info" data-toggle="modal" data-target="#category{{category.id}}">Mostrar </button>
+        <button class="btn btn-info" data-toggle="modal" data-target="#category{{category.id}}">
+          <span class="visible-lg">Mostrar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td>
       <?php if( $current_user['role'] == 'Administrador')
       {
       ?>
       <td>
-        <button class="btn btn-default" data-toggle="modal" data-target="#updateCategory{{category.id}}">Modificar </button>
+        <button class="btn btn-default" data-toggle="modal" data-target="#updateCategory{{category.id}}"> 
+          <span class="visible-lg">Modificar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td>
       <td>
-        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCategory{{category.id}}">Eliminar </button>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCategory{{category.id}}">
+          <span class="visible-lg">Eliminar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td> 
       <?php
       }
@@ -77,16 +86,25 @@
       <tr ng-repeat="category in resultSearch">
       <td> {{category.name}}</td>
       <td>
-        <button class="btn btn-info" data-toggle="modal" data-target="#category{{category.id}}">Mostrar </button>
+        <button class="btn btn-info" data-toggle="modal" data-target="#category{{category.id}}">
+          <span class="visible-lg">Mostrar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td>
         <?php if( $current_user['role'] == 'Administrador')
         {
         ?>
       <td>
-        <button class="btn btn-default" data-toggle="modal" data-target="#updateCategory{{category.id}}">Modificar </button>
+        <button class="btn btn-default" data-toggle="modal" data-target="#updateCategory{{category.id}}">
+          <span class="visible-lg">Modificar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td>
       <td>
-        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCategory{{category.id}}">Eliminar </button>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCategory{{category.id}}">
+          <span class="visible-lg">Eliminar </span> 
+          <span class="hidden-lg"> · </span>
+        </button>
       </td> 
         <?php
         }
