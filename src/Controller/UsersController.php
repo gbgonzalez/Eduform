@@ -60,8 +60,8 @@ class UsersController extends AppController {
         $connection = ConnectionManager::get('default');
         
         $competencesUser = $connection->execute("
-            SELECT C.id, C.name, S.name as subjectName FROM Competences AS C
-            INNER JOIN usersCompetences AS UC ON C.id=UC.competence_id
+            SELECT C.id, C.name, S.name as subjectName FROM competences AS C
+            INNER JOIN userscompetences AS UC ON C.id=UC.competence_id
             INNER JOIN subjects AS S ON S.id=C.subject_id
             WHERE UC.user_id= " .$userProfile['id']. "");
 
