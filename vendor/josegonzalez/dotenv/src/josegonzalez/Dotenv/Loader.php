@@ -22,6 +22,7 @@ class Loader
     protected $raise = true;
 
     protected $skip = array(
+        'apacheSetenv' => false,
         'define' => false,
         'putenv' => false,
         'toEnv' => false,
@@ -65,6 +66,7 @@ class Loader
             'skipExisting',
             'prefix',
             'expect',
+            'apacheSetenv',
             'define',
             'putenv',
             'toEnv',
@@ -230,6 +232,28 @@ class Loader
         return $this;
     }
 
+    public function apacheSetenv($overwrite = false)
+    {
+        $this->requireParse('apache_setenv');
+        foreach ($this->environment as $key => $value) {
+            $prefixedKey = $this->prefixed($key);
+            if (apache_getenv($prefixedKey) !== false && !$overwrite) {
+                if ($this->skip['apacheSetenv']) {
+                    continue;
+                }
+
+                return $this->raise(
+                    'LogicException',
+                    sprintf('Key "%s" has already been defined in apache_getenv()', $prefixedKey)
+                );
+            }
+
+            apache_setenv($prefixedKey, $value);
+        }
+
+        return $this;
+    }
+
     public function define()
     {
         $this->requireParse('define');
@@ -257,7 +281,7 @@ class Loader
         $this->requireParse('putenv');
         foreach ($this->environment as $key => $value) {
             $prefixedKey = $this->prefixed($key);
-            if (getenv($prefixedKey) && !$overwrite) {
+            if (getenv($prefixedKey) !== false && !$overwrite) {
                 if ($this->skip['putenv']) {
                     continue;
                 }
@@ -279,7 +303,7 @@ class Loader
         $this->requireParse('toEnv');
         foreach ($this->environment as $key => $value) {
             $prefixedKey = $this->prefixed($key);
-            if (isset($_ENV[$prefixedKey]) && !$overwrite) {
+            if (array_key_exists($prefixedKey, $_ENV) && !$overwrite) {
                 if ($this->skip['toEnv']) {
                     continue;
                 }
@@ -301,7 +325,7 @@ class Loader
         $this->requireParse('toServer');
         foreach ($this->environment as $key => $value) {
             $prefixedKey = $this->prefixed($key);
-            if (isset($_SERVER[$prefixedKey]) && !$overwrite) {
+            if (array_key_exists($prefixedKey, $_SERVER) && !$overwrite) {
                 if ($this->skip['toServer']) {
                     continue;
                 }

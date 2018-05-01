@@ -31,7 +31,6 @@ use ReflectionClass;
 /**
  * Task class for creating and updating test files.
  *
- * @property \Bake\Shell\Task\BakeTemplateTask $BakeTemplate
  */
 class TestTask extends BakeTask
 {
@@ -349,7 +348,7 @@ class TestTask extends BakeTask
         if ($suffix && strpos($class, $suffix) === false) {
             $class .= $suffix;
         }
-        if (strtolower($type) === 'controller' && $this->param('prefix')) {
+        if ($type === 'controller' && $this->param('prefix')) {
             $subSpace .= '\\' . Inflector::camelize($this->param('prefix'));
         }
 

@@ -44,7 +44,7 @@ return [
         'dir' => 'src',
         'webroot' => 'webroot',
         'wwwRoot' => WWW_ROOT,
-        'baseUrl' => env('SCRIPT_NAME'),
+        // 'baseUrl' => env('SCRIPT_NAME'),
         'fullBaseUrl' => false,
         'imageBaseUrl' => 'img/',
         'cssBaseUrl' => 'css/',
@@ -64,7 +64,7 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => env('SECURITY_SALT', '6326028e5eae324eb57e4974a89786c711c9da6b78381a52819b96a2e2828165'),
+        'salt' => env('SECURITY_SALT', '519081116ecd1d101d98866c0a644adb47161a09488eccf09b0b8f06d01f641d'),
     ],
 
     /**
@@ -183,8 +183,8 @@ return [
             'host' => 'localhost',
             'port' => 25,
             'timeout' => 30,
-            'username' => null,
-            'password' => null,
+            'username' => 'guiller5_cphp2',
+            'password' => 'T@p2@4uRbX#vUx*JSm@86]@1',
             'client' => null,
             'tls' => null,
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
@@ -269,9 +269,9 @@ return [
             'persistent' => false,
             'host' => 'localhost',
             //'port' => 'non_standard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'test_myapp',
+            'username' => 'guiller5_eduformUser',
+            'password' => 'guiller5_eduformPass',
+            'database' => 'guiller5_eduform',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
             'cacheMetadata' => true,
@@ -290,25 +290,15 @@ return [
             'className' => 'Cake\Log\Engine\FileLog',
             'path' => LOGS,
             'file' => 'debug',
-            'url' => env('LOG_DEBUG_URL', null),
-            'scopes' => false,
             'levels' => ['notice', 'info', 'debug'],
+            'url' => env('LOG_DEBUG_URL', null),
         ],
         'error' => [
             'className' => 'Cake\Log\Engine\FileLog',
             'path' => LOGS,
             'file' => 'error',
-            'url' => env('LOG_ERROR_URL', null),
-            'scopes' => false,
             'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
-        ],
-        // To enable this dedicated query log, you need set your datasource's log flag to true
-        'queries' => [
-            'className' => 'Cake\Log\Engine\FileLog',
-            'path' => LOGS,
-            'file' => 'queries',
-            'url' => env('LOG_QUERIES_URL', null),
-            'scopes' => ['queriesLog'],
+            'url' => env('LOG_ERROR_URL', null),
         ],
     ],
 

@@ -227,7 +227,8 @@ trait EntityTrait
      */
     public function set($property, $value = null, array $options = [])
     {
-        if (is_string($property) && $property !== '') {
+        $isString = is_string($property);
+        if ($isString && $property !== '') {
             $guard = false;
             $property = [$property => $value];
         } else {
@@ -419,7 +420,7 @@ trait EntityTrait
     /**
      * Sets hidden properties.
      *
-     * @param array $properties An array of properties to hide from array exports.
+     * @param array $properties An array of properties to treat as virtual.
      * @param bool $merge Merge the new properties with the existing. By default false.
      * @return $this
      */
@@ -752,7 +753,7 @@ trait EntityTrait
         if ($isDirty === false) {
             unset($this->_dirty[$property]);
 
-            return $this;
+            return false;
         }
 
         $this->_dirty[$property] = true;
@@ -1035,74 +1036,12 @@ trait EntityTrait
     }
 
     /**
-     * Get a list of invalid fields and their data for errors upon validation/patching
-     *
-     * @return array
-     */
-    public function getInvalid()
-    {
-        return $this->_invalid;
-    }
-
-    /**
-     * Get a single value of an invalid field. Returns null if not set.
-     *
-     * @param string $field The name of the field.
-     * @return mixed
-     */
-    public function getInvalidField($field)
-    {
-        $value = isset($this->_invalid[$field]) ? $this->_invalid[$field] : null;
-
-        return $value;
-    }
-
-    /**
-     * Set fields as invalid and not patchable into the entity.
-     *
-     * This is useful for batch operations when one needs to get the original value for an error message after patching.
-     * This value could not be patched into the entity and is simply copied into the _invalid property for debugging purposes
-     * or to be able to log it away.
-     *
-     * @param array $fields The values to set.
-     * @param bool $overwrite Whether or not to overwrite pre-existing values for $field.
-     * @return $this
-     */
-    public function setInvalid(array $fields, $overwrite = false)
-    {
-        foreach ($fields as $field => $value) {
-            if ($overwrite === true) {
-                $this->_invalid[$field] = $value;
-                continue;
-            }
-            $this->_invalid += [$field => $value];
-        }
-
-        return $this;
-    }
-
-    /**
-     * Sets a field as invalid and not patchable into the entity.
-     *
-     * @param string $field The value to set.
-     * @param mixed $value The invalid value to be set for $field.
-     * @return $this
-     */
-    public function setInvalidField($field, $value)
-    {
-        $this->_invalid[$field] = $value;
-
-        return $this;
-    }
-
-    /**
      * Sets a field as invalid and not patchable into the entity.
      *
      * This is useful for batch operations when one needs to get the original value for an error message after patching.
      * This value could not be patched into the entity and is simply copied into the _invalid property for debugging purposes
      * or to be able to log it away.
      *
-     * @deprecated 3.5 Use getInvalid()/getInvalidField()/setInvalid() instead.
      * @param string|array|null $field The field to get invalid value for, or the value to set.
      * @param mixed|null $value The invalid value to be set for $field.
      * @param bool $overwrite Whether or not to overwrite pre-existing values for $field.
@@ -1182,7 +1121,7 @@ trait EntityTrait
      * Stores whether or not a property value can be changed or set in this entity.
      * The special property `*` can also be marked as accessible or protected, meaning
      * that any other property specified before will take its value. For example
-     * `$entity->setAccess('*', true)` means that any property not specified already
+     * `$entity->accessible('*', true)` means that any property not specified already
      * will be accessible by default.
      *
      * You can also call this method with an array of properties, in which case they

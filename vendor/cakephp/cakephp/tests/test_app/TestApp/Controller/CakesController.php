@@ -2,6 +2,7 @@
 namespace TestApp\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Network\Exception\NotFoundException;
 
 /**
  * CakesController class

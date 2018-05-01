@@ -1310,7 +1310,7 @@ class QueryTest extends TestCase
         $table->belongsToMany('Tags');
 
         $articlesTags
-            ->getEventManager()
+            ->eventManager()
             ->on('Model.beforeFind', function (Event $event, $query) {
                 $query->formatResults(function ($results) {
                     foreach ($results as $result) {
@@ -1614,7 +1614,7 @@ class QueryTest extends TestCase
     {
         $table = TableRegistry::get('Articles');
         $table->hasMany('Comments');
-        $table->getEventManager()
+        $table->eventManager()
             ->on('Model.beforeFind', function (Event $event, $query) {
                 $query
                     ->limit(1)
@@ -1635,7 +1635,7 @@ class QueryTest extends TestCase
     {
         $callCount = 0;
         $table = TableRegistry::get('Articles');
-        $table->getEventManager()
+        $table->eventManager()
             ->on('Model.beforeFind', function (Event $event, $query) use (&$callCount) {
                 $valueBinder = new ValueBinder();
                 $query->sql($valueBinder);
@@ -1802,34 +1802,6 @@ class QueryTest extends TestCase
             ['append', new \ArrayIterator],
             ['compile', 1],
         ];
-    }
-
-    /**
-     * testClearContain
-     *
-     * @return void
-     */
-    public function testClearContain()
-    {
-        $query = $this->getMockBuilder('\Cake\ORM\Query')
-            ->setMethods(['all'])
-            ->setConstructorArgs([$this->connection, $this->table])
-            ->getMock();
-
-        $query->contain([
-            'Articles'
-        ]);
-
-        $result = $query->contain();
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-
-        $result = $query->clearContain();
-        $this->assertInstanceOf(Query::class, $result);
-
-        $result = $query->contain();
-        $this->assertInternalType('array', $result);
-        $this->assertEmpty($result);
     }
 
     /**
@@ -2008,32 +1980,6 @@ class QueryTest extends TestCase
             ->contain(['articles' => function ($q) {
                 return $q->where(['articles.id' => 1]);
             }]);
-
-        $ids = [];
-        foreach ($query as $entity) {
-            foreach ((array)$entity->articles as $article) {
-                $ids[] = $article->id;
-            }
-        }
-        $this->assertEquals([1], array_unique($ids));
-    }
-
-    /**
-     * Integration test that uses the contain signature that is the same as the
-     * matching signature
-     *
-     * @return void
-     */
-    public function testContainSecondSignature()
-    {
-        $table = TableRegistry::get('authors');
-        $table->hasMany('articles');
-        $query = new Query($this->connection, $table);
-        $query
-            ->select()
-            ->contain('articles', function ($q) {
-                return $q->where(['articles.id' => 1]);
-            });
 
         $ids = [];
         foreach ($query as $entity) {
@@ -2569,40 +2515,12 @@ class QueryTest extends TestCase
         }]);
         $this->assertFalse($query->eagerLoaded());
 
-        $table->getEventManager()->attach(function ($e, $q, $o, $primary) {
+        $table->eventManager()->attach(function ($e, $q, $o, $primary) {
             $this->assertTrue($primary);
         }, 'Model.beforeFind');
 
         TableRegistry::get('articles')
-            ->getEventManager()->attach(function ($e, $q, $o, $primary) {
-                $this->assertFalse($primary);
-            }, 'Model.beforeFind');
-        $query->all();
-    }
-
-    /**
-     * Tests that the isEagerLoaded function works and is transmitted correctly to eagerly
-     * loaded associations
-     *
-     * @return void
-     */
-    public function testIsEagerLoaded()
-    {
-        $table = TableRegistry::get('authors');
-        $table->hasMany('articles');
-        $query = $table->find()->contain(['articles' => function ($q) {
-            $this->assertTrue($q->isEagerLoaded());
-
-            return $q;
-        }]);
-        $this->assertFalse($query->isEagerLoaded());
-
-        $table->getEventManager()->attach(function ($e, $q, $o, $primary) {
-            $this->assertTrue($primary);
-        }, 'Model.beforeFind');
-
-        TableRegistry::get('articles')
-            ->getEventManager()->attach(function ($e, $q, $o, $primary) {
+            ->eventManager()->attach(function ($e, $q, $o, $primary) {
                 $this->assertFalse($primary);
             }, 'Model.beforeFind');
         $query->all();
@@ -2844,7 +2762,7 @@ class QueryTest extends TestCase
     {
         $table = TableRegistry::get('Articles');
         $table->hasMany('Comments');
-        $table->getEventManager()
+        $table->eventManager()
             ->on('Model.beforeFind', function (Event $event, $query) {
                 $query
                     ->limit(5)
@@ -3135,9 +3053,6 @@ class QueryTest extends TestCase
         $table = TableRegistry::get('Datatypes');
         $entity = $table->newEntity([]);
         $entity->cost = $big;
-        $entity->tiny = 1;
-        $entity->small = 10;
-
         $table->save($entity);
         $out = $table->find()->where([
             'cost' => $big

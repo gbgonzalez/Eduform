@@ -14,7 +14,6 @@
 namespace Cake\Test\TestCase\Http\Client;
 
 use Cake\Http\Client\Response;
-use Cake\Http\Cookie\CookieCollection;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -103,12 +102,10 @@ class ResponseTest extends TestCase
         $encoded = json_encode($data);
 
         $response = new Response([], $encoded);
-
-        $this->assertEquals($encoded, $response->getBody()->getContents());
-        $this->assertEquals($encoded, $response->body());
-
         $result = $response->body('json_decode');
         $this->assertEquals($data['property'], $result->property);
+        $this->assertEquals($encoded, $response->body());
+
         $this->assertEquals($encoded, $response->body);
         $this->assertTrue(isset($response->body));
     }
@@ -331,29 +328,6 @@ XML;
         $this->assertArrayHasKey('test', $result);
         $this->assertArrayHasKey('session', $result);
         $this->assertArrayHasKey('expiring', $result);
-    }
-
-    /**
-     * Test accessing cookie collection
-     *
-     * @return void
-     */
-    public function testGetCookieCollection()
-    {
-        $headers = [
-            'HTTP/1.0 200 Ok',
-            'Set-Cookie: test=value',
-            'Set-Cookie: session=123abc',
-            'Set-Cookie: expiring=soon; Expires=Wed, 09-Jun-2021 10:18:14 GMT; Path=/; HttpOnly; Secure;',
-        ];
-        $response = new Response($headers, '');
-
-        $cookies = $response->getCookieCollection();
-        $this->assertInstanceOf(CookieCollection::class, $cookies);
-        $this->assertTrue($cookies->has('test'));
-        $this->assertTrue($cookies->has('session'));
-        $this->assertTrue($cookies->has('expiring'));
-        $this->assertSame('123abc', $cookies->get('session')->getValue());
     }
 
     /**

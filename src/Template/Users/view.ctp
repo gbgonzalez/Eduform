@@ -23,7 +23,7 @@
 				<div ng-repeat="competences in dataUser.Competences">
 					<li ng-repeat="competence in competences">
 
-						<a href="/Eduform/competences/view/{{competence.id}}"> {{ competence.name }} </a>
+						<a href="/competences/view/{{competence.id}}"> {{ competence.name }} </a>
 					</li>
 				</div>
 			</ul>

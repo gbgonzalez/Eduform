@@ -32,9 +32,6 @@ class Type implements TypeInterface
      * @var array
      */
     protected static $_types = [
-        'tinyinteger' => 'Cake\Database\Type\IntegerType',
-        'smallinteger' => 'Cake\Database\Type\IntegerType',
-        'integer' => 'Cake\Database\Type\IntegerType',
         'biginteger' => 'Cake\Database\Type\IntegerType',
         'binary' => 'Cake\Database\Type\BinaryType',
         'boolean' => 'Cake\Database\Type\BoolType',
@@ -42,6 +39,7 @@ class Type implements TypeInterface
         'datetime' => 'Cake\Database\Type\DateTimeType',
         'decimal' => 'Cake\Database\Type\DecimalType',
         'float' => 'Cake\Database\Type\FloatType',
+        'integer' => 'Cake\Database\Type\IntegerType',
         'json' => 'Cake\Database\Type\JsonType',
         'string' => 'Cake\Database\Type\StringType',
         'text' => 'Cake\Database\Type\StringType',

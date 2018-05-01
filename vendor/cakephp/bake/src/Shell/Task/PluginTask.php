@@ -24,7 +24,6 @@ use Cake\Utility\Inflector;
 /**
  * The Plugin Task handles creating an empty plugin, ready to be used
  *
- * @property \Bake\Shell\Task\BakeTemplateTask $BakeTemplate
  */
 class PluginTask extends BakeTask
 {
@@ -69,9 +68,7 @@ class PluginTask extends BakeTask
 
             return false;
         }
-        $parts = explode('/', $name);
-        $plugin = implode('/', array_map([$this, '_camelize'], $parts));
-
+        $plugin = $this->_camelize($name);
         $pluginPath = $this->_pluginPath($plugin);
         if (is_dir($pluginPath)) {
             $this->out(sprintf('Plugin: %s already exists, no action taken', $plugin));

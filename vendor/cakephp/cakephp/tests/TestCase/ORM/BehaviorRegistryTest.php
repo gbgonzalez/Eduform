@@ -34,7 +34,7 @@ class BehaviorRegistryTest extends TestCase
     {
         parent::setUp();
         $this->Table = new Table(['table' => 'articles']);
-        $this->EventManager = $this->Table->getEventManager();
+        $this->EventManager = $this->Table->eventManager();
         $this->Behaviors = new BehaviorRegistry($this->Table);
         static::setAppNamespace();
     }
@@ -362,32 +362,6 @@ class BehaviorRegistryTest extends TestCase
     }
 
     /**
-     * Test that unloading a none existing behavior triggers an error.
-     *
-     * @return void
-     */
-    public function testUnload()
-    {
-        $this->Behaviors->load('Sluggable');
-        $this->Behaviors->unload('Sluggable');
-
-        $this->assertEmpty($this->Behaviors->loaded());
-        $this->assertCount(0, $this->EventManager->listeners('Model.beforeFind'));
-    }
-
-    /**
-     * Test that unloading a none existing behavior triggers an error.
-     *
-     * @expectedException \Cake\ORM\Exception\MissingBehaviorException
-     * @expectedExceptionMessage Behavior class FooBehavior could not be found.
-     * @return void
-     */
-    public function testUnloadUnknown()
-    {
-        $this->Behaviors->unload('Foo');
-    }
-
-    /**
      * Test setTable() method.
      *
      * @return void
@@ -395,7 +369,7 @@ class BehaviorRegistryTest extends TestCase
     public function testSetTable()
     {
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $table->expects($this->once())->method('getEventManager');
+        $table->expects($this->once())->method('eventManager');
 
         $this->Behaviors->setTable($table);
     }

@@ -115,8 +115,9 @@ $cakeDescription = 'Bienvenido a la plataforma educativa ';
           </p>
         </div>
       </div>
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
 
-        <?= $this->Html->script('//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js', array('inline' => false)); ?>
+
         <?= $this->Html->script('bootstrap.min.js') ?>
 
     </footer>

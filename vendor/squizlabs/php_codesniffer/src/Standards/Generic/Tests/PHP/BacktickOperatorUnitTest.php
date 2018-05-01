@@ -27,6 +27,8 @@ class BacktickOperatorUnitTest extends AbstractSniffUnitTest
     {
         return array(2 => 2);
 
+        return $errors;
+
     }//end getErrorList()
 
 

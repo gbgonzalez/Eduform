@@ -218,11 +218,8 @@ class ConsoleIOTest extends TestCase
             ->will($this->returnValue($helperMock))
         ;
 
-        $validator = function ($value) {
-             return true;
-        };
         $consoleIO = new ConsoleIO($inputMock, $outputMock, $setMock);
-        $consoleIO->askAndValidate('Why?', $validator, 10, 'default');
+        $consoleIO->askAndValidate('Why?', 'validator', 10, 'default');
     }
 
     public function testSelect()

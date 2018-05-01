@@ -14,6 +14,7 @@
  */
 namespace TestPlugin\Log\Engine;
 
+use Cake\Log\LogInterface;
 use Psr\Log\AbstractLogger;
 
 /**

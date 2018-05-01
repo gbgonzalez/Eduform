@@ -16,8 +16,6 @@
 namespace PHP_CodeSniffer\Sniffs;
 
 use PHP_CodeSniffer\Files\File;
-use PHP_CodeSniffer\Util\Tokens;
-use PHP_CodeSniffer\Exceptions\RuntimeException;
 
 abstract class AbstractVariableSniff extends AbstractScopeSniff
 {
@@ -49,7 +47,12 @@ abstract class AbstractVariableSniff extends AbstractScopeSniff
      */
     public function __construct()
     {
-        $scopes = Tokens::$ooScopeTokens;
+        $scopes = array(
+                   T_CLASS,
+                   T_ANON_CLASS,
+                   T_TRAIT,
+                   T_INTERFACE,
+                  );
 
         $listen = array(
                    T_FUNCTION,

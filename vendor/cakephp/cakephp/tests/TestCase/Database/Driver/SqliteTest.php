@@ -43,7 +43,6 @@ class SqliteTest extends TestCase
             'password' => null,
             'flags' => [],
             'init' => [],
-            'mask' => 420,
         ];
 
         $expected['flags'] += [
@@ -69,8 +68,7 @@ class SqliteTest extends TestCase
             'database' => 'bar.db',
             'flags' => [1 => true, 2 => false],
             'encoding' => 'a-language',
-            'init' => ['Execute this', 'this too'],
-            'mask' => 0666
+            'init' => ['Execute this', 'this too']
         ];
         $driver = $this->getMockBuilder('Cake\Database\driver\Sqlite')
             ->setMethods(['_connect', 'connection'])

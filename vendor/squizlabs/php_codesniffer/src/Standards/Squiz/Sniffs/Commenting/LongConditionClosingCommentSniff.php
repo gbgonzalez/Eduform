@@ -142,9 +142,7 @@ class LongConditionClosingCommentSniff implements Sniff
             // TRY statements need to check until the end of all CATCH statements.
             do {
                 $nextToken = $phpcsFile->findNext(T_WHITESPACE, ($stackPtr + 1), null, true);
-                if ($tokens[$nextToken]['code'] === T_CATCH
-                    || $tokens[$nextToken]['code'] === T_FINALLY
-                ) {
+                if ($tokens[$nextToken]['code'] === T_CATCH) {
                     // The end brace becomes the CATCH's end brace.
                     $stackPtr = $tokens[$nextToken]['scope_closer'];
                     $endBrace = $tokens[$stackPtr];

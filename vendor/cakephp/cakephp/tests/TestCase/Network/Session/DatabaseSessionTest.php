@@ -17,6 +17,7 @@
 namespace Cake\Test\TestCase\Network\Session;
 
 use Cake\Datasource\ConnectionManager;
+use Cake\Network\Session;
 use Cake\Network\Session\DatabaseSession;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
@@ -152,8 +153,8 @@ class DatabaseSessionTest extends TestCase
     {
         TableRegistry::clear();
 
+        ini_set('session.gc_maxlifetime', '0');
         $storage = new DatabaseSession();
-        $storage->setTimeout(0);
         $storage->write('foo', 'Some value');
 
         sleep(1);

@@ -17,7 +17,6 @@ namespace Cake\Http;
 use ArrayAccess;
 use BadMethodCallException;
 use Cake\Core\Configure;
-use Cake\Http\Cookie\CookieCollection;
 use Cake\Network\Exception\MethodNotAllowedException;
 use Cake\Network\Session;
 use Cake\Utility\Hash;
@@ -351,7 +350,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      */
     protected function _processPost($data)
     {
-        $method = $this->getEnv('REQUEST_METHOD');
+        $method = $this->env('REQUEST_METHOD');
         $override = false;
 
         if (in_array($method, ['PUT', 'DELETE', 'PATCH']) &&
@@ -505,22 +504,12 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      */
     public function contentType()
     {
-        $type = $this->getEnv('CONTENT_TYPE');
+        $type = $this->env('CONTENT_TYPE');
         if ($type) {
             return $type;
         }
 
-        return $this->getEnv('HTTP_CONTENT_TYPE');
-    }
-
-    /**
-     * Returns the instance of the Session object for this request
-     *
-     * @return \Cake\Network\Session
-     */
-    public function getSession()
-    {
-        return $this->session;
+        return $this->env('HTTP_CONTENT_TYPE');
     }
 
     /**
@@ -529,7 +518,6 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      * If a session object is passed as first argument it will be set as
      * the session to use for this request
      *
-     * @deprecated 3.5.0 Use getSession() instead. The setter part will be removed.
      * @param \Cake\Network\Session|null $session the session object to use
      * @return \Cake\Network\Session
      */
@@ -549,13 +537,12 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      */
     public function clientIp()
     {
-        if ($this->trustProxy && $this->getEnv('HTTP_X_FORWARDED_FOR')) {
-            $addresses = explode(',', $this->getEnv('HTTP_X_FORWARDED_FOR'));
-            $ipaddr = end($addresses);
-        } elseif ($this->trustProxy && $this->getEnv('HTTP_CLIENT_IP')) {
-            $ipaddr = $this->getEnv('HTTP_CLIENT_IP');
+        if ($this->trustProxy && $this->env('HTTP_X_FORWARDED_FOR')) {
+            $ipaddr = preg_replace('/(?:,.*)/', '', $this->env('HTTP_X_FORWARDED_FOR'));
+        } elseif ($this->trustProxy && $this->env('HTTP_CLIENT_IP')) {
+            $ipaddr = $this->env('HTTP_CLIENT_IP');
         } else {
-            $ipaddr = $this->getEnv('REMOTE_ADDR');
+            $ipaddr = $this->env('REMOTE_ADDR');
         }
 
         return trim($ipaddr);
@@ -570,7 +557,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      */
     public function referer($local = false)
     {
-        $ref = $this->getEnv('HTTP_REFERER');
+        $ref = $this->env('HTTP_REFERER');
 
         $base = Configure::read('App.fullBaseUrl') . $this->webroot;
         if (!empty($ref) && !empty($base)) {
@@ -639,7 +626,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      * @param string $name The property being accessed.
      * @return bool Existence
      * @deprecated 3.4.0 Accessing routing parameters through __isset will removed in 4.0.0.
-     *   Use getParam() instead.
+     *   Use param() instead.
      */
     public function __isset($name)
     {
@@ -730,7 +717,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      */
     protected function _acceptHeaderDetector($detect)
     {
-        $acceptHeaders = explode(',', $this->getEnv('HTTP_ACCEPT'));
+        $acceptHeaders = explode(',', $this->env('HTTP_ACCEPT'));
         foreach ($detect['accept'] as $header) {
             if (in_array($header, $acceptHeaders)) {
                 return true;
@@ -749,7 +736,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
     protected function _headerDetector($detect)
     {
         foreach ($detect['header'] as $header => $value) {
-            $header = $this->getEnv('http_' . $header);
+            $header = $this->env('http_' . $header);
             if ($header !== null) {
                 if (!is_string($value) && !is_bool($value) && is_callable($value)) {
                     return call_user_func($value, $header);
@@ -793,15 +780,15 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
     {
         if (isset($detect['env'])) {
             if (isset($detect['value'])) {
-                return $this->getEnv($detect['env']) == $detect['value'];
+                return $this->env($detect['env']) == $detect['value'];
             }
             if (isset($detect['pattern'])) {
-                return (bool)preg_match($detect['pattern'], $this->getEnv($detect['env']));
+                return (bool)preg_match($detect['pattern'], $this->env($detect['env']));
             }
             if (isset($detect['options'])) {
                 $pattern = '/' . implode('|', $detect['options']) . '/i';
 
-                return (bool)preg_match($pattern, $this->getEnv($detect['env']));
+                return (bool)preg_match($pattern, $this->env($detect['env']));
             }
         }
 
@@ -896,7 +883,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
 
     /**
      * Add parameters to the request's parsed parameter set. This will overwrite any existing parameters.
-     * This modifies the parameters available through `$request->getParam()`.
+     * This modifies the parameters available through `$request->params`.
      *
      * @param array $params Array of parameters to merge in
      * @return $this The current object, you can chain this method.
@@ -971,13 +958,13 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      *
      * @param string $name Name of the header you want.
      * @return string|null Either null on no header being set or the value of the header.
-     * @deprecated 4.0.0 The automatic fallback to env() will be removed in 4.0.0, see getHeader()
+     * @deprecated 4.0.0 The automatic fallback to env() will be removed in 4.0.0
      */
     public function header($name)
     {
         $name = $this->normalizeHeaderName($name);
 
-        return $this->getEnv($name);
+        return $this->env($name);
     }
 
     /**
@@ -1128,7 +1115,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      */
     public function method()
     {
-        return $this->getEnv('REQUEST_METHOD');
+        return $this->env('REQUEST_METHOD');
     }
 
     /**
@@ -1147,7 +1134,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      */
     public function getMethod()
     {
-        return $this->getEnv('REQUEST_METHOD');
+        return $this->env('REQUEST_METHOD');
     }
 
     /**
@@ -1222,11 +1209,11 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      */
     public function host()
     {
-        if ($this->trustProxy && $this->getEnv('HTTP_X_FORWARDED_HOST')) {
-            return $this->getEnv('HTTP_X_FORWARDED_HOST');
+        if ($this->trustProxy && $this->env('HTTP_X_FORWARDED_HOST')) {
+            return $this->env('HTTP_X_FORWARDED_HOST');
         }
 
-        return $this->getEnv('HTTP_HOST');
+        return $this->env('HTTP_HOST');
     }
 
     /**
@@ -1236,11 +1223,11 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      */
     public function port()
     {
-        if ($this->trustProxy && $this->getEnv('HTTP_X_FORWARDED_PORT')) {
-            return $this->getEnv('HTTP_X_FORWARDED_PORT');
+        if ($this->trustProxy && $this->env('HTTP_X_FORWARDED_PORT')) {
+            return $this->env('HTTP_X_FORWARDED_PORT');
         }
 
-        return $this->getEnv('SERVER_PORT');
+        return $this->env('SERVER_PORT');
     }
 
     /**
@@ -1252,11 +1239,11 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      */
     public function scheme()
     {
-        if ($this->trustProxy && $this->getEnv('HTTP_X_FORWARDED_PROTO')) {
-            return $this->getEnv('HTTP_X_FORWARDED_PROTO');
+        if ($this->trustProxy && $this->env('HTTP_X_FORWARDED_PROTO')) {
+            return $this->env('HTTP_X_FORWARDED_PROTO');
         }
 
-        return $this->getEnv('HTTPS') ? 'https' : 'http';
+        return $this->env('HTTPS') ? 'https' : 'http';
     }
 
     /**
@@ -1618,45 +1605,6 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
     }
 
     /**
-     * Get a cookie collection based on the request's cookies
-     *
-     * The CookieCollection lets you interact with request cookies using
-     * `\Cake\Http\Cookie\Cookie` objects and can make converting request cookies
-     * into response cookies easier.
-     *
-     * This method will create a new cookie collection each time it is called.
-     * This is an optimization that allows fewer objects to be allocated until
-     * the more complex CookieCollection is needed. In general you should prefer
-     * `getCookie()` and `getCookieParams()` over this method. Using a CookieCollection
-     * is ideal if your cookies contain complex JSON encoded data.
-     *
-     * @return \Cake\Http\Cookie\CookieCollection
-     */
-    public function getCookieCollection()
-    {
-        return CookieCollection::createFromServerRequest($this);
-    }
-
-    /**
-     * Replace the cookies in the request with those contained in
-     * the provided CookieCollection.
-     *
-     * @param \Cake\Http\Cookie\CookieCollection $cookies The cookie collection
-     * @return static
-     */
-    public function withCookieCollection(CookieCollection $cookies)
-    {
-        $new = clone $this;
-        $values = [];
-        foreach ($cookies as $cookie) {
-            $values[$cookie->getName()] = $cookie->getValue();
-        }
-        $new->cookies = $values;
-
-        return $new;
-    }
-
-    /**
      * Get all the cookie data from the request.
      *
      * @return array An array of cookie data.
@@ -1723,7 +1671,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
         }
 
         // Lazily populate this data as it is generally not used.
-        preg_match('/^HTTP\/([\d.]+)$/', $this->getEnv('SERVER_PROTOCOL'), $match);
+        preg_match('/^HTTP\/([\d.]+)$/', $this->env('SERVER_PROTOCOL'), $match);
         $protocol = '1.1';
         if (isset($match[1])) {
             $protocol = $match[1];
@@ -1754,48 +1702,9 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
     }
 
     /**
-     * Get a value from the request's environment data.
-     * Fallback to using env() if the key is not set in the $environment property.
-     *
-     * @param string $key The key you want to read from.
-     * @param string|null $default Default value when trying to retrieve an environment
-     *   variable's value that does not exist.
-     * @return string|null Either the environment value, or null if the value doesn't exist.
-     */
-    public function getEnv($key, $default = null)
-    {
-        $key = strtoupper($key);
-        if (!array_key_exists($key, $this->_environment)) {
-            $this->_environment[$key] = env($key);
-        }
-
-        return $this->_environment[$key] !== null ? $this->_environment[$key] : $default;
-    }
-
-    /**
-     * Update the request with a new environment data element.
-     *
-     * Returns an updated request object. This method returns
-     * a *new* request object and does not mutate the request in-place.
-     *
-     * @param string $key The key you want to write to.
-     * @param string $value Value to set
-     * @return static
-     */
-    public function withEnv($key, $value)
-    {
-        $new = clone $this;
-        $new->_environment[$key] = $value;
-        $new->clearDetectorCache();
-
-        return $new;
-    }
-
-    /**
      * Get/Set value from the request's environment data.
      * Fallback to using env() if key not set in $environment property.
      *
-     * @deprecated 3.5.0 Use getEnv()/withEnv() instead.
      * @param string $key The key you want to read/write from/to.
      * @param string|null $value Value to set. Default null.
      * @param string|null $default Default value when trying to retrieve an environment
@@ -2215,7 +2124,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      * @param string $name Name of the key being written
      * @param mixed $value The value being written.
      * @return void
-     * @deprecated 3.4.0 The ArrayAccess methods will be removed in 4.0.0. Use withParam() instead.
+     * @deprecated 3.4.0 The ArrayAccess methods will be removed in 4.0.0. Use withParam() or param() instead.
      */
     public function offsetSet($name, $value)
     {
@@ -2227,7 +2136,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      *
      * @param string $name thing to check.
      * @return bool
-     * @deprecated 3.4.0 The ArrayAccess methods will be removed in 4.0.0. Use getParam() instead.
+     * @deprecated 3.4.0 The ArrayAccess methods will be removed in 4.0.0. Use getParam() or param() instead.
      */
     public function offsetExists($name)
     {
@@ -2243,7 +2152,7 @@ class ServerRequest implements ArrayAccess, ServerRequestInterface
      *
      * @param string $name Name to unset.
      * @return void
-     * @deprecated 3.4.0 The ArrayAccess methods will be removed in 4.0.0. Use withParam() instead.
+     * @deprecated 3.4.0 The ArrayAccess methods will be removed in 4.0.0. Use withParam() or param() instead.
      */
     public function offsetUnset($name)
     {

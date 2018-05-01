@@ -198,9 +198,6 @@ class UrlHelperTest extends TestCase
         $result = $this->Helper->assetUrl('foo.jpg?one=two&three=four');
         $this->assertEquals('foo.jpg?one=two&amp;three=four', $result);
 
-        $result = $this->Helper->assetUrl('x:"><script>alert(1)</script>');
-        $this->assertEquals('x:&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;', $result);
-
         $result = $this->Helper->assetUrl('dir/big+tall/image', ['ext' => '.jpg']);
         $this->assertEquals('dir/big%2Btall/image.jpg', $result);
     }
@@ -269,13 +266,13 @@ class UrlHelperTest extends TestCase
         $this->assertRegExp('#/test_plugin/css/test_plugin_asset.css\?[0-9]+$#', $result, 'Missing timestamp plugin');
 
         $result = $this->Helper->assetTimestamp('/test_plugin/css/i_dont_exist.css');
-        $this->assertRegExp('#/test_plugin/css/i_dont_exist.css$#', $result, 'No error on missing file');
+        $this->assertRegExp('#/test_plugin/css/i_dont_exist.css\?$#', $result, 'No error on missing file');
 
         $result = $this->Helper->assetTimestamp('/test_theme/js/theme.js');
         $this->assertRegExp('#/test_theme/js/theme.js\?[0-9]+$#', $result, 'Missing timestamp theme');
 
         $result = $this->Helper->assetTimestamp('/test_theme/js/non_existant.js');
-        $this->assertRegExp('#/test_theme/js/non_existant.js$#', $result, 'No error on missing file');
+        $this->assertRegExp('#/test_theme/js/non_existant.js\?$#', $result, 'No error on missing file');
     }
 
     /**

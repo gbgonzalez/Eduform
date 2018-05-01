@@ -39,7 +39,7 @@ class TableRegistryTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->_originalLocator = TableRegistry::getTableLocator();
+        $this->_originalLocator = TableRegistry::locator();
     }
 
     /**
@@ -50,7 +50,7 @@ class TableRegistryTest extends TestCase
     public function tearDown()
     {
         parent::tearDown();
-        TableRegistry::setTableLocator($this->_originalLocator);
+        TableRegistry::locator($this->_originalLocator);
     }
 
     /**
@@ -61,7 +61,7 @@ class TableRegistryTest extends TestCase
     protected function _setMockLocator()
     {
         $locator = $this->getMockBuilder('Cake\ORM\Locator\LocatorInterface')->getMock();
-        TableRegistry::setTableLocator($locator);
+        TableRegistry::locator($locator);
 
         return $locator;
     }
@@ -75,32 +75,9 @@ class TableRegistryTest extends TestCase
     {
         $this->assertInstanceOf('Cake\ORM\Locator\LocatorInterface', TableRegistry::locator());
 
-        $locator = $this->getMockBuilder('Cake\ORM\Locator\LocatorInterface')->getMock();
-        TableRegistry::locator($locator);
-
-        $this->assertSame($locator, TableRegistry::locator());
-    }
-
-    /**
-     * Test testSetLocator() method.
-     *
-     * @return void
-     */
-    public function testSetLocator()
-    {
         $locator = $this->_setMockLocator();
 
-        $this->assertSame($locator, TableRegistry::getTableLocator());
-    }
-
-    /**
-     * Test testSetLocator() method.
-     *
-     * @return void
-     */
-    public function testGetLocator()
-    {
-        $this->assertInstanceOf('Cake\ORM\Locator\LocatorInterface', TableRegistry::getTableLocator());
+        $this->assertSame($locator, TableRegistry::locator());
     }
 
     /**
@@ -110,7 +87,7 @@ class TableRegistryTest extends TestCase
      */
     public function testLocatorDefault()
     {
-        $locator = TableRegistry::getTableLocator();
+        $locator = TableRegistry::locator();
         $this->assertInstanceOf('Cake\ORM\Locator\TableLocator', $locator);
     }
 

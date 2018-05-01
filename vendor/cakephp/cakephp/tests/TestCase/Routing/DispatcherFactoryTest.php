@@ -121,16 +121,12 @@ class DispatcherFactoryTest extends TestCase
         $response = $this->getMockBuilder('Cake\Http\Response')
             ->setMethods(['send'])
             ->getMock();
-
-        $response->expects($this->once())
-            ->method('send')
-            ->will($this->returnSelf());
-
         DispatcherFactory::add('ControllerFactory');
         DispatcherFactory::add('Append');
 
         $dispatcher = DispatcherFactory::create();
         $result = $dispatcher->dispatch($url, $response);
-        $this->assertEquals('posts index appended content', $result->body());
+        $this->assertNull($result);
+        $this->assertEquals('posts index appended content', $response->body());
     }
 }

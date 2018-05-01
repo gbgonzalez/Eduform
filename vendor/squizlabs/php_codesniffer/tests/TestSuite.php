@@ -9,22 +9,19 @@
 
 namespace PHP_CodeSniffer\Tests;
 
-use PHPUnit\Framework\TestSuite as PHPUnit_TestSuite;
-use PHPUnit\Framework\TestResult;
-
-class TestSuite extends PHPUnit_TestSuite
+class TestSuite extends \PHPUnit_Framework_TestSuite
 {
 
 
     /**
      * Runs the tests and collects their result in a TestResult.
      *
-     * @param \PHPUnit\Framework\TestResult $result A test result.
+     * @param \PHPUnit_Framework_TestResult $result A test result.
      * @param mixed                         $filter The filter passed to each test.
      *
-     * @return \PHPUnit\Framework\TestResult
+     * @return \PHPUnit_Framework_TestResult
      */
-    public function run(TestResult $result=null, $filter=false)
+    public function run(\PHPUnit_Framework_TestResult $result=null, $filter=false)
     {
         $result = parent::run($result, $filter);
 

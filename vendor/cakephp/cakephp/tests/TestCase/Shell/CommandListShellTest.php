@@ -14,15 +14,16 @@
  */
 namespace Cake\Test\TestCase\Shell;
 
-use Cake\Console\Shell;
+use Cake\Console\ConsoleIo;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\TestSuite\Stub\ConsoleOutput;
+use Cake\TestSuite\TestCase;
 
 /**
  * CommandListShellTest
  */
-class CommandListShellTest extends ConsoleIntegrationTestCase
+class CommandListShellTest extends TestCase
 {
 
     /**
@@ -34,6 +35,19 @@ class CommandListShellTest extends ConsoleIntegrationTestCase
     {
         parent::setUp();
         Plugin::load(['TestPlugin', 'TestPluginTwo']);
+
+        $this->out = new ConsoleOutput();
+        $io = new ConsoleIo($this->out);
+
+        $this->Shell = $this->getMockBuilder('Cake\Shell\CommandListShell')
+            ->setMethods(['in', 'err', '_stop', 'clear'])
+            ->setConstructorArgs([$io])
+            ->getMock();
+
+        $this->Shell->Command = $this->getMockBuilder('Cake\Shell\Task\CommandTask')
+            ->setMethods(['in', '_stop', 'err', 'clear'])
+            ->setConstructorArgs([$io])
+            ->getMock();
     }
 
     /**
@@ -44,6 +58,7 @@ class CommandListShellTest extends ConsoleIntegrationTestCase
     public function tearDown()
     {
         parent::tearDown();
+        unset($this->Shell);
         Plugin::unload();
     }
 
@@ -54,21 +69,21 @@ class CommandListShellTest extends ConsoleIntegrationTestCase
      */
     public function testMain()
     {
-        $this->exec('command_list');
+        $this->Shell->main();
+        $output = $this->out->messages();
+        $output = implode("\n", $output);
 
         $expected = "/\[.*TestPlugin.*\] example/";
-        $this->assertOutputRegExp($expected);
+        $this->assertRegExp($expected, $output);
 
         $expected = "/\[.*TestPluginTwo.*\] example, unique, welcome/";
-        $this->assertOutputRegExp($expected);
+        $this->assertRegExp($expected, $output);
 
-        $expected = "/\[.*CORE.*\] cache, help, i18n, orm_cache, plugin, routes, server/";
-        $this->assertOutputRegExp($expected);
+        $expected = "/\[.*CORE.*\] cache, i18n, orm_cache, plugin, routes, server/";
+        $this->assertRegExp($expected, $output);
 
-        $expected = "/\[.*app.*\] i18m, integration, sample/";
-        $this->assertOutputRegExp($expected);
-        $this->assertExitCode(Shell::CODE_SUCCESS);
-        $this->assertErrorEmpty();
+        $expected = "/\[.*app.*\] i18m, sample/";
+        $this->assertRegExp($expected, $output);
     }
 
     /**
@@ -80,16 +95,16 @@ class CommandListShellTest extends ConsoleIntegrationTestCase
     public function testMainAppPriority()
     {
         rename(APP . 'Shell' . DS . 'I18mShell.php', APP . 'Shell' . DS . 'I18nShell.php');
-        $this->exec('command_list');
+        $this->Shell->main();
+        $output = $this->out->messages();
+        $output = implode("\n", $output);
         rename(APP . 'Shell' . DS . 'I18nShell.php', APP . 'Shell' . DS . 'I18mShell.php');
 
-        $expected = "/\[.*CORE.*\] cache, help, orm_cache, plugin, routes, server/";
-        $this->assertOutputRegExp($expected);
+        $expected = "/\[.*CORE.*\] cache, orm_cache, plugin, routes, server/";
+        $this->assertRegExp($expected, $output);
 
-        $expected = "/\[.*app.*\] i18n, integration, sample/";
-        $this->assertOutputRegExp($expected);
-        $this->assertExitCode(Shell::CODE_SUCCESS);
-        $this->assertErrorEmpty();
+        $expected = "/\[.*app.*\] i18n, sample/";
+        $this->assertRegExp($expected, $output);
     }
 
     /**
@@ -99,18 +114,20 @@ class CommandListShellTest extends ConsoleIntegrationTestCase
      */
     public function testMainXml()
     {
-        $this->exec('command_list --xml');
+        $this->Shell->params['xml'] = true;
+        $this->Shell->main();
+
+        $output = $this->out->messages();
+        $output = implode("\n", $output);
 
         $find = '<shell name="sample" call_as="sample" provider="app" help="sample -h"';
-        $this->assertOutputContains($find);
+        $this->assertContains($find, $output);
 
         $find = '<shell name="orm_cache" call_as="orm_cache" provider="CORE" help="orm_cache -h"';
-        $this->assertOutputContains($find);
+        $this->assertContains($find, $output);
 
         $find = '<shell name="welcome" call_as="TestPluginTwo.welcome" provider="TestPluginTwo" help="TestPluginTwo.welcome -h"';
-        $this->assertOutputContains($find);
-        $this->assertExitCode(Shell::CODE_SUCCESS);
-        $this->assertErrorEmpty();
+        $this->assertContains($find, $output);
     }
 
     /**
@@ -120,10 +137,12 @@ class CommandListShellTest extends ConsoleIntegrationTestCase
      */
     public function testMainVersion()
     {
-        $this->exec('command_list --version');
+        $this->Shell->params['version'] = true;
+        $this->Shell->main();
+        $output = $this->out->messages();
+        $output = implode("\n", $output);
+
         $expected = Configure::version();
-        $this->assertOutputContains($expected);
-        $this->assertExitCode(Shell::CODE_SUCCESS);
-        $this->assertErrorEmpty();
+        $this->assertEquals($expected, $output);
     }
 }

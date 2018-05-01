@@ -190,5 +190,3 @@
 /**
  * étude des ...
  */
-
-/**doc comment */

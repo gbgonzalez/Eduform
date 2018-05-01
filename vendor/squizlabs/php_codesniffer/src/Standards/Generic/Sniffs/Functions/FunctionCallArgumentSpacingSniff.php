@@ -26,9 +26,8 @@ class FunctionCallArgumentSpacingSniff implements Sniff
     {
         $tokens = Tokens::$functionNameTokens;
 
+        // For calling closures.
         $tokens[] = T_VARIABLE;
-        $tokens[] = T_CLOSE_CURLY_BRACKET;
-        $tokens[] = T_CLOSE_PARENTHESIS;
 
         return $tokens;
 
@@ -58,13 +57,6 @@ class FunctionCallArgumentSpacingSniff implements Sniff
         $ignoreTokens[]  = T_BITWISE_AND;
         $functionKeyword = $phpcsFile->findPrevious($ignoreTokens, ($stackPtr - 1), null, true);
         if ($tokens[$functionKeyword]['code'] === T_FUNCTION || $tokens[$functionKeyword]['code'] === T_CLASS) {
-            return;
-        }
-
-        if ($tokens[$stackPtr]['code'] === T_CLOSE_CURLY_BRACKET
-            && isset($tokens[$stackPtr]['scope_condition']) === true
-        ) {
-            // Not a function call.
             return;
         }
 

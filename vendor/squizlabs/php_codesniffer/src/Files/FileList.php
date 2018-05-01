@@ -14,7 +14,6 @@ namespace PHP_CodeSniffer\Files;
 use PHP_CodeSniffer\Util;
 use PHP_CodeSniffer\Ruleset;
 use PHP_CodeSniffer\Config;
-use PHP_CodeSniffer\Exceptions\DeepExitException;
 
 class FileList implements \Iterator, \Countable
 {
@@ -78,7 +77,7 @@ class FileList implements \Iterator, \Countable
 
                 $filterClass = $this->getFilterClass();
 
-                $di       = new \RecursiveDirectoryIterator($path, (\RecursiveDirectoryIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS));
+                $di       = new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS);
                 $filter   = new $filterClass($di, $path, $config, $ruleset);
                 $iterator = new \RecursiveIteratorIterator($filter);
 
@@ -147,8 +146,8 @@ class FileList implements \Iterator, \Countable
                 // This is a path to a custom filter class.
                 $filename = realpath($filterType);
                 if ($filename === false) {
-                    $error = "ERROR: Custom filter \"$filterType\" not found".PHP_EOL;
-                    throw new DeepExitException($error, 3);
+                    echo "ERROR: Custom filter \"$filterType\" not found".PHP_EOL;
+                    exit(3);
                 }
 
                 $filterClass = \PHP_CodeSniffer\Autoload::loadFile($filename);

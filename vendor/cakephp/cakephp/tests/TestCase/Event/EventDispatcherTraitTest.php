@@ -14,6 +14,7 @@
 
 namespace Cake\Test\TestCase\Event;
 
+use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
 
@@ -50,41 +51,18 @@ class EventDispatcherTraitTest extends TestCase
     }
 
     /**
-     * testEventManager
+     * testSettingEventManager
      *
+     * @covers \Cake\Event\EventDispatcherTrait::eventManager
      * @return void
      */
-    public function testEventManager()
+    public function testSettingEventManager()
     {
         $eventManager = new EventManager();
 
         $this->subject->eventManager($eventManager);
 
         $this->assertSame($eventManager, $this->subject->eventManager());
-    }
-
-    /**
-     * testGetEventManager
-     *
-     * @return void
-     */
-    public function testGetEventManager()
-    {
-        $this->assertInstanceOf(EventManager::class, $this->subject->getEventManager());
-    }
-
-    /**
-     * testSetEventManager
-     *
-     * @return void
-     */
-    public function testSetEventManager()
-    {
-        $eventManager = new EventManager();
-
-        $this->subject->setEventManager($eventManager);
-
-        $this->assertSame($eventManager, $this->subject->getEventManager());
     }
 
     /**

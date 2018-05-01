@@ -163,8 +163,11 @@ class StreamTest extends TestCase
         $request->url('http://localhost')
             ->header([
                 'User-Agent' => 'CakePHP TestSuite',
-                'Content-Type' => 'application/json',
-                'Cookie' => 'a=b; c=do%20it'
+                'Content-Type' => 'application/json'
+            ])
+            ->cookie([
+                'testing' => 'value',
+                'utm_src' => 'awesome',
             ]);
 
         $options = [
@@ -176,10 +179,10 @@ class StreamTest extends TestCase
             'Connection: close',
             'User-Agent: CakePHP TestSuite',
             'Content-Type: application/json',
-            'Cookie: a=b; c=do%20it',
+            'Cookie: testing=value; utm_src=awesome',
         ];
         $this->assertEquals(implode("\r\n", $expected), $result['header']);
-        $this->assertSame(0, $result['max_redirects']);
+        $this->assertEquals($options['redirect'], $result['max_redirects']);
         $this->assertTrue($result['ignore_errors']);
     }
 
@@ -420,7 +423,7 @@ class StreamTest extends TestCase
     /**
      * Test that an exception is raised when timed out.
      *
-     * @expectedException \Cake\Network\Exception\HttpException
+     * @expectedException \Cake\Core\Exception\Exception
      * @expectedExceptionMessage Connection timed out http://dummy/?sleep
      * @return void
      */

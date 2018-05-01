@@ -286,13 +286,7 @@ class RemoteFilesystem
             $contentLength = !empty($http_response_header[0]) ? $this->findHeaderValue($http_response_header, 'content-length') : null;
             if ($contentLength && Platform::strlen($result) < $contentLength) {
                 // alas, this is not possible via the stream callback because STREAM_NOTIFY_COMPLETED is documented, but not implemented anywhere in PHP
-                $e = new TransportException('Content-Length mismatch, received '.Platform::strlen($result).' bytes out of the expected '.$contentLength);
-                $e->setHeaders($http_response_header);
-                $e->setStatusCode($this->findStatusCode($http_response_header));
-                $e->setResponse($result);
-                $this->io->writeError('Content-Length mismatch, received '.Platform::strlen($result).' out of '.$contentLength.' bytes: (' . base64_encode($result).')', true, IOInterface::DEBUG);
-
-                throw $e;
+                throw new TransportException('Content-Length mismatch');
             }
 
             if (PHP_VERSION_ID < 50600 && !empty($options['ssl']['peer_fingerprint'])) {
@@ -347,17 +341,6 @@ class RemoteFilesystem
             && !$this->isPublicBitBucketDownload($fileUrl)
             && substr($fileUrl, -4) === '.zip'
             && $contentType && preg_match('{^text/html\b}i', $contentType)
-        ) {
-            $result = false;
-            if ($this->retryAuthFailure) {
-                $this->promptAuthAndRetry(401);
-            }
-        }
-
-        // check for gitlab 404 when downloading archives
-        if ($statusCode === 404
-            && $this->config && in_array($originUrl, $this->config->get('gitlab-domains'), true)
-            && false !== strpos($fileUrl, 'archive.zip')
         ) {
             $result = false;
             if ($this->retryAuthFailure) {

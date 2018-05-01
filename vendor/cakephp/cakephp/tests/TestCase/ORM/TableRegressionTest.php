@@ -55,7 +55,7 @@ class TableRegressionTest extends TestCase
     public function testAfterSaveRollbackTransaction()
     {
         $table = TableRegistry::get('Authors');
-        $table->getEventManager()->on(
+        $table->eventManager()->on(
             'Model.afterSave',
             function () use ($table) {
                 $table->connection()->rollback();

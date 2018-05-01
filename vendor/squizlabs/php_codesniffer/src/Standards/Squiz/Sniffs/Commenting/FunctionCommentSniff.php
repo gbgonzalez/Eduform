@@ -138,24 +138,9 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                     // If return type is not void, there needs to be a return statement
                     // somewhere in the function that returns something.
                     if (isset($tokens[$stackPtr]['scope_closer']) === true) {
-                        $endToken = $tokens[$stackPtr]['scope_closer'];
-                        for ($returnToken = $stackPtr; $returnToken < $endToken; $returnToken++) {
-                            if ($tokens[$returnToken]['code'] === T_CLOSURE
-                                || $tokens[$returnToken]['code'] === T_ANON_CLASS
-                            ) {
-                                $returnToken = $tokens[$returnToken]['scope_closer'];
-                                continue;
-                            }
-
-                            if ($tokens[$returnToken]['code'] === T_RETURN
-                                || $tokens[$returnToken]['code'] === T_YIELD
-                                || $tokens[$returnToken]['code'] === T_YIELD_FROM
-                            ) {
-                                break;
-                            }
-                        }
-
-                        if ($returnToken === $endToken) {
+                        $endToken    = $tokens[$stackPtr]['scope_closer'];
+                        $returnToken = $phpcsFile->findNext(array(T_RETURN, T_YIELD, T_YIELD_FROM), $stackPtr, $endToken);
+                        if ($returnToken === false) {
                             $error = 'Function return type is not void, but function has no return statement';
                             $phpcsFile->addError($error, $return, 'InvalidNoReturn');
                         } else {
@@ -165,7 +150,7 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                                 $phpcsFile->addError($error, $returnToken, 'InvalidReturnNotVoid');
                             }
                         }
-                    }//end if
+                    }
                 }//end if
             }//end if
         } else {
@@ -661,10 +646,6 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
 
                     $diff      = ($param['var_space'] - $spaces);
                     $newIndent = ($param['commentLines'][$lineNum]['indent'] - $diff);
-                    if ($newIndent <= 0) {
-                        continue;
-                    }
-
                     $phpcsFile->fixer->replaceToken(
                         ($param['commentLines'][$lineNum]['token'] - 1),
                         str_repeat(' ', $newIndent)

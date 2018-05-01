@@ -143,18 +143,4 @@ class LoggingStatementTest extends TestCase
         $st->logger($logger);
         $st->execute();
     }
-
-    /**
-     * Tests setting and getting the logger
-     *
-     * @return void
-     */
-    public function testSetAndGetLogger()
-    {
-        $logger = $this->getMockBuilder('\Cake\Database\Log\QueryLogger')->getMock();
-        $st = new LoggingStatement();
-        $this->assertNull($st->getLogger());
-        $st->setLogger($logger);
-        $this->assertSame($logger, $st->getLogger());
-    }
 }

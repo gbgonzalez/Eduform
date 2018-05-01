@@ -76,7 +76,7 @@ class ConsoleLogTest extends TestCase
         $output = $this->getMockBuilder('Cake\Console\ConsoleOutput')->getMock();
 
         $output->expects($this->at(0))
-            ->method('setOutputAs')
+            ->method('outputAs')
             ->with($expected);
 
         $log = new ConsoleLog([

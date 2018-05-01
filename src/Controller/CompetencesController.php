@@ -113,12 +113,12 @@ class CompetencesController extends AppController {
 
         $connection = ConnectionManager::get('default');
         $contents = $connection->execute("
-            SELECT * FROM Contents
+            SELECT * FROM contents
             WHERE competence_id= " .$id. "");
 
         $connection = ConnectionManager::get('default');
         $userscompetences= $connection->execute("
-            SELECT * FROM UsersCompetences
+            SELECT * FROM userscompetences
             WHERE competence_id= " .$id. " AND user_id= " .$this->Auth->user()['id']. "");
         
       

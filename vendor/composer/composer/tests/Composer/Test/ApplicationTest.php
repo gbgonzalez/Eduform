@@ -36,9 +36,9 @@ class ApplicationTest extends TestCase
             ->with($this->equalTo(array('--working-dir', '-d')))
             ->will($this->returnValue(false));
 
-        $inputMock->expects($this->any())
+        $inputMock->expects($this->at($index++))
             ->method('getFirstArgument')
-            ->will($this->returnValue('show'));
+            ->will($this->returnValue('list'));
 
         $index = 0;
         $outputMock->expects($this->at($index++))
@@ -89,9 +89,9 @@ class ApplicationTest extends TestCase
             ->with($this->equalTo(array('--working-dir', '-d')))
             ->will($this->returnValue(false));
 
-        $inputMock->expects($this->any())
+        $inputMock->expects($this->at($index++))
             ->method('getFirstArgument')
-            ->will($this->returnValue('show'));
+            ->will($this->returnValue('list'));
 
         $outputMock->expects($this->never())
             ->method("writeln");

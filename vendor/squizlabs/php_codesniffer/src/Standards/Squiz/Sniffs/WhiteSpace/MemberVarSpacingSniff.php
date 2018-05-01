@@ -16,20 +16,6 @@ use PHP_CodeSniffer\Util\Tokens;
 class MemberVarSpacingSniff extends AbstractVariableSniff
 {
 
-    /**
-     * The number of blank lines between member vars.
-     *
-     * @var integer
-     */
-    public $spacing = 1;
-
-    /**
-     * The number of blank lines before the fist member var.
-     *
-     * @var integer
-     */
-    public $spacingBeforeFirst = 1;
-
 
     /**
      * Processes the function tokens within the class.
@@ -84,7 +70,7 @@ class MemberVarSpacingSniff extends AbstractVariableSniff
             }//end if
         }//end if
 
-        // There needs to be n blank lines before the var, not counting comments.
+        // There needs to be 1 blank line before the var, not counting comments.
         if ($start === $stackPtr) {
             // No comment found.
             $first = $phpcsFile->findFirstOnLine(Tokens::$emptyTokens, $start, true);
@@ -98,31 +84,15 @@ class MemberVarSpacingSniff extends AbstractVariableSniff
             $first = $phpcsFile->findNext(Tokens::$commentTokens, ($first + 1));
         }
 
-        // Determine if this is the first member var.
-        $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($first - 1), null, true);
-        if ($tokens[$prev]['code'] === T_OPEN_CURLY_BRACKET
-            && isset(Tokens::$ooScopeTokens[$tokens[$tokens[$prev]['scope_condition']]['code']]) === true
-        ) {
-            $errorMsg  = 'Expected %s blank line(s) before first member var; %s found';
-            $errorCode = 'FirstIncorrect';
-            $spacing   = (int) $this->spacingBeforeFirst;
-        } else {
-            $errorMsg  = 'Expected %s blank line(s) before member var; %s found';
-            $errorCode = 'Incorrect';
-            $spacing   = (int) $this->spacing;
-        }
-
+        $prev       = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($first - 1), null, true);
         $foundLines = ($tokens[$first]['line'] - $tokens[$prev]['line'] - 1);
-        if ($foundLines === $spacing) {
+        if ($foundLines === 1) {
             return;
         }
 
-        $data = array(
-                 $spacing,
-                 $foundLines,
-                );
-
-        $fix = $phpcsFile->addFixableError($errorMsg, $stackPtr, $errorCode, $data);
+        $error = 'Expected 1 blank line before member var; %s found';
+        $data  = array($foundLines);
+        $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'Incorrect', $data);
         if ($fix === true) {
             $phpcsFile->fixer->beginChangeset();
             for ($i = ($prev + 1); $i < $first; $i++) {
@@ -131,10 +101,7 @@ class MemberVarSpacingSniff extends AbstractVariableSniff
                 }
 
                 if ($tokens[$i]['line'] === $tokens[$first]['line']) {
-                    for ($x = 1; $x <= $spacing; $x++) {
-                        $phpcsFile->fixer->addNewlineBefore($i);
-                    }
-
+                    $phpcsFile->fixer->addNewline(($i - 1));
                     break;
                 }
 

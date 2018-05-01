@@ -16,6 +16,7 @@ namespace Cake\Test\TestCase\Error;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Error;
 use Cake\Error\ErrorHandler;
 use Cake\Error\PHP7ErrorException;
 use Cake\Http\ServerRequest;

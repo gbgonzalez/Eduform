@@ -132,7 +132,8 @@ class QuestionHelper extends Helper
      *
      * @return bool|mixed|null|string
      *
-     * @throws RuntimeException In case the fallback is deactivated and the response cannot be hidden
+     * @throws \Exception
+     * @throws \RuntimeException
      */
     private function doAsk(OutputInterface $output, Question $question)
     {
@@ -146,7 +147,7 @@ class QuestionHelper extends Helper
             if ($question->isHidden()) {
                 try {
                     $ret = trim($this->getHiddenResponse($output, $inputStream));
-                } catch (RuntimeException $e) {
+                } catch (\RuntimeException $e) {
                     if (!$question->isHiddenFallback()) {
                         throw $e;
                     }
@@ -256,7 +257,7 @@ class QuestionHelper extends Helper
                     $output->write("\033[1D");
                 }
 
-                if (0 === $i) {
+                if ($i === 0) {
                     $ofs = -1;
                     $matches = $autocomplete;
                     $numMatches = count($matches);
@@ -386,7 +387,7 @@ class QuestionHelper extends Helper
         }
 
         if (false !== $shell = $this->getShell()) {
-            $readCmd = 'csh' === $shell ? 'set mypassword = $<' : 'read -r mypassword';
+            $readCmd = $shell === 'csh' ? 'set mypassword = $<' : 'read -r mypassword';
             $command = sprintf("/usr/bin/env %s -c 'stty -echo; %s; stty echo; echo \$mypassword'", $shell, $readCmd);
             $value = rtrim(shell_exec($command));
             $output->writeln('');
@@ -468,6 +469,6 @@ class QuestionHelper extends Helper
 
         exec('stty 2>&1', $output, $exitcode);
 
-        return self::$stty = 0 === $exitcode;
+        return self::$stty = $exitcode === 0;
     }
 }

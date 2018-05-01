@@ -71,7 +71,9 @@ class ChainMessagesLoader
                 ));
             }
 
-            return $package;
+            if (count($package->getMessages())) {
+                return $package;
+            }
         }
 
         return new Package();

@@ -16,7 +16,6 @@ namespace Cake\Error\Middleware;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
-use Cake\Core\Exception\Exception as CakeException;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Error\ExceptionRenderer;
 use Cake\Log\Log;
@@ -27,8 +26,6 @@ use Exception;
  *
  * Traps exceptions and converts them into HTML or content-type appropriate
  * error pages using the CakePHP ExceptionRenderer.
- *
- * @mixin \Cake\Core\InstanceConfigTrait
  */
 class ErrorHandlerMiddleware
 {
@@ -93,7 +90,7 @@ class ErrorHandlerMiddleware
     {
         try {
             return $next($request, $response);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->handleException($e, $request, $response);
         }
     }
@@ -114,7 +111,7 @@ class ErrorHandlerMiddleware
             $this->logException($request, $exception);
 
             return $res;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logException($request, $e);
 
             $body = $response->getBody();
@@ -196,7 +193,7 @@ class ErrorHandlerMiddleware
         );
         $debug = Configure::read('debug');
 
-        if ($debug && $exception instanceof CakeException) {
+        if ($debug && method_exists($exception, 'getAttributes')) {
             $attributes = $exception->getAttributes();
             if ($attributes) {
                 $message .= "\nException Attributes: " . var_export($exception->getAttributes(), true);

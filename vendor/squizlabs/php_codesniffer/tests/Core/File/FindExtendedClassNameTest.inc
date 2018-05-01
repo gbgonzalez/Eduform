@@ -16,9 +16,3 @@ class testFECNNonExtendedClass {}
 
 /* testInterface */
 interface testFECNInterface {}
-
-/* testInterfaceThatExtendsInterface */
-interface testInterfaceThatExtendsInterface extends testFECNInterface{}
-
-/* testInterfaceThatExtendsFQCNInterface */
-interface testInterfaceThatExtendsFQCNInterface extends \PHP_CodeSniffer\Tests\Core\File\testFECNInterface{}

@@ -101,12 +101,13 @@ class MessagesFileLoader
      * Loads the translation file and parses it. Returns an instance of a translations
      * package containing the messages loaded from the file.
      *
-     * @return \Aura\Intl\Package|false
+     * @return \Aura\Intl\Package
      * @throws \RuntimeException if no file parser class could be found for the specified
      * file extension.
      */
     public function __invoke()
     {
+        $package = new Package('default');
         $folders = $this->translationsFolders();
         $ext = $this->_extension;
         $file = false;
@@ -125,7 +126,7 @@ class MessagesFileLoader
         }
 
         if (!$file) {
-            return false;
+            return $package;
         }
 
         $name = ucfirst($ext);
@@ -136,7 +137,6 @@ class MessagesFileLoader
         }
 
         $messages = (new $class)->parse($file);
-        $package = new Package('default');
         $package->setMessages($messages);
 
         return $package;

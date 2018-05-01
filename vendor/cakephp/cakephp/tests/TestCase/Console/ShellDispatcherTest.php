@@ -103,7 +103,6 @@ class ShellDispatcherTest extends TestCase
     public function testAddShortPluginAlias()
     {
         $expected = [
-            'Company' => 'Company/TestPluginThree.company',
             'Example' => 'TestPlugin.example'
         ];
         $result = $this->dispatcher->addShortPluginAliases();
@@ -111,7 +110,6 @@ class ShellDispatcherTest extends TestCase
 
         ShellDispatcher::alias('Example', 'SomeOther.PluginsShell');
         $expected = [
-            'Company' => 'Company/TestPluginThree.company',
             'Example' => 'SomeOther.PluginsShell'
         ];
         $result = $this->dispatcher->addShortPluginAliases();

@@ -117,24 +117,9 @@ class ControlStructureSpacingSniff implements Sniff
         $scopeCloser = $tokens[$stackPtr]['scope_closer'];
 
         for ($firstContent = ($scopeOpener + 1); $firstContent < $phpcsFile->numTokens; $firstContent++) {
-            $code = $tokens[$firstContent]['code'];
-
-            if ($code === T_WHITESPACE
-                || ($code === T_INLINE_HTML
-                && trim($tokens[$firstContent]['content']) === '')
-            ) {
-                continue;
+            if ($tokens[$firstContent]['code'] !== T_WHITESPACE) {
+                break;
             }
-
-            // Skip all empty tokens on the same line as the opener.
-            if ($tokens[$firstContent]['line'] === $tokens[$scopeOpener]['line']
-                && (isset(Tokens::$emptyTokens[$code]) === true
-                || $code === T_CLOSE_TAG)
-            ) {
-                continue;
-            }
-
-            break;
         }
 
         // We ignore spacing for some structures that tend to have their own rules.
@@ -159,14 +144,11 @@ class ControlStructureSpacingSniff implements Sniff
                 $phpcsFile->fixer->beginChangeset();
                 $i = ($scopeOpener + 1);
                 while ($tokens[$i]['line'] !== $tokens[$firstContent]['line']) {
-                    // Start removing content from the line after the opener.
-                    if ($tokens[$i]['line'] !== $tokens[$scopeOpener]['line']) {
-                        $phpcsFile->fixer->replaceToken($i, '');
-                    }
-
+                    $phpcsFile->fixer->replaceToken($i, '');
                     $i++;
                 }
 
+                $phpcsFile->fixer->addNewline($scopeOpener);
                 $phpcsFile->fixer->endChangeset();
             }
         } else {
