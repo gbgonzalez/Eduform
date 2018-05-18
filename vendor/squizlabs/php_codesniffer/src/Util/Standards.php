@@ -261,18 +261,10 @@ class Standards
      */
     public static function getInstalledStandardPath($standard)
     {
-        if (strpos($standard, '.') !== false) {
-            return null;
-        }
-
         $installedPaths = self::getInstalledStandardPaths();
         foreach ($installedPaths as $installedPath) {
             $standardPath = $installedPath.DIRECTORY_SEPARATOR.$standard;
-            if (file_exists($standardPath) === false) {
-                if (basename($installedPath) !== $standard) {
-                    continue;
-                }
-
+            if (file_exists($standardPath) === false && basename($installedPath) === $standard) {
                 $standardPath = $installedPath;
             }
 
@@ -286,7 +278,7 @@ class Standards
                     return $path;
                 }
             }
-        }//end foreach
+        }
 
         return null;
 

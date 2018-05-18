@@ -102,8 +102,7 @@ abstract class AbstractSeed extends BaseAbstractSeed
         $seedCommand->setInput($input);
         $config = $seedCommand->getConfig();
 
-        $seedPaths = $config->getSeedPaths();
-        require_once(array_pop($seedPaths) . DS . $seeder . '.php');
+        require_once($config->getSeedPath() . DS . $seeder . '.php');
         $seeder = new $seeder();
         $seeder->setOutput($this->getOutput());
         $seeder->setAdapter($this->getAdapter());

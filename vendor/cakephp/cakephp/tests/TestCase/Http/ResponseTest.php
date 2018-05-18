@@ -16,8 +16,6 @@ namespace Cake\Test\TestCase\Http;
 
 include_once CORE_TEST_CASES . DS . 'Http' . DS . 'server_mocks.php';
 
-use Cake\Http\Cookie\Cookie;
-use Cake\Http\Cookie\CookieCollection;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Network\Exception\NotFoundException;
@@ -143,7 +141,7 @@ class ResponseTest extends TestCase
     }
 
     /**
-     * Tests the getCharset/withCharset methods
+     * Tests withCharset method
      *
      * @return void
      */
@@ -154,7 +152,6 @@ class ResponseTest extends TestCase
 
         $new = $response->withCharset('iso-8859-1');
         $this->assertNotContains('iso', $response->getHeaderLine('Content-Type'), 'Old instance not changed');
-        $this->assertSame('iso-8859-1', $new->getCharset());
 
         $this->assertEquals('text/html; charset=iso-8859-1', $new->getHeaderLine('Content-Type'));
     }
@@ -211,28 +208,6 @@ class ResponseTest extends TestCase
         $this->assertEquals('application/bat', $response->type('bat'));
 
         $this->assertFalse($response->type('wackytype'));
-    }
-
-    /**
-     * Tests the getType method
-     *
-     * @return void
-     */
-    public function testGetType()
-    {
-        $response = new Response();
-        $this->assertEquals('text/html', $response->getType());
-        $response->type('pdf');
-        $this->assertEquals('application/pdf', $response->getType());
-
-        $this->assertEquals(
-            'custom/stuff',
-            $response->withType('custom/stuff')->getType()
-        );
-        $this->assertEquals(
-            'application/json',
-            $response->withType('json')->getType()
-        );
     }
 
     /**
@@ -360,34 +335,29 @@ class ResponseTest extends TestCase
     public function testSend()
     {
         $response = $this->getMockBuilder('Cake\Http\Response')
-            ->setMethods(['_sendHeader', '_sendContent'])
+            ->setMethods(['_sendHeader', '_sendContent', '_setCookies'])
             ->getMock();
         $response->header([
             'Content-Language' => 'es',
             'WWW-Authenticate' => 'Negotiate',
             'Access-Control-Allow-Origin' => ['domain1', 'domain2'],
         ]);
-        $response->cookie(['name' => 'thing', 'value' => 'value']);
         $response->body('the response body');
-
         $response->expects($this->once())->method('_sendContent')->with('the response body');
-        $response->expects($this->at(0))
-            ->method('_sendHeader')->with('HTTP/1.1 200 OK');
+        $response->expects($this->at(0))->method('_setCookies');
         $response->expects($this->at(1))
-            ->method('_sendHeader')->with('Content-Type', 'text/html; charset=UTF-8');
+            ->method('_sendHeader')->with('HTTP/1.1 200 OK');
         $response->expects($this->at(2))
-            ->method('_sendHeader')->with('Content-Language', 'es');
+            ->method('_sendHeader')->with('Content-Type', 'text/html; charset=UTF-8');
         $response->expects($this->at(3))
-            ->method('_sendHeader')->with('WWW-Authenticate', 'Negotiate');
+            ->method('_sendHeader')->with('Content-Language', 'es');
         $response->expects($this->at(4))
-            ->method('_sendHeader')->with('Access-Control-Allow-Origin', 'domain1');
+            ->method('_sendHeader')->with('WWW-Authenticate', 'Negotiate');
         $response->expects($this->at(5))
+            ->method('_sendHeader')->with('Access-Control-Allow-Origin', 'domain1');
+        $response->expects($this->at(6))
             ->method('_sendHeader')->with('Access-Control-Allow-Origin', 'domain2');
         $response->send();
-
-        $this->assertCount(1, $GLOBALS['mockedCookies']);
-        $this->assertSame('value', $GLOBALS['mockedCookies'][0]['value']);
-        $this->assertSame('thing', $GLOBALS['mockedCookies'][0]['name']);
     }
 
     /**
@@ -1362,8 +1332,7 @@ class ResponseTest extends TestCase
             'path' => '/',
             'domain' => '',
             'secure' => false,
-            'httpOnly' => false
-        ];
+            'httpOnly' => false];
         $result = $response->cookie('CakeTestCookie[Testing]');
         $this->assertEquals($expected, $result);
 
@@ -1502,70 +1471,6 @@ class ResponseTest extends TestCase
     }
 
     /**
-     * Test withCookie() and a cookie instance
-     *
-     * @return void
-     */
-    public function testWithCookieObject()
-    {
-        $response = new Response();
-        $cookie = new Cookie('yay', 'a value');
-        $new = $response->withCookie($cookie);
-        $this->assertNull($response->getCookie('yay'), 'withCookie does not mutate');
-
-        $this->assertNotEmpty($new->getCookie('yay'));
-        $this->assertSame($cookie, $new->getCookieCollection()->get('yay'));
-    }
-
-    public function testWithExpiredCookieScalar()
-    {
-        $response = new Response();
-        $response = $response->withCookie('testing', 'abc123');
-        $this->assertEquals('abc123', $response->getCookie('testing')['value']);
-
-        $new = $response->withExpiredCookie('testing');
-
-        $this->assertNull($response->getCookie('testing')['expire']);
-        $this->assertEquals('1', $new->getCookie('testing')['expire']);
-    }
-
-    public function testWithExpiredCookieOptions()
-    {
-        $options = [
-            'name' => 'testing',
-            'value' => 'abc123',
-            'domain' => 'cakephp.org',
-            'path' => '/custompath/',
-            'secure' => true,
-            'httpOnly' => true,
-            'expire' => (string)strtotime('+14 days'),
-        ];
-
-        $response = new Response();
-        $response = $response->withCookie('testing', $options);
-        $this->assertEquals($options, $response->getCookie('testing'));
-
-        $new = $response->withExpiredCookie('testing', $options);
-
-        $this->assertEquals($options['expire'], $response->getCookie('testing')['expire']);
-        $this->assertEquals('1', $new->getCookie('testing')['expire']);
-        $this->assertEquals('', $new->getCookie('testing')['value']);
-    }
-
-    public function testWithExpiredCookieObject()
-    {
-        $response = new Response();
-        $cookie = new Cookie('yay', 'a value');
-        $response = $response->withCookie($cookie);
-        $this->assertEquals('a value', $response->getCookie('yay')['value']);
-
-        $new = $response->withExpiredCookie($cookie);
-
-        $this->assertNull($response->getCookie('yay')['expire']);
-        $this->assertEquals('1', $new->getCookie('yay')['expire']);
-    }
-
-    /**
      * Test getCookies() and array data.
      *
      * @return void
@@ -1573,6 +1478,13 @@ class ResponseTest extends TestCase
     public function testGetCookies()
     {
         $response = new Response();
+        $cookie = [
+            'name' => 'ignored key',
+            'value' => '[a,b,c]',
+            'expire' => 1000,
+            'path' => '/test',
+            'secure' => true
+        ];
         $new = $response->withCookie('testing', 'a')
             ->withCookie('test2', ['value' => 'b', 'path' => '/test', 'secure' => true]);
         $expected = [
@@ -1596,55 +1508,6 @@ class ResponseTest extends TestCase
             ]
         ];
         $this->assertEquals($expected, $new->getCookies());
-    }
-
-    /**
-     * Test getCookies() and array data.
-     *
-     * @return void
-     */
-    public function testGetCookiesArrayValue()
-    {
-        $response = new Response();
-        $cookie = (new Cookie('urmc'))
-            ->withValue(['user_id' => 1, 'token' => 'abc123'])
-            ->withHttpOnly(true);
-
-        $new = $response->withCookie($cookie);
-        $expected = [
-            'urmc' => [
-                'name' => 'urmc',
-                'value' => '{"user_id":1,"token":"abc123"}',
-                'expire' => null,
-                'path' => '',
-                'domain' => '',
-                'secure' => false,
-                'httpOnly' => true
-            ],
-        ];
-        $this->assertEquals($expected, $new->getCookies());
-    }
-
-    /**
-     * Test getCookieCollection() as array data
-     *
-     * @return void
-     */
-    public function testGetCookieCollection()
-    {
-        $response = new Response();
-        $new = $response->withCookie('testing', 'a')
-            ->withCookie('test2', ['value' => 'b', 'path' => '/test', 'secure' => true]);
-        $cookies = $response->getCookieCollection();
-        $this->assertInstanceOf(CookieCollection::class, $cookies);
-        $this->assertCount(0, $cookies, 'Original response not mutated');
-
-        $cookies = $new->getCookieCollection();
-        $this->assertInstanceOf(CookieCollection::class, $cookies);
-        $this->assertCount(2, $cookies);
-
-        $this->assertTrue($cookies->has('testing'));
-        $this->assertTrue($cookies->has('test2'));
     }
 
     /**
@@ -3147,7 +3010,7 @@ class ResponseTest extends TestCase
             ],
             'file' => null,
             'fileRange' => [],
-            'cookies' => new CookieCollection(),
+            'cookies' => [],
             'cacheDirectives' => [],
             'body' => ''
         ];

@@ -17,7 +17,6 @@ use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Migrations\TableFinderTrait;
 use Migrations\Util\UtilTrait;
 
 /**
@@ -25,10 +24,8 @@ use Migrations\Util\UtilTrait;
  */
 class MigrationSnapshotTask extends SimpleMigrationTask
 {
-
-    use SnapshotTrait;
-    use TableFinderTrait;
     use UtilTrait;
+    use SnapshotTrait;
 
     /**
      * {@inheritDoc}

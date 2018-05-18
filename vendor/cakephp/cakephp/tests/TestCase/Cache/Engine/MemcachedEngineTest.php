@@ -20,6 +20,34 @@ use Cake\TestSuite\TestCase;
 use Memcached;
 
 /**
+ * TestMemcachedEngine
+ */
+class TestMemcachedEngine extends MemcachedEngine
+{
+
+    /**
+     * public accessor to _parseServerString
+     *
+     * @param string $server
+     * @return array
+     */
+    public function parseServerString($server)
+    {
+        return $this->_parseServerString($server);
+    }
+
+    public function setMemcached($memcached)
+    {
+        $this->_Memcached = $memcached;
+    }
+
+    public function getMemcached()
+    {
+        return $this->_Memcached;
+    }
+}
+
+/**
  * MemcachedEngineTest class
  */
 class MemcachedEngineTest extends TestCase
@@ -112,23 +140,23 @@ class MemcachedEngineTest extends TestCase
      */
     public function testCompressionSetting()
     {
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $Memcached->init([
             'engine' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
             'compress' => false
         ]);
 
-        $this->assertFalse($Memcached->getOption(\Memcached::OPT_COMPRESSION));
+        $this->assertFalse($Memcached->getMemcached()->getOption(\Memcached::OPT_COMPRESSION));
 
-        $MemcachedCompressed = new MemcachedEngine();
+        $MemcachedCompressed = new TestMemcachedEngine();
         $MemcachedCompressed->init([
             'engine' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
             'compress' => true
         ]);
 
-        $this->assertTrue($MemcachedCompressed->getOption(\Memcached::OPT_COMPRESSION));
+        $this->assertTrue($MemcachedCompressed->getMemcached()->getOption(\Memcached::OPT_COMPRESSION));
     }
 
     /**
@@ -138,7 +166,7 @@ class MemcachedEngineTest extends TestCase
      */
     public function testOptionsSetting()
     {
-        $memcached = new MemcachedEngine();
+        $memcached = new TestMemcachedEngine();
         $memcached->init([
             'engine' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
@@ -146,25 +174,26 @@ class MemcachedEngineTest extends TestCase
                 Memcached::OPT_BINARY_PROTOCOL => true
             ]
         ]);
-        $this->assertEquals(1, $memcached->getOption(Memcached::OPT_BINARY_PROTOCOL));
+        $this->assertEquals(1, $memcached->getMemcached()->getOption(Memcached::OPT_BINARY_PROTOCOL));
     }
 
     /**
      * test accepts only valid serializer engine
      *
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage invalid_serializer is not a valid serializer engine for Memcached
      * @return  void
      */
     public function testInvalidSerializerSetting()
     {
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $config = [
             'className' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
             'persistent' => false,
             'serialize' => 'invalid_serializer'
         ];
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('invalid_serializer is not a valid serializer engine for Memcached');
         $Memcached->init($config);
     }
 
@@ -175,7 +204,7 @@ class MemcachedEngineTest extends TestCase
      */
     public function testPhpSerializerSetting()
     {
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $config = [
             'className' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
@@ -184,7 +213,7 @@ class MemcachedEngineTest extends TestCase
         ];
 
         $Memcached->init($config);
-        $this->assertEquals(Memcached::SERIALIZER_PHP, $Memcached->getOption(Memcached::OPT_SERIALIZER));
+        $this->assertEquals(Memcached::SERIALIZER_PHP, $Memcached->getMemcached()->getOption(Memcached::OPT_SERIALIZER));
     }
 
     /**
@@ -199,7 +228,7 @@ class MemcachedEngineTest extends TestCase
             'Memcached extension is not compiled with json support'
         );
 
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $config = [
             'engine' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
@@ -208,7 +237,7 @@ class MemcachedEngineTest extends TestCase
         ];
 
         $Memcached->init($config);
-        $this->assertEquals(Memcached::SERIALIZER_JSON, $Memcached->getOption(Memcached::OPT_SERIALIZER));
+        $this->assertEquals(Memcached::SERIALIZER_JSON, $Memcached->getMemcached()->getOption(Memcached::OPT_SERIALIZER));
     }
 
     /**
@@ -223,7 +252,7 @@ class MemcachedEngineTest extends TestCase
             'Memcached extension is not compiled with igbinary support'
         );
 
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $config = [
             'engine' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
@@ -232,7 +261,7 @@ class MemcachedEngineTest extends TestCase
         ];
 
         $Memcached->init($config);
-        $this->assertEquals(Memcached::SERIALIZER_IGBINARY, $Memcached->getOption(Memcached::OPT_SERIALIZER));
+        $this->assertEquals(Memcached::SERIALIZER_IGBINARY, $Memcached->getMemcached()->getOption(Memcached::OPT_SERIALIZER));
     }
 
     /**
@@ -247,7 +276,7 @@ class MemcachedEngineTest extends TestCase
             'Memcached extension is not compiled with msgpack support'
         );
 
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $config = [
             'engine' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
@@ -256,7 +285,7 @@ class MemcachedEngineTest extends TestCase
         ];
 
         $Memcached->init($config);
-        $this->assertEquals(Memcached::SERIALIZER_MSGPACK, $Memcached->getOption(Memcached::OPT_SERIALIZER));
+        $this->assertEquals(Memcached::SERIALIZER_MSGPACK, $Memcached->getMemcached()->getOption(Memcached::OPT_SERIALIZER));
     }
 
     /**
@@ -271,7 +300,7 @@ class MemcachedEngineTest extends TestCase
             'Memcached extension is compiled with json support'
         );
 
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $config = [
             'className' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
@@ -296,7 +325,7 @@ class MemcachedEngineTest extends TestCase
             'Memcached extension is compiled with msgpack support'
         );
 
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $config = [
             'engine' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
@@ -321,7 +350,7 @@ class MemcachedEngineTest extends TestCase
             'Memcached extension is compiled with igbinary support'
         );
 
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $config = [
             'engine' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
@@ -344,11 +373,7 @@ class MemcachedEngineTest extends TestCase
      */
     public function testSaslAuthException()
     {
-        $this->skipIf(
-            method_exists(Memcached::class, 'setSaslAuthData'),
-            'Cannot test exception when sasl has been compiled in.'
-        );
-        $MemcachedEngine = new MemcachedEngine();
+        $MemcachedEngine = new TestMemcachedEngine();
         $config = [
             'engine' => 'Memcached',
             'servers' => ['127.0.0.1:11211'],
@@ -356,8 +381,7 @@ class MemcachedEngineTest extends TestCase
             'username' => 'test',
             'password' => 'password'
         ];
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Memcached extension is not built with SASL support');
+
         $MemcachedEngine->init($config);
     }
 
@@ -417,7 +441,7 @@ class MemcachedEngineTest extends TestCase
      */
     public function testParseServerStringWithU()
     {
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $result = $Memcached->parseServerString('udomain.net:13211');
         $this->assertEquals(['udomain.net', '13211'], $result);
     }
@@ -429,7 +453,7 @@ class MemcachedEngineTest extends TestCase
      */
     public function testParseServerStringNonLatin()
     {
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $result = $Memcached->parseServerString('schülervz.net:13211');
         $this->assertEquals(['schülervz.net', '13211'], $result);
 
@@ -444,7 +468,7 @@ class MemcachedEngineTest extends TestCase
      */
     public function testParseServerStringUnix()
     {
-        $Memcached = new MemcachedEngine();
+        $Memcached = new TestMemcachedEngine();
         $result = $Memcached->parseServerString('unix:///path/to/memcachedd.sock');
         $this->assertEquals(['/path/to/memcachedd.sock', 0], $result);
     }

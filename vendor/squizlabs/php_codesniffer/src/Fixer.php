@@ -203,10 +203,7 @@ class Fixer
 
         if ($this->numFixes > 0) {
             if (PHP_CODESNIFFER_VERBOSITY > 1) {
-                if (ob_get_level() > 0) {
-                    ob_end_clean();
-                }
-
+                @ob_end_clean();
                 echo "\t*** Reached maximum number of loops with $this->numFixes violations left unfixed ***".PHP_EOL;
                 ob_start();
             }

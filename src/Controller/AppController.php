@@ -69,7 +69,7 @@ class AppController extends Controller
             ],
             'logoutRedirect' => [
                 'controller' => 'Eduform',
-                'action' => ''
+                'action' => ' '
             ]
         ]);
 
@@ -98,6 +98,6 @@ class AppController extends Controller
     {
 
         return true;
-   }
+    }
 
 }

@@ -941,7 +941,7 @@ class ViewTest extends TestCase
         $callback = function (Event $event, $file) use (&$count) {
             $count++;
         };
-        $events = $this->View->getEventManager();
+        $events = $this->View->eventManager();
         $events->attach($callback, 'View.beforeRender');
         $events->attach($callback, 'View.afterRender');
 
@@ -1048,7 +1048,7 @@ class ViewTest extends TestCase
         $View->autoLayout = false;
         $listener = new TestViewEventListenerInterface();
 
-        $View->getEventManager()->attach($listener);
+        $View->eventManager()->attach($listener);
 
         $View->render('index');
         $this->assertEquals(View::TYPE_VIEW, $listener->beforeRenderViewType);
@@ -1106,8 +1106,7 @@ class ViewTest extends TestCase
         $View = new View();
 
         $View->helpers = ['Html' => ['foo' => 'bar'], 'Form' => ['foo' => 'baz']];
-        $result = $View->loadHelpers();
-        $this->assertSame($View, $result);
+        $View->loadHelpers();
 
         $this->assertInstanceOf('Cake\View\Helper\HtmlHelper', $View->Html, 'Object type is wrong.');
         $this->assertInstanceOf('Cake\View\Helper\FormHelper', $View->Form, 'Object type is wrong.');
@@ -1156,7 +1155,7 @@ class ViewTest extends TestCase
         $View->templatePath($this->PostsController->name);
 
         $manager = $this->getMockBuilder('Cake\Event\EventManager')->getMock();
-        $View->setEventManager($manager);
+        $View->eventManager($manager);
 
         $manager->expects($this->at(0))->method('dispatch')
             ->with(
@@ -1444,12 +1443,9 @@ class ViewTest extends TestCase
      */
     public function testBlockCaptureOverwrite()
     {
-        $result = $this->View->start('test');
-        $this->assertSame($this->View, $result);
-
+        $this->View->start('test');
         echo 'Block content';
-        $result = $this->View->end();
-        $this->assertSame($this->View, $result);
+        $this->View->end();
 
         $this->View->start('test');
         echo 'New content';
@@ -1505,9 +1501,7 @@ class ViewTest extends TestCase
         echo 'Content ';
         $this->View->end();
 
-        $result = $this->View->append('test');
-        $this->assertSame($this->View, $result);
-
+        $this->View->append('test');
         echo 'appended';
         $this->View->end();
 
@@ -1522,9 +1516,7 @@ class ViewTest extends TestCase
      */
     public function testBlockSet()
     {
-        $result = $this->View->assign('test', 'Block content');
-        $this->assertSame($this->View, $result);
-
+        $this->View->assign('test', 'Block content');
         $result = $this->View->fetch('test');
         $this->assertEquals('Block content', $result);
     }
@@ -1552,9 +1544,7 @@ class ViewTest extends TestCase
         $result = $this->View->fetch('test', 'This should not be returned');
         $this->assertSame('Block content', $result);
 
-        $result = $this->View->reset('test');
-        $this->assertSame($this->View, $result);
-
+        $this->View->reset('test');
         $result = $this->View->fetch('test', 'This should not be returned');
         $this->assertSame('', $result);
     }
@@ -1679,8 +1669,7 @@ class ViewTest extends TestCase
     public function testBlockPrepend($value)
     {
         $this->View->assign('test', 'Block');
-        $result = $this->View->prepend('test', $value);
-        $this->assertSame($this->View, $result);
+        $this->View->prepend('test', $value);
 
         $result = $this->View->fetch('test');
         $this->assertEquals($value . 'Block', $result);
@@ -1709,9 +1698,7 @@ class ViewTest extends TestCase
      */
     public function testBlockAppendUndefined()
     {
-        $result = $this->View->append('test', 'Unknown');
-        $this->assertSame($this->View, $result);
-
+        $this->View->append('test', 'Unknown');
         $result = $this->View->fetch('test');
         $this->assertEquals('Unknown', $result);
     }
@@ -2008,94 +1995,6 @@ TEXT;
 
         $result = $this->View->helpers();
         $this->assertSame($result, $this->View->helpers());
-    }
-
-    /**
-     * Test getTemplatePath() and setTemplatePath().
-     *
-     * @return void
-     */
-    public function testGetSetTemplatePath()
-    {
-        $result = $this->View->setTemplatePath('foo');
-        $this->assertSame($this->View, $result);
-
-        $templatePath = $this->View->getTemplatePath();
-        $this->assertSame($templatePath, 'foo');
-    }
-
-    /**
-     * Test getLayoutPath() and setLayoutPath().
-     *
-     * @return void
-     */
-    public function testGetSetLayoutPath()
-    {
-        $result = $this->View->setLayoutPath('foo');
-        $this->assertSame($this->View, $result);
-
-        $layoutPath = $this->View->getLayoutPath();
-        $this->assertSame($layoutPath, 'foo');
-    }
-
-    /**
-     * Test isAutoLayoutEnabled() and enableAutoLayout().
-     *
-     * @return void
-     */
-    public function testAutoLayout()
-    {
-        $result = $this->View->enableAutoLayout(false);
-        $this->assertSame($this->View, $result);
-
-        $autoLayout = $this->View->isAutoLayoutEnabled();
-        $this->assertSame($autoLayout, false);
-
-        $this->View->enableAutoLayout();
-        $autoLayout = $this->View->isAutoLayoutEnabled();
-        $this->assertSame($autoLayout, true);
-    }
-
-    /**
-     * Test getTheme() and setTheme().
-     *
-     * @return void
-     */
-    public function testGetSetTheme()
-    {
-        $result = $this->View->setTheme('foo');
-        $this->assertSame($this->View, $result);
-
-        $theme = $this->View->getTheme();
-        $this->assertSame($theme, 'foo');
-    }
-
-    /**
-     * Test getTemplate() and setTemplate().
-     *
-     * @return void
-     */
-    public function testGetSetTemplate()
-    {
-        $result = $this->View->setTemplate('foo');
-        $this->assertSame($this->View, $result);
-
-        $template = $this->View->getTemplate();
-        $this->assertSame($template, 'foo');
-    }
-
-    /**
-     * Test setLayout() and getLayout().
-     *
-     * @return void
-     */
-    public function testGetSetLayout()
-    {
-        $result = $this->View->setLayout('foo');
-        $this->assertSame($this->View, $result);
-
-        $layout = $this->View->getLayout();
-        $this->assertSame($layout, 'foo');
     }
 
     /**

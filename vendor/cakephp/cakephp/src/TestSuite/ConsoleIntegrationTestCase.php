@@ -23,7 +23,7 @@ use Cake\TestSuite\Stub\ConsoleOutput;
  * A test case class intended to make integration tests of cake console commands
  * easier.
  */
-class ConsoleIntegrationTestCase extends TestCase
+abstract class ConsoleIntegrationTestCase extends TestCase
 {
     /**
      * Whether or not to use the CommandRunner
@@ -35,28 +35,28 @@ class ConsoleIntegrationTestCase extends TestCase
     /**
      * Last exit code
      *
-     * @var int
+     * @var int|null
      */
     protected $_exitCode;
 
     /**
      * Console output stub
      *
-     * @var ConsoleOutput
+     * @var \Cake\Console\ConsoleOutput|\PHPUnit_Framework_MockObject_MockObject|null
      */
     protected $_out;
 
     /**
      * Console error output stub
      *
-     * @var ConsoleOutput
+     * @var \Cake\Console\ConsoleOutput|\PHPUnit_Framework_MockObject_MockObject|null
      */
     protected $_err;
 
     /**
      * Console input mock
      *
-     * @var ConsoleInput
+     * @var \Cake\Console\ConsoleInput|\PHPUnit_Framework_MockObject_MockObject|null
      */
     protected $_in;
 
@@ -162,6 +162,18 @@ class ConsoleIntegrationTestCase extends TestCase
         $output = implode(PHP_EOL, $this->_out->messages());
         $this->assertContains($expected, $output, $message);
     }
+    /**
+     * Asserts `stdout` does not contain expected output
+     *
+     * @param string $expected Expected output
+     * @param string $message Failure message
+     * @return void
+     */
+    public function assertOutputNotContains($expected, $message = '')
+    {
+        $output = implode(PHP_EOL, $this->_out->messages());
+        $this->assertNotContains($expected, $output, $message);
+    }
 
     /**
      * Asserts `stdout` contains expected regexp
@@ -190,7 +202,7 @@ class ConsoleIntegrationTestCase extends TestCase
         }, $row);
         $cells = implode('\s+\|\s+', $row);
         $pattern = '/' . $cells . '/';
-        $this->assertOutputRegexp($pattern);
+        $this->assertOutputRegExp($pattern);
     }
 
     /**

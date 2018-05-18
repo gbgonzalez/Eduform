@@ -18,7 +18,6 @@ class DocBlockAlignmentUnitTest extends AbstractSniffUnitTest
                     7 => 1,
                     14 => 1,
                     21 => 1,
-                    30 => 1
                 ];
 
             default:

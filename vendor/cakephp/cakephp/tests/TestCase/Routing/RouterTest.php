@@ -18,8 +18,6 @@ use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
-use Cake\Routing\RouteBuilder;
-use Cake\Routing\RouteCollection;
 use Cake\Routing\Router;
 use Cake\Routing\Route\Route;
 use Cake\TestSuite\TestCase;
@@ -1818,11 +1816,11 @@ class RouterTest extends TestCase
         Router::extensions(['json']);
 
         Router::scope('/', function ($routes) {
-            $routes->setExtensions('rss');
+            $routes->extensions('rss');
             $routes->connect('/', ['controller' => 'Pages', 'action' => 'index']);
 
             $routes->scope('/api', function ($routes) {
-                $routes->setExtensions('xml');
+                $routes->extensions('xml');
                 $routes->connect('/docs', ['controller' => 'ApiDocs', 'action' => 'index']);
             });
         });
@@ -1838,7 +1836,7 @@ class RouterTest extends TestCase
     public function testResourcesInScope()
     {
         Router::scope('/api', ['prefix' => 'api'], function ($routes) {
-            $routes->setExtensions(['json']);
+            $routes->extensions(['json']);
             $routes->resources('Articles');
         });
         $url = Router::url([
@@ -2035,9 +2033,8 @@ class RouterTest extends TestCase
     {
         Router::connect('/:controller/:action/*');
 
-        $request = new ServerRequest([
-            'environment' => ['HTTP_HOST' => 'localhost']
-        ]);
+        $request = new ServerRequest();
+        $request->env('HTTP_HOST', 'localhost');
         Router::pushRequest(
             $request->addParams([
                 'plugin' => null, 'controller' => 'images', 'action' => 'index'
@@ -2068,9 +2065,9 @@ class RouterTest extends TestCase
     {
         Router::connect('/:controller/:action/*');
 
-        $request = new ServerRequest([
-            'environment' => ['HTTP_HOST' => 'localhost', 'HTTPS' => 'on']
-        ]);
+        $request = new ServerRequest();
+        $request->env('HTTP_HOST', 'localhost');
+        $request->env('HTTPS', 'on');
         Router::pushRequest(
             $request->addParams([
                 'plugin' => null,
@@ -2659,7 +2656,7 @@ class RouterTest extends TestCase
      *
      * @return void
      */
-    public function testReverseToken()
+    public function testReverse()
     {
         Router::connect('/:controller/:action/*');
         $params = [
@@ -2675,10 +2672,7 @@ class RouterTest extends TestCase
         ];
         $result = Router::reverse($params);
         $this->assertEquals('/posts/view/1', $result);
-    }
 
-    public function testReverseLocalized()
-    {
         Router::reload();
         Router::connect('/:lang/:controller/:action/*', [], ['lang' => '[a-z]{3}']);
         $params = [
@@ -2690,11 +2684,7 @@ class RouterTest extends TestCase
         ];
         $result = Router::reverse($params);
         $this->assertEquals('/eng/posts/view/1', $result);
-    }
 
-    public function testReverseArrayQuery()
-    {
-        Router::connect('/:lang/:controller/:action/*', [], ['lang' => '[a-z]{3}']);
         $params = [
             'lang' => 'eng',
             'controller' => 'posts',
@@ -2716,11 +2706,7 @@ class RouterTest extends TestCase
         ];
         $result = Router::reverse($params);
         $this->assertEquals('/eng/posts/view/1?foo=bar&baz=quu', $result);
-    }
 
-    public function testReverseCakeRequestQuery()
-    {
-        Router::connect('/:lang/:controller/:action/*', [], ['lang' => '[a-z]{3}']);
         $request = new ServerRequest('/eng/posts/view/1');
         $request->addParams([
             'lang' => 'eng',
@@ -2732,10 +2718,7 @@ class RouterTest extends TestCase
         $result = Router::reverse($request);
         $expected = '/eng/posts/view/1?test=value';
         $this->assertEquals($expected, $result);
-    }
 
-    public function testReverseFull()
-    {
         $params = [
             'lang' => 'eng',
             'controller' => 'posts',
@@ -2768,55 +2751,6 @@ class RouterTest extends TestCase
         $result = Router::reverse($request);
         $expected = '/posts/view/1.json';
         $this->assertEquals($expected, $result);
-    }
-
-    public function testReverseToArrayQuery()
-    {
-        Router::connect('/:lang/:controller/:action/*', [], ['lang' => '[a-z]{3}']);
-        $params = [
-            'lang' => 'eng',
-            'controller' => 'posts',
-            'action' => 'view',
-            'pass' => [123],
-            'url' => ['url' => 'eng/posts/view/123', 'foo' => 'bar', 'baz' => 'quu'],
-            'paging' => [],
-            'models' => [],
-        ];
-        $actual = Router::reverseToArray($params);
-        $expected = [
-            'lang' => 'eng',
-            'controller' => 'posts',
-            'action' => 'view',
-            123,
-            '?' => ['foo' => 'bar', 'baz' => 'quu'],
-        ];
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testReverseToArrayRequestQuery()
-    {
-        Router::connect('/:lang/:controller/:action/*', [], ['lang' => '[a-z]{3}']);
-        $request = new ServerRequest('/eng/posts/view/1');
-        $request->addParams([
-            'lang' => 'eng',
-            'controller' => 'posts',
-            'action' => 'view',
-            'pass' => [123],
-        ]);
-        $request->query = ['url' => 'eng/posts/view/1', 'test' => 'value'];
-        $actual = Router::reverseToArray($request);
-        $expected = [
-            'lang' => 'eng',
-            'plugin' => null,
-            'controller' => 'posts',
-            'action' => 'view',
-            123,
-            '_ext' => null,
-            '?' => [
-                'test' => 'value',
-            ],
-        ];
-        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -3016,7 +2950,6 @@ class RouterTest extends TestCase
     {
         $route1 = $this->getMockBuilder('Cake\Routing\Route\RedirectRoute')
             ->setConstructorArgs(['/mobile\''])
-            ->setMethods(['parse'])
             ->getMock();
         $class = '\\' . get_class($route1);
 
@@ -3107,12 +3040,12 @@ class RouterTest extends TestCase
     {
         Router::extensions(['json']);
         Router::scope('/', function ($routes) {
-            $this->assertEquals(['json'], $routes->getExtensions(), 'Should default to global extensions.');
-            $routes->setExtensions(['rss']);
+            $this->assertEquals(['json'], $routes->extensions(), 'Should default to global extensions.');
+            $routes->extensions(['rss']);
 
             $this->assertEquals(
                 ['rss'],
-                $routes->getExtensions(),
+                $routes->extensions(),
                 'Should include new extensions.'
             );
             $routes->connect('/home', []);
@@ -3121,13 +3054,13 @@ class RouterTest extends TestCase
         $this->assertEquals(['json', 'rss'], array_values(Router::extensions()));
 
         Router::scope('/api', function ($routes) {
-            $this->assertEquals(['json'], $routes->getExtensions(), 'Should default to global extensions.');
+            $this->assertEquals(['json'], $routes->extensions(), 'Should default to global extensions.');
 
-            $routes->setExtensions(['json', 'csv']);
+            $routes->extensions(['json', 'csv']);
             $routes->connect('/export', []);
 
             $routes->scope('/v1', function ($routes) {
-                $this->assertEquals(['json', 'csv'], $routes->getExtensions());
+                $this->assertEquals(['json', 'csv'], $routes->extensions());
             });
         });
 
@@ -3143,8 +3076,8 @@ class RouterTest extends TestCase
     {
         $options = ['param' => 'value', 'routeClass' => 'InflectedRoute', 'extensions' => ['json']];
         Router::scope('/path', $options, function ($routes) {
-            $this->assertSame('InflectedRoute', $routes->getRouteClass());
-            $this->assertSame(['json'], $routes->getExtensions());
+            $this->assertSame('InflectedRoute', $routes->routeClass());
+            $this->assertSame(['json'], $routes->extensions());
             $this->assertEquals('/path', $routes->path());
             $this->assertEquals(['param' => 'value'], $routes->params());
         });
@@ -3345,34 +3278,14 @@ class RouterTest extends TestCase
     }
 
     /**
-     * Test getting the route collection
+     * Test setting the request context.
      *
+     * @expectedException \InvalidArgumentException
      * @return void
      */
-    public function testGetRouteCollection()
+    public function testSetRequestContextInvalid()
     {
-        $collection = Router::getRouteCollection();
-        $this->assertInstanceOf(RouteCollection::class, $collection);
-        $this->assertCount(0, $collection->routes());
-    }
-
-    /**
-     * Test getting a route builder instance.
-     *
-     * @return void
-     */
-    public function testCreateRouteBuilder()
-    {
-        $builder = Router::createRouteBuilder('/api');
-        $this->assertInstanceOf(RouteBuilder::class, $builder);
-        $this->assertSame('/api', $builder->path());
-
-        $builder = Router::createRouteBuilder('/', [
-            'routeClass' => 'InflectedRoute',
-            'extensions' => ['json']
-        ]);
-        $this->assertInstanceOf(RouteBuilder::class, $builder);
-        $this->assertSame(['json'], $builder->getExtensions());
+        Router::setRequestContext(new \stdClass);
     }
 
     /**

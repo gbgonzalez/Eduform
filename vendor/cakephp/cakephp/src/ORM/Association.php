@@ -19,7 +19,6 @@ use Cake\Core\App;
 use Cake\Core\ConventionsTrait;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\QueryInterface;
 use Cake\Datasource\ResultSetDecorator;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Inflector;
@@ -159,7 +158,7 @@ abstract class Association
      *
      * @var string
      */
-    protected $_joinType = QueryInterface::JOIN_TYPE_LEFT;
+    protected $_joinType = 'LEFT';
 
     /**
      * The property name that should be filled with data from the target table
@@ -239,8 +238,7 @@ abstract class Association
     }
 
     /**
-     * Sets the name for this association, usually the alias
-     * assigned to the target associated table
+     * Sets the name for this association.
      *
      * @param string $name Name to be assigned
      * @return $this
@@ -260,8 +258,7 @@ abstract class Association
     }
 
     /**
-     * Gets the name for this association, usually the alias
-     * assigned to the target associated table
+     * Gets the name for this association.
      *
      * @return string
      */
@@ -404,7 +401,7 @@ abstract class Association
                 $registryAlias = $this->_name;
             }
 
-            $tableLocator = $this->getTableLocator();
+            $tableLocator = $this->tableLocator();
 
             $config = [];
             $exists = $tableLocator->exists($registryAlias);
@@ -422,10 +419,10 @@ abstract class Association
 
                     throw new RuntimeException(sprintf(
                         $errorMessage,
-                        $this->_sourceTable ? get_class($this->_sourceTable) : 'null',
+                        get_class($this->_sourceTable),
                         $this->getName(),
                         $this->type(),
-                        $this->_targetTable ? get_class($this->_targetTable) : 'null',
+                        get_class($this->_targetTable),
                         $className
                     ));
                 }
@@ -501,7 +498,7 @@ abstract class Association
      * Sets the name of the field representing the binding field with the target table.
      * When not manually specified the primary key of the owning side table is used.
      *
-     * @param string|array $key the table field or fields to be used to link both tables together
+     * @param string $key the table field to be used to link both tables together
      * @return $this
      */
     public function setBindingKey($key)
@@ -560,7 +557,7 @@ abstract class Association
     /**
      * Sets the name of the field representing the foreign key to the target table.
      *
-     * @param string|array $key the key or keys to be used to link both tables together
+     * @param string $key the key to be used to link both tables together
      * @return $this
      */
     public function setForeignKey($key)
@@ -1192,7 +1189,6 @@ abstract class Association
                 $extracted = new ResultSetDecorator($callable($extracted));
             }
 
-            /* @var \Cake\Collection\CollectionInterface $results */
             return $results->insert($property, $extracted);
         }, Query::PREPEND);
     }

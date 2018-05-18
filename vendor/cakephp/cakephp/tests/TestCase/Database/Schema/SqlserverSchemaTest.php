@@ -110,32 +110,11 @@ SQL;
                 ['type' => 'time', 'length' => null]
             ],
             [
-                'TINYINT',
-                null,
-                2,
-                null,
-                ['type' => 'tinyinteger', 'length' => 2]
-            ],
-            [
-                'TINYINT',
-                null,
-                null,
-                null,
-                ['type' => 'tinyinteger', 'length' => 3]
-            ],
-            [
                 'SMALLINT',
                 null,
-                3,
+                4,
                 null,
-                ['type' => 'smallinteger', 'length' => 3]
-            ],
-            [
-                'SMALLINT',
-                null,
-                null,
-                null,
-                ['type' => 'smallinteger', 'length' => 5]
+                ['type' => 'integer', 'length' => 4]
             ],
             [
                 'INTEGER',
@@ -198,8 +177,7 @@ SQL;
                 50,
                 null,
                 null,
-                // Sqlserver returns double lenghts for unicode columns
-                ['type' => 'string', 'length' => 25]
+                ['type' => 'string', 'length' => 50]
             ],
             [
                 'CHAR',
@@ -213,8 +191,7 @@ SQL;
                 10,
                 null,
                 null,
-                // SQLServer returns double length for unicode columns.
-                ['type' => 'string', 'fixed' => true, 'length' => 5]
+                ['type' => 'string', 'fixed' => true, 'length' => 10]
             ],
             [
                 'UNIQUEIDENTIFIER',
@@ -326,7 +303,7 @@ SQL;
                 'type' => 'string',
                 'null' => true,
                 'default' => '無題',
-                'length' => 20,
+                'length' => 40,
                 'precision' => null,
                 'comment' => null,
                 'fixed' => null,
@@ -336,7 +313,7 @@ SQL;
                 'type' => 'string',
                 'null' => true,
                 'default' => '本文なし',
-                'length' => 1000,
+                'length' => 2000,
                 'precision' => null,
                 'fixed' => null,
                 'comment' => null,
@@ -361,12 +338,13 @@ SQL;
                 'comment' => null,
             ],
             'views' => [
-                'type' => 'smallinteger',
+                'type' => 'integer',
                 'null' => true,
                 'default' => 0,
                 'length' => 5,
                 'precision' => null,
                 'unsigned' => null,
+                'autoIncrement' => null,
                 'comment' => null,
             ],
             'created' => [
@@ -410,10 +388,7 @@ SQL;
         ];
         $this->assertEquals(['id'], $result->primaryKey());
         foreach ($expected as $field => $definition) {
-            $column = $result->column($field);
-            $this->assertEquals($definition, $column, 'Failed to match field ' . $field);
-            $this->assertSame($definition['length'], $column['length']);
-            $this->assertSame($definition['precision'], $column['precision']);
+            $this->assertEquals($definition, $result->column($field), 'Failed to match field ' . $field);
         }
     }
 
@@ -578,16 +553,6 @@ SQL;
                 '[body] NVARCHAR(MAX) COLLATE Japanese_Unicode_CI_AI NOT NULL'
             ],
             // Integers
-            [
-                'post_id',
-                ['type' => 'smallinteger', 'length' => 11],
-                '[post_id] SMALLINT'
-            ],
-            [
-                'post_id',
-                ['type' => 'tinyinteger', 'length' => 11],
-                '[post_id] TINYINT'
-            ],
             [
                 'post_id',
                 ['type' => 'integer', 'length' => 11],
@@ -800,7 +765,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
 
         $table = (new TableSchema('posts'))
@@ -851,7 +816,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
 
         $table = (new TableSchema('posts'))
@@ -902,7 +867,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
 
         $table = (new TableSchema('schema_articles'))->addColumn('id', [
@@ -964,7 +929,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
 
         $table = new TableSchema('schema_articles');
@@ -984,7 +949,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
 
         $table = new TableSchema('schema_articles');

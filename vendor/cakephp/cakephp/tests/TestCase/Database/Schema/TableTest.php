@@ -105,21 +105,6 @@ class TableTest extends TestCase
     }
 
     /**
-     * Test hasColumn() method.
-     *
-     * @return void
-     */
-    public function testHasColumn()
-    {
-        $schema = new Table('articles', [
-            'title' => 'string'
-        ]);
-
-        $this->assertTrue($schema->hasColumn('title'));
-        $this->assertFalse($schema->hasColumn('body'));
-    }
-
-    /**
      * Test removing columns.
      *
      * @return void

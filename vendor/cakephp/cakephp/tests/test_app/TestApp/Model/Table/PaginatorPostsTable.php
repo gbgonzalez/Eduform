@@ -15,6 +15,7 @@ namespace TestApp\Model\Table;
 
 use Cake\ORM\Query;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 
 /**
  * PaginatorPostsTable class

@@ -13,7 +13,6 @@
  */
 namespace Cake\Test\TestCase\Utility;
 
-use Cake\I18n\Time;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
 
@@ -229,14 +228,6 @@ class TextTest extends TestCase
         $string = 'switching :timeout_count by :timeout';
         $expected = 'switching 10 by 5';
         $result = Text::insert($string, ['timeout_count' => 10, 'timeout' => 5]);
-        $this->assertEquals($expected, $result);
-        $string = 'inserting a :user.email';
-        $expected = 'inserting a security@example.com';
-        $result = Text::insert($string, [
-            'user.email' => 'security@example.com',
-            'user.id' => 2,
-            'user.created' => Time::parse('2016-01-01')
-        ]);
         $this->assertEquals($expected, $result);
     }
 
@@ -1804,15 +1795,7 @@ HTML;
             [
                 'clean!_me.tar.gz', ['preserve' => '.'],
                 'clean-me.tar.gz'
-            ],
-            [
-                'cl#ean(me', [],
-                'cl-ean-me'
-            ],
-            [
-                'cl#e|an(me.jpg', ['preserve' => '.'],
-                'cl-e-an-me.jpg'
-            ],
+            ]
         ];
     }
 

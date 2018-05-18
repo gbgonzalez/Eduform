@@ -75,21 +75,15 @@ class ArrayDeclarationSniff implements Sniff
 
             if ($arrayStart !== ($stackPtr + 1)) {
                 $error = 'There must be no space between the "array" keyword and the opening parenthesis';
+                $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'SpaceAfterKeyword');
 
-                $next = $phpcsFile->findNext(T_WHITESPACE, ($stackPtr + 1), $arrayStart, true);
-                if (isset(Tokens::$commentTokens[$tokens[$next]['code']]) === true) {
-                    // We don't have anywhere to put the comment, so don't attempt to fix it.
-                    $phpcsFile->addError($error, $stackPtr, 'SpaceAfterKeyword');
-                } else {
-                    $fix = $phpcsFile->addFixableError($error, $stackPtr, 'SpaceAfterKeyword');
-                    if ($fix === true) {
-                        $phpcsFile->fixer->beginChangeset();
-                        for ($i = ($stackPtr + 1); $i < $arrayStart; $i++) {
-                            $phpcsFile->fixer->replaceToken($i, '');
-                        }
-
-                        $phpcsFile->fixer->endChangeset();
+                if ($fix === true) {
+                    $phpcsFile->fixer->beginChangeset();
+                    for ($i = ($stackPtr + 1); $i < $arrayStart; $i++) {
+                        $phpcsFile->fixer->replaceToken($i, '');
                     }
+
+                    $phpcsFile->fixer->endChangeset();
                 }
             }
         } else {
@@ -229,14 +223,10 @@ class ArrayDeclarationSniff implements Sniff
         }//end while
 
         if ($valueCount > 0) {
-            $nestedParenthesis = false;
-            if (isset($tokens[$stackPtr]['nested_parenthesis']) === true) {
-                $nested            = $tokens[$stackPtr]['nested_parenthesis'];
-                $nestedParenthesis = array_pop($nested);
-            }
+            $conditionCheck = $phpcsFile->findPrevious(array(T_OPEN_PARENTHESIS, T_SEMICOLON), ($stackPtr - 1), null, false);
 
-            if ($nestedParenthesis === false
-                || $tokens[$nestedParenthesis]['line'] !== $tokens[$stackPtr]['line']
+            if ($conditionCheck === false
+                || $tokens[$conditionCheck]['line'] !== $tokens[$stackPtr]['line']
             ) {
                 $error = 'Array with multiple values cannot be declared on a single line';
                 $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'SingleLineNotAllowed');
@@ -804,14 +794,6 @@ class ArrayDeclarationSniff implements Sniff
                     continue;
                 }
 
-                if ($tokens[$i]['code'] === T_START_HEREDOC || $tokens[$i]['code'] === T_START_NOWDOC) {
-                    // Here/nowdoc closing tags must not be followed by a comma,
-                    // so it must be on the next line.
-                    $i         = $tokens[$i]['scope_closer'];
-                    $valueLine = ($tokens[$i]['line'] + 1);
-                    continue;
-                }
-
                 if ($tokens[$i]['code'] === T_OPEN_SHORT_ARRAY) {
                     $i         = $tokens[$i]['bracket_closer'];
                     $valueLine = $tokens[$i]['line'];
@@ -848,21 +830,17 @@ class ArrayDeclarationSniff implements Sniff
 
             // Check that there is no space before the comma.
             if ($nextComma !== false && $tokens[($nextComma - 1)]['code'] === T_WHITESPACE) {
-                // Here/nowdoc closing tags must have the command on the next line.
-                $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($nextComma - 1), null, true);
-                if ($tokens[$prev]['code'] !== T_END_HEREDOC && $tokens[$prev]['code'] !== T_END_NOWDOC) {
-                    $content     = $tokens[($nextComma - 2)]['content'];
-                    $spaceLength = $tokens[($nextComma - 1)]['length'];
-                    $error       = 'Expected 0 spaces between "%s" and comma; %s found';
-                    $data        = array(
-                                    $content,
-                                    $spaceLength,
-                                   );
+                $content     = $tokens[($nextComma - 2)]['content'];
+                $spaceLength = $tokens[($nextComma - 1)]['length'];
+                $error       = 'Expected 0 spaces between "%s" and comma; %s found';
+                $data        = array(
+                                $content,
+                                $spaceLength,
+                               );
 
-                    $fix = $phpcsFile->addFixableError($error, $nextComma, 'SpaceBeforeComma', $data);
-                    if ($fix === true) {
-                        $phpcsFile->fixer->replaceToken(($nextComma - 1), '');
-                    }
+                $fix = $phpcsFile->addFixableError($error, $nextComma, 'SpaceBeforeComma', $data);
+                if ($fix === true) {
+                    $phpcsFile->fixer->replaceToken(($nextComma - 1), '');
                 }
             }
         }//end foreach

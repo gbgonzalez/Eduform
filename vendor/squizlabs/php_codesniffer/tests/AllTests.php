@@ -9,18 +9,33 @@
 
 namespace PHP_CodeSniffer\Tests;
 
-use PHP_CodeSniffer\Tests\TestSuite;
-use PHPUnit\TextUI\TestRunner;
+use PHP_CodeSniffer\Util\Tokens;
+
+if (defined('PHP_CODESNIFFER_IN_TESTS') === false) {
+    define('PHP_CODESNIFFER_IN_TESTS', true);
+}
+
+if (defined('PHP_CODESNIFFER_CBF') === false) {
+    define('PHP_CODESNIFFER_CBF', false);
+}
+
+if (defined('PHP_CODESNIFFER_VERBOSITY') === false) {
+    define('PHP_CODESNIFFER_VERBOSITY', 0);
+}
 
 if (is_file(__DIR__.'/../autoload.php') === true) {
+    include_once __DIR__.'/../autoload.php';
     include_once 'Core/AllTests.php';
     include_once 'Standards/AllSniffs.php';
 } else {
+    include_once 'PHP/CodeSniffer/autoload.php';
     include_once 'CodeSniffer/Core/AllTests.php';
     include_once 'CodeSniffer/Standards/AllSniffs.php';
 }
 
 require_once 'TestSuite.php';
+
+$tokens = new Tokens();
 
 class PHP_CodeSniffer_AllTests
 {
@@ -33,7 +48,7 @@ class PHP_CodeSniffer_AllTests
      */
     public static function main()
     {
-        TestRunner::run(self::suite());
+        \PHPUnit_TextUI_TestRunner::run(self::suite());
 
     }//end main()
 
@@ -41,7 +56,7 @@ class PHP_CodeSniffer_AllTests
     /**
      * Add all PHP_CodeSniffer test suites into a single test suite.
      *
-     * @return \PHPUnit\Framework\TestSuite
+     * @return \PHPUnit_Framework_TestSuite
      */
     public static function suite()
     {

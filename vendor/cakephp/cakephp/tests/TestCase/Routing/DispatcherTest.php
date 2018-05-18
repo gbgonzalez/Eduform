@@ -13,6 +13,7 @@
  */
 namespace Cake\Test\TestCase\Routing;
 
+use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Http\Response;
@@ -159,9 +160,7 @@ class DispatcherTest extends TestCase
                 'pass' => ['extract'],
             ]
         ]);
-        $response = $this->getMockBuilder('Cake\Http\Response')
-            ->setMethods(['send'])
-            ->getMock();
+        $response = $this->getMockBuilder('Cake\Http\Response')->getMock();
         $response->expects($this->once())
             ->method('send');
 

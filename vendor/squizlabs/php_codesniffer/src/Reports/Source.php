@@ -42,14 +42,13 @@ class Source implements Report
         foreach ($report['messages'] as $line => $lineErrors) {
             foreach ($lineErrors as $column => $colErrors) {
                 foreach ($colErrors as $error) {
-                    $src = $error['source'];
-                    if (isset($sources[$src]) === false) {
-                        $sources[$src] = array(
-                                          'fixable' => (int) $error['fixable'],
-                                          'count'   => 1,
-                                         );
+                    if (isset($sources[$error['source']]) === false) {
+                        $sources[$error['source']] = array(
+                                                      'fixable' => (int) $error['fixable'],
+                                                      'count'   => 1,
+                                                     );
                     } else {
-                        $sources[$src]['count']++;
+                        $sources[$error['source']]['count']++;
                     }
                 }
             }
@@ -134,12 +133,12 @@ class Source implements Report
                 $maxLength = max($maxLength, strlen($sniff));
 
                 $sources[$source] = array(
-                                     'count'   => $count,
+                                     'count'   => 1,
                                      'fixable' => $fixable,
                                      'parts'   => $parts,
                                     );
             } else {
-                $sources[$source]['count'] += $count;
+                $sources[$source]['count']++;
             }//end if
 
             $fileLen = strlen($parts[0]);

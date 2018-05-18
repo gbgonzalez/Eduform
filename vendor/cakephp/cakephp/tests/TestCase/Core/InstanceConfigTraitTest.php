@@ -151,24 +151,6 @@ class InstanceConfigTraitTest extends TestCase
     }
 
     /**
-     * testGetDefault
-     *
-     * @return void
-     */
-    public function testGetDefault()
-    {
-        $this->assertSame(
-            'default',
-            $this->object->getConfig('nonexistent', 'default')
-        );
-
-        $this->assertSame(
-            'my-default',
-            $this->object->getConfig('nested.nonexistent', 'my-default')
-        );
-    }
-
-    /**
      * testSetSimple
      *
      * @return void

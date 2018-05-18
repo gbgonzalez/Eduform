@@ -90,10 +90,6 @@ class TypeTest extends TestCase
         return [
             ['string'],
             ['text'],
-            ['smallinteger'],
-            ['tinyinteger'],
-            ['integer'],
-            ['biginteger'],
         ];
     }
 

@@ -87,7 +87,7 @@ class Email implements JsonSerializable, Serializable
      *
      * @var string
      */
-    const EMAIL_PATTERN = '/^((?:[\p{L}0-9.!#$%&\'*+\/=?^_`{|}~-]+)*@[\p{L}0-9-._]+)$/ui';
+    const EMAIL_PATTERN = '/^((?:[\p{L}0-9.!#$%&\'*+\/=?^_`{|}~-]+)*@[\p{L}0-9-.]+)$/ui';
 
     /**
      * Recipient of the email
@@ -882,7 +882,7 @@ class Email implements JsonSerializable, Serializable
     protected function _setEmail($varName, $email, $name)
     {
         if (!is_array($email)) {
-            $this->_validateEmail($email, $varName);
+            $this->_validateEmail($email);
             if ($name === null) {
                 $name = $email;
             }
@@ -895,7 +895,7 @@ class Email implements JsonSerializable, Serializable
             if (is_int($key)) {
                 $key = $value;
             }
-            $this->_validateEmail($key, $varName);
+            $this->_validateEmail($key);
             $list[$key] = $value;
         }
         $this->{$varName} = $list;
@@ -907,11 +907,10 @@ class Email implements JsonSerializable, Serializable
      * Validate email address
      *
      * @param string $email Email address to validate
-     * @param string $context Which property was set
      * @return void
      * @throws \InvalidArgumentException If email address does not validate
      */
-    protected function _validateEmail($email, $context)
+    protected function _validateEmail($email)
     {
         if ($this->_emailPattern === null) {
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -920,12 +919,7 @@ class Email implements JsonSerializable, Serializable
         } elseif (preg_match($this->_emailPattern, $email)) {
             return;
         }
-
-        $context = ltrim($context, '_');
-        if ($email == '') {
-            throw new InvalidArgumentException(sprintf('The email set for "%s" is empty.', $context));
-        }
-        throw new InvalidArgumentException(sprintf('Invalid email set for "%s". You passed "%s".', $context, $email));
+        throw new InvalidArgumentException(sprintf('Invalid email: "%s"', $email));
     }
 
     /**
@@ -964,7 +958,7 @@ class Email implements JsonSerializable, Serializable
     protected function _addEmail($varName, $email, $name)
     {
         if (!is_array($email)) {
-            $this->_validateEmail($email, $varName);
+            $this->_validateEmail($email);
             if ($name === null) {
                 $name = $email;
             }
@@ -977,7 +971,7 @@ class Email implements JsonSerializable, Serializable
             if (is_int($key)) {
                 $key = $value;
             }
-            $this->_validateEmail($key, $varName);
+            $this->_validateEmail($key);
             $list[$key] = $value;
         }
         $this->{$varName} = array_merge($this->{$varName}, $list);
@@ -2084,20 +2078,9 @@ class Email implements JsonSerializable, Serializable
         }
         Log::write(
             $config['level'],
-            PHP_EOL . $this->flatten($contents['headers']) . PHP_EOL . PHP_EOL . $this->flatten($contents['message']),
+            PHP_EOL . $contents['headers'] . PHP_EOL . PHP_EOL . $contents['message'],
             $config['scope']
         );
-    }
-
-    /**
-     * Converts given value to string
-     *
-     * @param string|array $value The value to convert
-     * @return string
-     */
-    protected function flatten($value)
-    {
-        return is_array($value) ? implode(';', $value) : (string)$value;
     }
 
     /**
@@ -2623,8 +2606,8 @@ class Email implements JsonSerializable, Serializable
 
         $View = $this->createView();
 
-        list($templatePlugin) = pluginSplit($View->getTemplate());
-        list($layoutPlugin) = pluginSplit($View->getLayout());
+        list($templatePlugin) = pluginSplit($View->template());
+        list($layoutPlugin) = pluginSplit($View->layout());
         if ($templatePlugin) {
             $View->plugin = $templatePlugin;
         } elseif ($layoutPlugin) {
@@ -2637,8 +2620,8 @@ class Email implements JsonSerializable, Serializable
 
         foreach ($types as $type) {
             $View->hasRendered = false;
-            $View->setTemplatePath('Email' . DIRECTORY_SEPARATOR . $type);
-            $View->setLayoutPath('Email' . DIRECTORY_SEPARATOR . $type);
+            $View->templatePath('Email' . DIRECTORY_SEPARATOR . $type);
+            $View->layoutPath('Email' . DIRECTORY_SEPARATOR . $type);
 
             $render = $View->render();
             $render = str_replace(["\r\n", "\r"], "\n", $render);

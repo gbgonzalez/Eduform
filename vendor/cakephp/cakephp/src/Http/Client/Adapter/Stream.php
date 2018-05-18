@@ -16,7 +16,6 @@ namespace Cake\Http\Client\Adapter;
 use Cake\Core\Exception\Exception;
 use Cake\Http\Client\Request;
 use Cake\Http\Client\Response;
-use Cake\Network\Exception\HttpException;
 
 /**
  * Implements sending Cake\Http\Client\Request
@@ -124,7 +123,7 @@ class Stream
         $this->_buildHeaders($request, $options);
         $this->_buildOptions($request, $options);
 
-        $url = $request->getUri();
+        $url = $request->url();
         $scheme = parse_url($url, PHP_URL_SCHEME);
         if ($scheme === 'https') {
             $this->_buildSslContext($request, $options);
@@ -149,6 +148,14 @@ class Stream
         $headers = [];
         foreach ($request->getHeaders() as $name => $values) {
             $headers[] = sprintf('%s: %s', $name, implode(', ', $values));
+        }
+
+        $cookies = [];
+        foreach ($request->cookies() as $name => $value) {
+            $cookies[] = "$name=$value";
+        }
+        if ($cookies) {
+            $headers[] = 'Cookie: ' . implode('; ', $cookies);
         }
         $this->_contextOptions['header'] = implode("\r\n", $headers);
     }
@@ -191,9 +198,9 @@ class Stream
         if (isset($options['timeout'])) {
             $this->_contextOptions['timeout'] = $options['timeout'];
         }
-        // Redirects are handled in the client layer because of cookie handling issues.
-        $this->_contextOptions['max_redirects'] = 0;
-
+        if (isset($options['redirect'])) {
+            $this->_contextOptions['max_redirects'] = (int)$options['redirect'];
+        }
         if (isset($options['proxy']['proxy'])) {
             $this->_contextOptions['request_fulluri'] = true;
             $this->_contextOptions['proxy'] = $options['proxy']['proxy'];
@@ -222,7 +229,7 @@ class Stream
             $options['ssl_cafile'] = CORE_PATH . 'config' . DIRECTORY_SEPARATOR . 'cacert.pem';
         }
         if (!empty($options['ssl_verify_host'])) {
-            $url = $request->getUri();
+            $url = $request->url();
             $host = parse_url($url, PHP_URL_HOST);
             $this->_sslContextOptions['peer_name'] = $host;
         }
@@ -239,7 +246,7 @@ class Stream
      *
      * @param \Cake\Http\Client\Request $request The request object.
      * @return array Array of populated Response objects
-     * @throws \Cake\Network\Exception\HttpException
+     * @throws \Cake\Core\Exception\Exception
      */
     protected function _send(Request $request)
     {
@@ -248,7 +255,7 @@ class Stream
             $deadline = time() + $this->_contextOptions['timeout'];
         }
 
-        $url = $request->getUri();
+        $url = $request->url();
         $this->_open($url);
         $content = '';
         $timedOut = false;
@@ -270,7 +277,7 @@ class Stream
         fclose($this->_stream);
 
         if ($timedOut) {
-            throw new HttpException('Connection timed out ' . $url, 504);
+            throw new Exception('Connection timed out ' . $url);
         }
 
         $headers = $meta['wrapper_data'];

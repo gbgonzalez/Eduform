@@ -1,6 +1,7 @@
 <!-- File: /app/View/User/index.ctp -->
 <div ng-controller="AppCtrl" layout="column" ng-cloak>
 <h1 class="titleAdmin"> Administración de usuario </h1>
+<?= $this->Flash->render() ?>
 
 <button class="btn btn-success" data-toggle="modal" data-target="#addUser">Añadir Usuario </button>
 <form class="form-inline formSearch">
@@ -17,35 +18,44 @@
     <thead>
       <tr>
         <th>Nombre </th>
-        <th>DNI</th>
-        <th>Tipo</th>
-        <th>Email </th>
-        <th>Masterias </th>
+        <th class="visible-lg">DNI</th>
+        <th class="visible-lg">Tipo</th>
+        <th class="visible-lg">Email </th>
+        <th>Materias </th>
         <th>Mostrar </th>
-        <th>Modificar </th>
+        <th class="visible-lg">Modificar </th>
         <th>Eliminar </th>
       </tr>
     </thead>
     <tbody>
     	
     	<tr ng-repeat="user in users">
-    		<p> {{user}} </p>
     		<td> {{user.username}}</td>
-			<td> {{user.dni}}</td>
-			<td> {{user.role}}</td>
-			<td> {{user.email}}</td>
+			<td class="visible-lg"> {{user.dni}}</td>
+			<td class="visible-lg"> {{user.role}}</td>
+			<td class="visible-lg"> {{user.email}}</td>
 		
 			<td>
-				<button class="btn btn-warning" data-toggle="modal" data-target="#subjects{{user.id}}">Materias </button>
+				<button class="btn btn-warning" data-toggle="modal" data-target="#subjects{{user.id}}">
+					<span class="visible-lg">Materias </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
 			</td>
 			<td>
-				<button class="btn btn-info" data-toggle="modal" data-target="#user{{user.id}}">Mostrar </button>
+				<button class="btn btn-info" data-toggle="modal" data-target="#user{{user.id}}">
+					<span class="visible-lg">Mostrar </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
+			</td>
+			<td class="visible-lg">
+				<button class="btn btn-default" data-toggle="modal" data-target="#updateUser{{user.id}}">
+					<span>Modificar </span> 
+				</button>
 			</td>
 			<td>
-				<button class="btn btn-default" data-toggle="modal" data-target="#updateUser{{user.id}}">Modificar </button>
-			</td>
-			<td>
-				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteUser{{user.id}}">Eliminar </button>
+				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteUser{{user.id}}">	<span class="visible-lg">Eliminar </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
 			</td> 
     	</tr>
     	
@@ -56,35 +66,44 @@
     <thead>
       <tr>
         <th>Nombre </th>
-        <th>DNI</th>
-        <th>Tipo</th>
-        <th>Email </th>
-        <th>Masterias </th>
+        <th class="visible-lg">DNI</th>
+        <th class="visible-lg">Tipo</th>
+        <th class="visible-lg">Email </th>
+        <th>Materias </th>
         <th>Mostrar </th>
-        <th>Modificar </th>
+        <th class="visible-lg">Modificar </th>
         <th>Eliminar </th>
       </tr>
     </thead>
     <tbody>
     	
     	<tr ng-repeat="user in resultSearch">
-    		<p> {{user}} </p>
     		<td> {{user.username}}</td>
-			<td> {{user.dni}}</td>
-			<td> {{user.role}}</td>
-			<td> {{user.email}}</td>
+			<td class="visible-lg"> {{user.dni}}</td>
+			<td class="visible-lg"> {{user.role}}</td>
+			<td class="visible-lg"> {{user.email}}</td>
 		
 			<td>
-				<button class="btn btn-warning" data-toggle="modal" data-target="#subjects{{user.id}}">Materias </button>
+				<button class="btn btn-warning" data-toggle="modal" data-target="#subjects{{user.id}}">
+					<span class="visible-lg">Materias </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
 			</td>
 			<td>
-				<button class="btn btn-info" data-toggle="modal" data-target="#user{{user.id}}">Mostrar </button>
+				<button class="btn btn-info" data-toggle="modal" data-target="#user{{user.id}}">
+					<span class="visible-lg">Mostrar </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
+			</td>
+			<td class="visible-lg">
+				<button class="btn btn-default" data-toggle="modal" data-target="#updateUser{{user.id}}">
+					<span>Modificar </span> 
+				</button>
 			</td>
 			<td>
-				<button class="btn btn-default" data-toggle="modal" data-target="#updateUser{{user.id}}">Modificar </button>
-			</td>
-			<td>
-				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteUser{{user.id}}">Eliminar </button>
+				<button class="btn btn-danger" data-toggle="modal" data-target="#deleteUser{{user.id}}">	<span class="visible-lg">Eliminar </span> 
+					<span class="hidden-lg"> · </span> 
+				</button>
 			</td> 
     	</tr>
     	
@@ -236,9 +255,108 @@
 		</div>
 <?php } ?>
 
+<!-- Modal Add Subject-->
+<?php foreach ($users as $user) 
+{ ?>
+		<div id="subjects<?php echo $user['id']; ?>" class="modal fade" role="dialog">
+		  <div class="modal-dialog">
+
+		    <!-- Modal content-->
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal">&times;</button>
+		        <h4 class="modal-title">Materias</h4>
+		      </div>
+		      <div class="modal-body">
+		        <?php 
+		        	echo "<p>".$user['name']."</p>";
+		        	echo "<p> Materias asignadas: </p>";
+		        	$k = 0;
+		        	$arrayFiltered = array();
+		        	$subjectUser = array();	
+		        	foreach ( $user['competences'] as $userCompetence)
+		        	{
+		        		foreach ($competences as $competence)
+		        		{
+		        			if( $competence['id'] == $userCompetence['id'])
+		        			{
+		        				
+		        				$subjectUser[$k] = [
+		        					'user_id' => $user['id'],
+		        					'subject_id' => $competence['subject']['id'],
+		        					'subjectName' => $competence['subject']['name']
+		        				];
+		        				$k++;
+		        				
+		        		 	}
+		        		}
+		        		
+		        	}
+
+		        	if ( count($subjectUser) != 0 )
+		        	{
+			        	$arrayFiltered = array_map('unserialize', array_unique(array_map('serialize', $subjectUser)));
+
+			        	$arrayKeys =  array_keys($arrayFiltered);
+			        	for ($i = 0; $i < count($arrayKeys); $i++)
+			        	{
+			        		echo $this->Form->create('Post', 
+			        			array('url' => '/users/deleteSubject'));
+
+			        		echo $this->Form->hidden('user_id', 
+			        			['value' => $arrayFiltered[ $arrayKeys[$i] ]['user_id']]);
+
+			        		echo $this->Form->hidden('subject_id', 
+			        			['value' => $arrayFiltered[ $arrayKeys[$i] ]['subject_id']]);
+
+			        		echo "<span class='subjectModal'>";
+			        		
+			        		echo $arrayFiltered[ $arrayKeys[$i] ]['subjectName'];
+			        				
+			        		echo $this->Form->submit('X', ['class' => 'buttonDeleteSubject']) ;
+			        		
+			        		echo "</span>";
+
+							echo $this->Form->end() ;
+			        	}
+			        }
+		        	
+		        	
+
+				?>
+				<hr>
+				<h4> Asignar nueva materia </h4>
+				<?php 
+		
+				  	echo $this->Form->create('Post', array('url' => '/users/addSubject'));
+
+				  	echo $this->Form->hidden('id', ['value' => $user['id']]);
+				  	
+
+				  	echo $this->Form->select('subject_id', $subjectsForm, 
+						['class' => 'form-control' ]);
+
+					echo $this->Form->submit('Añadir Materia', ['class' => 'btn btn-default buttonAddForm']) ;
+					echo $this->Form->end(); 
+				 ?>
+
+		      </div>
+		      <div class="modal-footer">
+		      	<div class="buttonsFooter">
+		        	<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+			  	</div>
+		      </div>
+		    </div>
+
+		  </div>
+		</div>
+<?php } ?>
+
 </div> <!-- end of div controller -->
 <script>
-	var users = <?php echo json_encode(compact('users')) ?>
+	var users = <?php echo json_encode(compact('users')) ?>;
+	var subjects = <?php echo json_encode(compact('subjects')) ?>;
+	var competences = <?php echo json_encode(compact('competences')) ?>;
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 <?= $this->Html->script('users.js') ?>

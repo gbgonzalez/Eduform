@@ -106,9 +106,7 @@ class ControlSignatureSniff implements Sniff
 
             if ($content !== ' ') {
                 $error = 'Expected 1 space after closing parenthesis; found %s';
-                if ($tokens[$closer]['line'] !== $tokens[$opener]['line']) {
-                    $found = 'newline';
-                } else if (trim($content) === '') {
+                if (trim($content) === '') {
                     $found = strlen($content);
                 } else {
                     $found = '"'.str_replace($phpcsFile->eolChar, '\n', $content).'"';

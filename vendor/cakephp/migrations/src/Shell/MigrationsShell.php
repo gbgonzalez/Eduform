@@ -160,11 +160,11 @@ class MigrationsShell extends Shell
      * Display the help in the correct format
      *
      * @param string $command The command to get help for.
-     * @return int|bool|null Exit code or number of bytes written to stdout
+     * @return void
      */
     protected function displayHelp($command)
     {
-        return $this->main();
+        $this->main();
     }
 
     /**

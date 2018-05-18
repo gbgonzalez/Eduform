@@ -44,14 +44,12 @@ class DoubleQuoteUsageSniff implements Sniff
     {
         $tokens = $phpcsFile->getTokens();
 
-        // If tabs are being converted to spaces by the tokeniser, the
-        // original content should be used instead of the converted content.
-        if (isset($tokens[$stackPtr]['orig_content']) === true) {
-            $workingString = $tokens[$stackPtr]['orig_content'];
-        } else {
-            $workingString = $tokens[$stackPtr]['content'];
+        // We are only interested in the first token in a multi-line string.
+        if ($tokens[$stackPtr]['code'] === $tokens[($stackPtr - 1)]['code']) {
+            return;
         }
 
+        $workingString   = $tokens[$stackPtr]['content'];
         $lastStringToken = $stackPtr;
 
         $i = ($stackPtr + 1);
@@ -59,22 +57,21 @@ class DoubleQuoteUsageSniff implements Sniff
             while ($i < $phpcsFile->numTokens
                 && $tokens[$i]['code'] === $tokens[$stackPtr]['code']
             ) {
-                if (isset($tokens[$i]['orig_content']) === true) {
-                    $workingString .= $tokens[$i]['orig_content'];
-                } else {
-                    $workingString .= $tokens[$i]['content'];
-                }
-
+                $workingString  .= $tokens[$i]['content'];
                 $lastStringToken = $i;
                 $i++;
             }
         }
 
-        $skipTo = ($lastStringToken + 1);
-
         // Check if it's a double quoted string.
-        if ($workingString[0] !== '"' || substr($workingString, -1) !== '"') {
-            return $skipTo;
+        if (strpos($workingString, '"') === false) {
+            return;
+        }
+
+        // Make sure it's not a part of a string started in a previous line.
+        // If it is, then we have already checked it.
+        if ($workingString[0] !== '"') {
+            return;
         }
 
         // The use of variables in double quoted strings is not allowed.
@@ -88,7 +85,7 @@ class DoubleQuoteUsageSniff implements Sniff
                 }
             }
 
-            return $skipTo;
+            return;
         }//end if
 
         $allowedChars = array(
@@ -114,7 +111,7 @@ class DoubleQuoteUsageSniff implements Sniff
 
         foreach ($allowedChars as $testChar) {
             if (strpos($workingString, $testChar) !== false) {
-                return $skipTo;
+                return;
             }
         }
 
@@ -135,8 +132,6 @@ class DoubleQuoteUsageSniff implements Sniff
 
             $phpcsFile->fixer->endChangeset();
         }
-
-        return $skipTo;
 
     }//end process()
 

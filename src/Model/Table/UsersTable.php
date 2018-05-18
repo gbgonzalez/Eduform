@@ -18,6 +18,11 @@ class UsersTable extends Table
     {
      $this->addBehavior('Timestamp');//
      //$this->table('customers'); *u can also specify ur table like this 
+     $this->belongsToMany('Competences', [
+          'foreignKey' => 'user_id',
+          'targetForeignKey' => 'competence_id',
+          'joinTable' => 'userscompetences',
+      ]);
     }
     
     public function validationDefault(Validator $validator)

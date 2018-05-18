@@ -37,8 +37,7 @@ class Filesystem
      */
     public function copy($originFile, $targetFile, $overwriteNewerFiles = false)
     {
-        $originIsLocal = stream_is_local($originFile) || 0 === stripos($originFile, 'file://');
-        if ($originIsLocal && !is_file($originFile)) {
+        if (stream_is_local($originFile) && !is_file($originFile)) {
             throw new FileNotFoundException(sprintf('Failed to copy "%s" because file does not exist.', $originFile), 0, null, $originFile);
         }
 
@@ -69,13 +68,11 @@ class Filesystem
                 throw new IOException(sprintf('Failed to copy "%s" to "%s".', $originFile, $targetFile), 0, null, $originFile);
             }
 
-            if ($originIsLocal) {
-                // Like `cp`, preserve executable permission bits
-                @chmod($targetFile, fileperms($targetFile) | (fileperms($originFile) & 0111));
+            // Like `cp`, preserve executable permission bits
+            @chmod($targetFile, fileperms($targetFile) | (fileperms($originFile) & 0111));
 
-                if ($bytesCopied !== $bytesOrigin = filesize($originFile)) {
-                    throw new IOException(sprintf('Failed to copy the whole content of "%s" to "%s" (%g of %g bytes copied).', $originFile, $targetFile, $bytesCopied, $bytesOrigin), 0, null, $originFile);
-                }
+            if (stream_is_local($originFile) && $bytesCopied !== ($bytesOrigin = filesize($originFile))) {
+                throw new IOException(sprintf('Failed to copy the whole content of "%s" to "%s" (%g of %g bytes copied).', $originFile, $targetFile, $bytesCopied, $bytesOrigin), 0, null, $originFile);
             }
         }
     }
@@ -117,11 +114,9 @@ class Filesystem
      */
     public function exists($files)
     {
-        $maxPathLength = PHP_MAXPATHLEN - 2;
-
         foreach ($this->toIterator($files) as $file) {
-            if (strlen($file) > $maxPathLength) {
-                throw new IOException(sprintf('Could not check if file exist because path length exceeds %d characters.', $maxPathLength), 0, null, $file);
+            if ('\\' === DIRECTORY_SEPARATOR && strlen($file) > 258) {
+                throw new IOException('Could not check if file exist because path length exceeds 258 characters.', 0, null, $file);
             }
 
             if (!file_exists($file)) {
@@ -281,13 +276,6 @@ class Filesystem
         }
 
         if (true !== @rename($origin, $target)) {
-            if (is_dir($origin)) {
-                // See https://bugs.php.net/bug.php?id=54097 & http://php.net/manual/en/function.rename.php#113943
-                $this->mirror($origin, $target, null, array('override' => $overwrite, 'delete' => $overwrite));
-                $this->remove($origin);
-
-                return;
-            }
             throw new IOException(sprintf('Cannot rename "%s" to "%s".', $origin, $target), 0, null, $target);
         }
     }
@@ -303,10 +291,8 @@ class Filesystem
      */
     private function isReadable($filename)
     {
-        $maxPathLength = PHP_MAXPATHLEN - 2;
-
-        if (strlen($filename) > $maxPathLength) {
-            throw new IOException(sprintf('Could not check if file is readable because path length exceeds %d characters.', $maxPathLength), 0, null, $filename);
+        if ('\\' === DIRECTORY_SEPARATOR && strlen($filename) > 258) {
+            throw new IOException('Could not check if file is readable because path length exceeds 258 characters.', 0, null, $filename);
         }
 
         return is_readable($filename);
@@ -456,28 +442,25 @@ class Filesystem
             $startPath = str_replace('\\', '/', $startPath);
         }
 
-        $stripDriveLetter = function ($path) {
-            if (strlen($path) > 2 && ':' === $path[1] && '/' === $path[2] && ctype_alpha($path[0])) {
-                return substr($path, 2);
-            }
-
-            return $path;
-        };
-
-        $endPath = $stripDriveLetter($endPath);
-        $startPath = $stripDriveLetter($startPath);
-
         // Split the paths into arrays
         $startPathArr = explode('/', trim($startPath, '/'));
         $endPathArr = explode('/', trim($endPath, '/'));
 
-        $normalizePathArray = function ($pathSegments, $absolute) {
+        if ('/' !== $startPath[0]) {
+            array_shift($startPathArr);
+        }
+
+        if ('/' !== $endPath[0]) {
+            array_shift($endPathArr);
+        }
+
+        $normalizePathArray = function ($pathSegments) {
             $result = array();
 
             foreach ($pathSegments as $segment) {
-                if ('..' === $segment && ($absolute || count($result))) {
+                if ('..' === $segment) {
                     array_pop($result);
-                } elseif ('.' !== $segment) {
+                } else {
                     $result[] = $segment;
                 }
             }
@@ -485,8 +468,8 @@ class Filesystem
             return $result;
         };
 
-        $startPathArr = $normalizePathArray($startPathArr, static::isAbsolutePath($startPath));
-        $endPathArr = $normalizePathArray($endPathArr, static::isAbsolutePath($endPath));
+        $startPathArr = $normalizePathArray($startPathArr);
+        $endPathArr = $normalizePathArray($endPathArr);
 
         // Find for which directory the common path stops
         $index = 0;
@@ -495,14 +478,19 @@ class Filesystem
         }
 
         // Determine how deep the start path is relative to the common path (ie, "web/bundles" = 2 levels)
-        if (1 === count($startPathArr) && '' === $startPathArr[0]) {
+        if (count($startPathArr) === 1 && $startPathArr[0] === '') {
             $depth = 0;
         } else {
             $depth = count($startPathArr) - $index;
         }
 
-        // Repeated "../" for each level need to reach the common path
-        $traverser = str_repeat('../', $depth);
+        // When we need to traverse from the start, and we are starting from a root path, don't add '../'
+        if ('/' === $startPath[0] && 0 === $index && 0 === $depth) {
+            $traverser = '';
+        } else {
+            // Repeated "../" for each level need to reach the common path
+            $traverser = str_repeat('../', $depth);
+        }
 
         $endPathRemainder = implode('/', array_slice($endPathArr, $index));
 
@@ -530,7 +518,6 @@ class Filesystem
     {
         $targetDir = rtrim($targetDir, '/\\');
         $originDir = rtrim($originDir, '/\\');
-        $originDirLen = strlen($originDir);
 
         // Iterate in destination folder to remove obsolete entries
         if ($this->exists($targetDir) && isset($options['delete']) && $options['delete']) {
@@ -539,9 +526,8 @@ class Filesystem
                 $flags = \FilesystemIterator::SKIP_DOTS;
                 $deleteIterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($targetDir, $flags), \RecursiveIteratorIterator::CHILD_FIRST);
             }
-            $targetDirLen = strlen($targetDir);
             foreach ($deleteIterator as $file) {
-                $origin = $originDir.substr($file->getPathname(), $targetDirLen);
+                $origin = str_replace($targetDir, $originDir, $file->getPathname());
                 if (!$this->exists($origin)) {
                     $this->remove($file);
                 }
@@ -563,7 +549,7 @@ class Filesystem
         }
 
         foreach ($iterator as $file) {
-            $target = $targetDir.substr($file->getPathname(), $originDirLen);
+            $target = str_replace($originDir, $targetDir, $file->getPathname());
 
             if ($copyOnWindows) {
                 if (is_file($file)) {
@@ -598,7 +584,7 @@ class Filesystem
     {
         return strspn($file, '/\\', 0, 1)
             || (strlen($file) > 3 && ctype_alpha($file[0])
-                && ':' === substr($file, 1, 1)
+                && substr($file, 1, 1) === ':'
                 && strspn($file, '/\\', 2, 1)
             )
             || null !== parse_url($file, PHP_URL_SCHEME)
@@ -663,7 +649,7 @@ class Filesystem
      * @param string $filename The file to be written to
      * @param string $content  The data to write into the file
      *
-     * @throws IOException if the file cannot be written to
+     * @throws IOException If the file cannot be written to
      */
     public function dumpFile($filename, $content)
     {

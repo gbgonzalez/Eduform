@@ -14,7 +14,6 @@
  */
 namespace Cake\Test\TestCase\TestSuite;
 
-use Cake\Core\Configure;
 use Cake\Event\EventManager;
 use Cake\Http\Response;
 use Cake\Routing\DispatcherFactory;
@@ -40,8 +39,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         static::setAppNamespace();
 
         Router::connect('/get/:controller/:action', ['_method' => 'GET'], ['routeClass' => 'InflectedRoute']);
-        Router::connect('/head/:controller/:action', ['_method' => 'HEAD'], ['routeClass' => 'InflectedRoute']);
-        Router::connect('/options/:controller/:action', ['_method' => 'OPTIONS'], ['routeClass' => 'InflectedRoute']);
         Router::connect('/:controller/:action/*', [], ['routeClass' => 'InflectedRoute']);
         DispatcherFactory::clear();
         DispatcherFactory::add('Routing');
@@ -191,62 +188,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     }
 
     /**
-     * Test sending get request and using default `test_app/config/routes.php`.
-     *
-     * @return void
-     */
-    public function testGetUsingApplicationWithDefaultRoutes()
-    {
-        // first clean routes to have Router::$initailized === false
-        Router::reload();
-
-        $this->useHttpServer(true);
-        $this->configApplication(Configure::read('App.namespace') . '\ApplicationWithDefaultRoutes', null);
-
-        $this->get('/some_alias');
-        $this->assertResponseOk();
-        $this->assertEquals('5', $this->_getBodyAsString());
-    }
-
-    /**
-     * Test sending head requests.
-     *
-     * @return void
-     */
-    public function testHead()
-    {
-        $this->assertNull($this->_response);
-
-        $this->head('/request_action/test_request_action');
-        $this->assertNotEmpty($this->_response);
-        $this->assertInstanceOf('Cake\Http\Response', $this->_response);
-        $this->assertResponseSuccess();
-
-        $this->_response = null;
-        $this->head('/head/request_action/test_request_action');
-        $this->assertResponseSuccess();
-    }
-
-    /**
-     * Test sending options requests.
-     *
-     * @return void
-     */
-    public function testOptions()
-    {
-        $this->assertNull($this->_response);
-
-        $this->options('/request_action/test_request_action');
-        $this->assertNotEmpty($this->_response);
-        $this->assertInstanceOf('Cake\Http\Response', $this->_response);
-        $this->assertResponseSuccess();
-
-        $this->_response = null;
-        $this->options('/options/request_action/test_request_action');
-        $this->assertResponseSuccess();
-    }
-
-    /**
      * Test sending get requests sets the request method
      *
      * @return void
@@ -358,21 +299,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
             $this->_response->getBody()->rewind();
         }
         $this->assertSame('world', $this->_response->getBody()->getContents());
-        $this->assertHeader('X-Middleware', 'true');
-    }
-
-    /**
-     * Test that the PSR7 requests receive encoded data.
-     *
-     * @return void
-     */
-    public function testInputDataSecurityToken()
-    {
-        $this->useHttpServer(true);
-        $this->enableSecurityToken();
-
-        $this->post('/request_action/input_test', '{"hello":"world"}');
-        $this->assertSame('world', '' . $this->_response->getBody());
         $this->assertHeader('X-Middleware', 'true');
     }
 
@@ -604,24 +530,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
             'body' => 'Some text'
         ];
         $this->post('/posts/securePost?foo=bar', $data);
-        $this->assertResponseOk();
-        $this->assertResponseContains('Request was accepted');
-    }
-
-    /**
-     * Test posting to a secured form action with a query that has a part that
-     * will be encoded by the security component
-     *
-     * @return void
-     */
-    public function testPostSecuredFormWithUnencodedQuery()
-    {
-        $this->enableSecurityToken();
-        $data = [
-            'title' => 'Some title',
-            'body' => 'Some text'
-        ];
-        $this->post('/posts/securePost?foo=/', $data);
         $this->assertResponseOk();
         $this->assertResponseContains('Request was accepted');
     }
@@ -880,19 +788,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     }
 
     /**
-     * Test the content assertion with no case sensitivity.
-     *
-     * @return void
-     */
-    public function testAssertResponseContainsWithIgnoreCaseFlag()
-    {
-        $this->_response = new Response();
-        $this->_response = $this->_response->withStringBody('Some content');
-
-        $this->assertResponseContains('some', 'Failed asserting that the body contains given content', true);
-    }
-
-    /**
      * Test the negated content assertion.
      *
      * @return void
@@ -1032,18 +927,5 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     {
         $this->get('/posts/get');
         $this->assertFileResponse('foo');
-    }
-
-    /**
-     * Test disabling the error handler middleware.
-     *
-     * @expectedException \Cake\Routing\Exception\MissingRouteException
-     * @expectedExceptionMessage A route matching "/foo" could not be found.
-     * @return void
-     */
-    public function testDisableErrorHandlerMiddleware()
-    {
-        $this->disableErrorHandlerMiddleware();
-        $this->get('/foo');
     }
 }

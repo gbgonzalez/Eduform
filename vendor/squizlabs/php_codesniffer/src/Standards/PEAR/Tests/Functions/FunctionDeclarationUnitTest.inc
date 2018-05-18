@@ -209,31 +209,3 @@ function foo(
     $param3,
 ) : SomeClass {
 }
-
-function foo(
-    $var
-)
-{
-    // body
-}
-
-function foo(
-    $var
-)
-/* hello */ {
-    // body
-}
-
-function foo(
-    $var
-)
-{ echo 'hi';
-    // body
-}
-
-function foo(
-    $var
-)
-/* hello */ { echo 'hi';
-    // body
-}

@@ -18,7 +18,12 @@
 <div class="col-md-4">
 	<div class="indexMenu">
 		<h2>Licencias</h2>
-		<?php echo $this->Html->image('study1.png', ['alt' => 'CakePHP', 'width' => 300]); ?>
+		<div class="visible-lg">
+			<?php echo $this->Html->image('study1.png', ['alt' => 'CakePHP', 'width' => 300]); ?>
+		</div>
+		<div class="hidden-lg">
+		<?php echo $this->Html->image('study1.png', ['alt' => 'CakePHP', 'width' => 200, 'class' => 'imageMobileIndex']); ?>
+		</div>
 		<p>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut aliquam egestas velit eu ullamcorper. Vestibulum risus urna, mollis vel interdum sit amet, mattis vel elit. Donec at volutpat urna. Suspendisse non tempor felis. Nullam pulvinar dictum erat eu pretium. In eu fermentum quam. 
 		</p>
@@ -28,7 +33,12 @@
 <div class="col-md-4">
 	<div class="indexMenu">
 		<h2>Area personalizada</h2>
-		<?php echo $this->Html->image('study2.png', ['alt' => 'CakePHP', 'width' => 300]); ?>
+		<div class="visible-lg">
+			<?php echo $this->Html->image('study2.png', ['alt' => 'CakePHP', 'width' => 300]); ?>
+		</div>
+		<div class="hidden-lg">
+		<?php echo $this->Html->image('study2.png', ['alt' => 'CakePHP', 'width' => 200, 'class' => 'imageMobileIndex']); ?>
+		</div>
 		<p>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut aliquam egestas velit eu ullamcorper. Vestibulum risus urna, mollis vel interdum sit amet, mattis vel elit. Donec at volutpat urna. Suspendisse non tempor felis. Nullam pulvinar dictum erat eu pretium. In eu fermentum quam. 
 		</p>
@@ -37,7 +47,12 @@
 <div class="col-md-4">
 	<div class="indexMenu">
 		<h2>Seguimiento</h2>
-		<?php echo $this->Html->image('study3.png', ['alt' => 'CakePHP', 'width' => 300]); ?>
+		<div class="visible-lg">
+			<?php echo $this->Html->image('study3.png', ['alt' => 'CakePHP', 'width' => 300]); ?>
+		</div>
+		<div class="hidden-lg">
+		<?php echo $this->Html->image('study3.png', ['alt' => 'CakePHP', 'width' => 200, 'class' => 'imageMobileIndex']); ?>
+		</div>
 		<p>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut aliquam egestas velit eu ullamcorper. Vestibulum risus urna, mollis vel interdum sit amet, mattis vel elit. Donec at volutpat urna. Suspendisse non tempor felis. Nullam pulvinar dictum erat eu pretium. In eu fermentum quam. 
 		</p>

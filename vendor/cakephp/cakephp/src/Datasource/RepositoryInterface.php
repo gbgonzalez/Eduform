@@ -17,9 +17,6 @@ namespace Cake\Datasource;
 /**
  * Describes the methods that any class representing a data storage should
  * comply with.
- *
- * @method $this setAlias($alias)
- * @method string getAlias()
  */
 interface RepositoryInterface
 {
@@ -27,7 +24,6 @@ interface RepositoryInterface
     /**
      * Returns the table alias or sets a new one
      *
-     * @deprecated 3.4.0 Use setAlias()/getAlias() instead.
      * @param string|null $alias the new table alias
      * @return string
      */

@@ -40,9 +40,9 @@ class DatabaseSuite extends TestSuite
         return $suite;
     }
 
-    public function count($preferCache = false)
+    public function count()
     {
-        return parent::count($preferCache) * 2;
+        return parent::count() * 2;
     }
 
     /**

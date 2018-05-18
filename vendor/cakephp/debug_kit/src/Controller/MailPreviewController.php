@@ -24,7 +24,6 @@ use Cake\Utility\Inflector;
 use DebugKit\Mailer\AbstractResult;
 use DebugKit\Mailer\PreviewResult;
 use DebugKit\Mailer\SentMailResult;
-use PDOException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -79,7 +78,6 @@ class MailPreviewController extends Controller
     {
         $this->loadModel('DebugKit.Panels');
         $panel = $this->Panels->get($panelId);
-
         // @codingStandardsIgnoreStart
         $content = @unserialize($panel->content);
         // @codingStandardsIgnoreEnd
@@ -98,7 +96,6 @@ class MailPreviewController extends Controller
 
         $this->set('noHeader', true);
         $this->set('email', $email);
-        $this->set('plugin', '');
         $this->set('part', $this->findPreferredPart($email, $this->request->query('part')));
         $this->viewBuilder()->template('email');
     }

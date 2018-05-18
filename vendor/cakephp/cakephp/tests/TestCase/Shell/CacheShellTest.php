@@ -15,13 +15,14 @@
 namespace Cake\Test\TestCase\Shell;
 
 use Cake\Cache\Cache;
-use Cake\Console\Shell;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\Console\Exception\StopException;
+use Cake\Shell\CacheShell;
+use Cake\TestSuite\TestCase;
 
 /**
  * CacheShell tests.
  */
-class CacheShellTest extends ConsoleIntegrationTestCase
+class CacheShellTest extends TestCase
 {
 
     /**
@@ -32,6 +33,8 @@ class CacheShellTest extends ConsoleIntegrationTestCase
     public function setUp()
     {
         parent::setUp();
+        $this->io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+        $this->shell = new CacheShell($this->io);
         Cache::config('test', ['engine' => 'File', 'path' => CACHE]);
     }
 
@@ -43,6 +46,8 @@ class CacheShellTest extends ConsoleIntegrationTestCase
     public function tearDown()
     {
         parent::tearDown();
+        unset($this->io);
+        unset($this->shell);
         Cache::drop('test');
     }
 
@@ -53,11 +58,7 @@ class CacheShellTest extends ConsoleIntegrationTestCase
      */
     public function testGetOptionParser()
     {
-        $this->exec('cache -h');
-
-        $this->assertExitCode(Shell::CODE_SUCCESS);
-        $this->assertOutputContains('list_prefixes');
-        $this->assertOutputContains('clear_all');
+        $this->assertInstanceOf('Cake\Console\ConsoleOptionParser', $this->shell->getOptionParser());
     }
 
     /**
@@ -67,9 +68,8 @@ class CacheShellTest extends ConsoleIntegrationTestCase
      */
     public function testClearInvalidPrefix()
     {
-        $this->exec('cache clear foo');
-        $this->assertExitCode(Shell::CODE_ERROR);
-        $this->assertErrorContains('The "foo" cache configuration does not exist');
+        $this->expectException(StopException::class);
+        $this->shell->clear('foo');
     }
 
     /**
@@ -80,9 +80,7 @@ class CacheShellTest extends ConsoleIntegrationTestCase
     public function testClearValidPrefix()
     {
         Cache::add('key', 'value', 'test');
-        $this->exec('cache clear test');
-
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->shell->clear('test');
         $this->assertFalse(Cache::read('key', 'test'));
     }
 
@@ -94,9 +92,7 @@ class CacheShellTest extends ConsoleIntegrationTestCase
     public function testClearIgnoresOtherCaches()
     {
         Cache::add('key', 'value', 'test');
-        $this->exec('cache clear _cake_core_');
-
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->shell->clear('_cake_core_');
         $this->assertEquals('value', Cache::read('key', 'test'));
     }
 
@@ -109,9 +105,7 @@ class CacheShellTest extends ConsoleIntegrationTestCase
     {
         Cache::add('key', 'value1', 'test');
         Cache::add('key', 'value3', '_cake_core_');
-        $this->exec('cache clear_all');
-
-        $this->assertExitCode(Shell::CODE_SUCCESS);
+        $this->shell->clearAll();
         $this->assertFalse(Cache::read('key', 'test'));
         $this->assertFalse(Cache::read('key', '_cake_core_'));
     }

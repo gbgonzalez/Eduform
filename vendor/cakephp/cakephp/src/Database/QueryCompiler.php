@@ -101,8 +101,8 @@ class QueryCompiler
 
         // Propagate bound parameters from sub-queries if the
         // placeholders can be found in the SQL statement.
-        if ($query->getValueBinder() !== $generator) {
-            foreach ($query->getValueBinder()->bindings() as $binding) {
+        if ($query->valueBinder() !== $generator) {
+            foreach ($query->valueBinder()->bindings() as $binding) {
                 $placeholder = ':' . $binding['placeholder'];
                 if (preg_match('/' . $placeholder . '(?:\W|$)/', $sql) > 0) {
                     $generator->bind($placeholder, $binding['value'], $binding['type']);
@@ -125,9 +125,7 @@ class QueryCompiler
     protected function _sqlCompiler(&$sql, $query, $generator)
     {
         return function ($parts, $name) use (&$sql, $query, $generator) {
-            if (!isset($parts) ||
-                ((is_array($parts) || $parts instanceof \Countable) && !count($parts))
-            ) {
+            if (!count($parts)) {
                 return;
             }
             if ($parts instanceof ExpressionInterface) {
@@ -156,7 +154,7 @@ class QueryCompiler
      */
     protected function _buildSelectPart($parts, $query, $generator)
     {
-        $driver = $query->getConnection()->getDriver();
+        $driver = $query->getConnection()->driver();
         $select = 'SELECT%s %s%s';
         if ($this->_orderedUnion && $query->clause('union')) {
             $select = '(SELECT%s %s%s';
@@ -235,13 +233,8 @@ class QueryCompiler
             }
 
             $joins .= sprintf(' %s JOIN %s %s', $join['type'], $join['table'], $join['alias']);
-
-            $condition = '';
-            if (isset($join['conditions']) && $join['conditions'] instanceof ExpressionInterface) {
-                $condition = $join['conditions']->sql($generator);
-            }
-            if (strlen($condition)) {
-                $joins .= " ON {$condition}";
+            if (isset($join['conditions']) && count($join['conditions'])) {
+                $joins .= sprintf(' ON %s', $join['conditions']->sql($generator));
             } else {
                 $joins .= ' ON 1 = 1';
             }

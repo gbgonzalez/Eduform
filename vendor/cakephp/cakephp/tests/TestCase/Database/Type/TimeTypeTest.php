@@ -15,7 +15,6 @@
 namespace Cake\Test\TestCase\Database\Type;
 
 use Cake\Database\Type\TimeType;
-use Cake\I18n\I18n;
 use Cake\I18n\Time;
 use Cake\TestSuite\TestCase;
 
@@ -27,17 +26,12 @@ class TimeTypeTest extends TestCase
     /**
      * @var \Cake\Database\Type\TimeType
      */
-    protected $type;
+    public $type;
 
     /**
      * @var \Cake\Database\Driver
      */
-    protected $driver;
-
-    /**
-     * @var string
-     */
-    protected $locale;
+    public $driver;
 
     /**
      * Setup
@@ -49,18 +43,6 @@ class TimeTypeTest extends TestCase
         parent::setUp();
         $this->type = new TimeType();
         $this->driver = $this->getMockBuilder('Cake\Database\Driver')->getMock();
-        $this->locale = I18n::locale();
-    }
-
-    /**
-     * Teardown
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        parent::tearDown();
-        I18n::locale($this->locale);
     }
 
     /**
@@ -199,7 +181,7 @@ class TimeTypeTest extends TestCase
     }
 
     /**
-     * Tests marshalling times using the locale aware parser
+     * Tests marshalling dates using the locale aware parser
      *
      * @return void
      */
@@ -211,23 +193,6 @@ class TimeTypeTest extends TestCase
         $this->assertEquals($expected->format('H:i'), $result->format('H:i'));
 
         $this->assertNull($this->type->marshal('derp:23'));
-    }
-
-    /**
-     * Tests marshalling times in denmark.
-     *
-     * @return void
-     */
-    public function testMarshalWithLocaleParsingDanishLocale()
-    {
-        $updated = setlocale(LC_COLLATE, 'da_DK.utf8');
-        $this->skipIf($updated === false, 'Could not set locale to da_DK.utf8, skipping test.');
-
-        I18n::locale('da_DK');
-        $this->type->useLocaleParser();
-        $expected = new Time('03:20:00');
-        $result = $this->type->marshal('03.20');
-        $this->assertEquals($expected->format('H:i'), $result->format('H:i'));
     }
 
     /**

@@ -33,7 +33,6 @@ class RedisEngineTest extends TestCase
     {
         parent::setUp();
         $this->skipIf(!class_exists('Redis'), 'Redis extension is not installed or configured properly.');
-        $this->skipIf(version_compare(PHP_VERSION, '7.2.0dev', '>='), 'Redis is misbehaving in PHP7.2');
 
         // @codingStandardsIgnoreStart
         $socket = @fsockopen('127.0.0.1', 6379, $errno, $errstr, 1);
@@ -338,27 +337,6 @@ class RedisEngineTest extends TestCase
 
         $result = Cache::read('test_increment', 'redis');
         $this->assertEquals(3, $result);
-    }
-
-    /**
-     * Test that increment() and decrement() can live forever.
-     *
-     * @return void
-     */
-    public function testIncrementDecrementForvever()
-    {
-        $this->_configCache(['duration' => 0]);
-        Cache::delete('test_increment', 'redis');
-        Cache::delete('test_decrement', 'redis');
-
-        $result = Cache::increment('test_increment', 1, 'redis');
-        $this->assertEquals(1, $result);
-
-        $result = Cache::decrement('test_decrement', 1, 'redis');
-        $this->assertEquals(-1, $result);
-
-        $this->assertEquals(1, Cache::read('test_increment', 'redis'));
-        $this->assertEquals(-1, Cache::read('test_decrement', 'redis'));
     }
 
     /**

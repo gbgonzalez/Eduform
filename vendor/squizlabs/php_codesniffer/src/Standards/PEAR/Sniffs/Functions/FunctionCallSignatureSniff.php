@@ -62,13 +62,7 @@ class FunctionCallSignatureSniff implements Sniff
      */
     public function register()
     {
-        $tokens = Tokens::$functionNameTokens;
-
-        $tokens[] = T_VARIABLE;
-        $tokens[] = T_CLOSE_CURLY_BRACKET;
-        $tokens[] = T_CLOSE_PARENTHESIS;
-
-        return $tokens;
+        return Tokens::$functionNameTokens;
 
     }//end register()
 
@@ -87,13 +81,6 @@ class FunctionCallSignatureSniff implements Sniff
         $this->requiredSpacesAfterOpen   = (int) $this->requiredSpacesAfterOpen;
         $this->requiredSpacesBeforeClose = (int) $this->requiredSpacesBeforeClose;
         $tokens = $phpcsFile->getTokens();
-
-        if ($tokens[$stackPtr]['code'] === T_CLOSE_CURLY_BRACKET
-            && isset($tokens[$stackPtr]['scope_condition']) === true
-        ) {
-            // Not a function call.
-            return;
-        }
 
         // Find the next non-empty token.
         $openBracket = $phpcsFile->findNext(Tokens::$emptyTokens, ($stackPtr + 1), null, true);
@@ -205,43 +192,33 @@ class FunctionCallSignatureSniff implements Sniff
      */
     public function processSingleLineCall(File $phpcsFile, $stackPtr, $openBracket, $tokens)
     {
-        // If the function call has no arguments or comments, enforce 0 spaces.
         $closer = $tokens[$openBracket]['parenthesis_closer'];
         if ($openBracket === ($closer - 1)) {
             return;
         }
 
-        $next = $phpcsFile->findNext(T_WHITESPACE, ($openBracket + 1), $closer, true);
-        if ($next === false) {
-            $requiredSpacesAfterOpen   = 0;
-            $requiredSpacesBeforeClose = 0;
-        } else {
-            $requiredSpacesAfterOpen   = $this->requiredSpacesAfterOpen;
-            $requiredSpacesBeforeClose = $this->requiredSpacesBeforeClose;
-        }
-
-        if ($requiredSpacesAfterOpen === 0 && $tokens[($openBracket + 1)]['code'] === T_WHITESPACE) {
+        if ($this->requiredSpacesAfterOpen === 0 && $tokens[($openBracket + 1)]['code'] === T_WHITESPACE) {
             // Checking this: $value = my_function([*]...).
             $error = 'Space after opening parenthesis of function call prohibited';
             $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'SpaceAfterOpenBracket');
             if ($fix === true) {
                 $phpcsFile->fixer->replaceToken(($openBracket + 1), '');
             }
-        } else if ($requiredSpacesAfterOpen > 0) {
+        } else if ($this->requiredSpacesAfterOpen > 0) {
             $spaceAfterOpen = 0;
             if ($tokens[($openBracket + 1)]['code'] === T_WHITESPACE) {
                 $spaceAfterOpen = strlen($tokens[($openBracket + 1)]['content']);
             }
 
-            if ($spaceAfterOpen !== $requiredSpacesAfterOpen) {
+            if ($spaceAfterOpen !== $this->requiredSpacesAfterOpen) {
                 $error = 'Expected %s spaces after opening bracket; %s found';
                 $data  = array(
-                          $requiredSpacesAfterOpen,
+                          $this->requiredSpacesAfterOpen,
                           $spaceAfterOpen,
                          );
                 $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'SpaceAfterOpenBracket', $data);
                 if ($fix === true) {
-                    $padding = str_repeat(' ', $requiredSpacesAfterOpen);
+                    $padding = str_repeat(' ', $this->requiredSpacesAfterOpen);
                     if ($spaceAfterOpen === 0) {
                         $phpcsFile->fixer->addContent($openBracket, $padding);
                     } else {
@@ -265,15 +242,15 @@ class FunctionCallSignatureSniff implements Sniff
             $spaceBeforeClose = strlen($tokens[($closer - 1)]['content']);
         }
 
-        if ($spaceBeforeClose !== $requiredSpacesBeforeClose) {
+        if ($spaceBeforeClose !== $this->requiredSpacesBeforeClose) {
             $error = 'Expected %s spaces before closing bracket; %s found';
             $data  = array(
-                      $requiredSpacesBeforeClose,
+                      $this->requiredSpacesBeforeClose,
                       $spaceBeforeClose,
                      );
             $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'SpaceBeforeCloseBracket', $data);
             if ($fix === true) {
-                $padding = str_repeat(' ', $requiredSpacesBeforeClose);
+                $padding = str_repeat(' ', $this->requiredSpacesBeforeClose);
 
                 if ($spaceBeforeClose === 0) {
                     $phpcsFile->fixer->addContentBefore($closer, $padding);

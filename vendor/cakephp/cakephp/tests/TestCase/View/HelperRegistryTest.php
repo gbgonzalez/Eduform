@@ -56,7 +56,7 @@ class HelperRegistryTest extends TestCase
     {
         parent::setUp();
         $this->View = new View();
-        $this->Events = $this->View->getEventManager();
+        $this->Events = $this->View->eventManager();
         $this->Helpers = new HelperRegistry($this->View);
     }
 
@@ -268,20 +268,8 @@ class HelperRegistryTest extends TestCase
         );
         $this->assertCount(1, $this->Events->listeners('View.beforeRender'));
 
-        $this->assertSame($this->Helpers, $this->Helpers->unload('EventListenerTest'));
+        $this->assertNull($this->Helpers->unload('EventListenerTest'), 'No return expected');
         $this->assertCount(0, $this->Events->listeners('View.beforeRender'));
-    }
-
-    /**
-     * Test that unloading a none existing helper triggers an error.
-     *
-     * @expectedException \Cake\View\Exception\MissingHelperException
-     * @expectedExceptionMessage Helper class FooHelper could not be found.
-     * @return void
-     */
-    public function testUnloadUnknown()
-    {
-        $this->Helpers->unload('Foo');
     }
 
     /**

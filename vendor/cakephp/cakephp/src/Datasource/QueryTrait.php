@@ -28,7 +28,7 @@ trait QueryTrait
     /**
      * Instance of a table object this query is bound to
      *
-     * @var \Cake\ORM\Table|\Cake\Datasource\RepositoryInterface
+     * @var \Cake\Datasource\RepositoryInterface
      */
     protected $_repository;
 
@@ -181,20 +181,9 @@ trait QueryTrait
     }
 
     /**
-     * Returns the current configured query `_eagerLoaded` value
-     *
-     * @return bool
-     */
-    public function isEagerLoaded()
-    {
-        return $this->_eagerLoaded;
-    }
-
-    /**
      * Sets the query instance to be an eager loaded query. If no argument is
      * passed, the current configured query `_eagerLoaded` value is returned.
      *
-     * @deprecated 3.5.0 Use isEagerLoaded() for the getter part instead.
      * @param bool|null $value Whether or not to eager load.
      * @return $this|\Cake\ORM\Query
      */
@@ -230,7 +219,7 @@ trait QueryTrait
         }
 
         if (!$alias) {
-            $alias = $this->repository()->getAlias();
+            $alias = $this->repository()->alias();
         }
 
         $key = sprintf('%s__%s', $alias, $field);

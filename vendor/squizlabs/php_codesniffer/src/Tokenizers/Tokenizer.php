@@ -618,19 +618,12 @@ abstract class Tokenizer
             // openers, so a following USE statement can cause an incorrect brace match.
             if (($currType === T_IF || $currType === T_ELSE || $currType === T_USE)
                 && $opener === null
-                && ($this->tokens[$i]['code'] === T_SEMICOLON
-                || $this->tokens[$i]['code'] === T_CLOSE_TAG)
+                && $this->tokens[$i]['code'] === T_SEMICOLON
             ) {
                 if (PHP_CODESNIFFER_VERBOSITY > 1) {
                     $type = $this->tokens[$stackPtr]['type'];
                     echo str_repeat("\t", $depth);
-                    if ($this->tokens[$i]['code'] === T_SEMICOLON) {
-                        $closerType = 'semicolon';
-                    } else {
-                        $closerType = 'close tag';
-                    }
-
-                    echo "=> Found $closerType before scope opener for $stackPtr:$type, bailing".PHP_EOL;
+                    echo "=> Found semicolon before scope opener for $stackPtr:$type, bailing".PHP_EOL;
                 }
 
                 return $i;
@@ -1097,7 +1090,7 @@ abstract class Tokenizer
                 if (empty($conditions) !== true) {
                     $condString = 'conds;';
                     foreach ($conditions as $condition) {
-                        $condString .= Util\Tokens::tokenName($condition).',';
+                        $condString .= token_name($condition).',';
                     }
 
                     echo rtrim($condString, ',').';';
@@ -1158,14 +1151,14 @@ abstract class Tokenizer
                                     $type     = $this->tokens[$x]['type'];
                                     $oldConds = '';
                                     foreach ($oldConditions as $condition) {
-                                        $oldConds .= Util\Tokens::tokenName($condition).',';
+                                        $oldConds .= token_name($condition).',';
                                     }
 
                                     $oldConds = rtrim($oldConds, ',');
 
                                     $newConds = '';
                                     foreach ($this->tokens[$x]['conditions'] as $condition) {
-                                        $newConds .= Util\Tokens::tokenName($condition).',';
+                                        $newConds .= token_name($condition).',';
                                     }
 
                                     $newConds = rtrim($newConds, ',');
@@ -1234,7 +1227,7 @@ abstract class Tokenizer
                             $oldCondition = array_pop($conditions);
                             if (PHP_CODESNIFFER_VERBOSITY > 1) {
                                 echo str_repeat("\t", ($level + 1));
-                                echo '* token '.Util\Tokens::tokenName($oldCondition).' removed from conditions array *'.PHP_EOL;
+                                echo '* token '.token_name($oldCondition).' removed from conditions array *'.PHP_EOL;
                             }
 
                             // Make sure this closer actually belongs to us.
@@ -1246,7 +1239,7 @@ abstract class Tokenizer
                                     $badToken = $this->tokens[$oldOpener]['scope_condition'];
 
                                     if (PHP_CODESNIFFER_VERBOSITY > 1) {
-                                        $type = Util\Tokens::tokenName($oldCondition);
+                                        $type = token_name($oldCondition);
                                         echo str_repeat("\t", ($level + 1));
                                         echo "* scope closer was bad, cleaning up $badToken:$type *".PHP_EOL;
                                     }
@@ -1260,14 +1253,14 @@ abstract class Tokenizer
                                             $type     = $this->tokens[$x]['type'];
                                             $oldConds = '';
                                             foreach ($oldConditions as $condition) {
-                                                $oldConds .= Util\Tokens::tokenName($condition).',';
+                                                $oldConds .= token_name($condition).',';
                                             }
 
                                             $oldConds = rtrim($oldConds, ',');
 
                                             $newConds = '';
                                             foreach ($this->tokens[$x]['conditions'] as $condition) {
-                                                $newConds .= Util\Tokens::tokenName($condition).',';
+                                                $newConds .= token_name($condition).',';
                                             }
 
                                             $newConds = rtrim($newConds, ',');

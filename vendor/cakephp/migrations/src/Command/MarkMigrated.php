@@ -22,7 +22,6 @@ use Symfony\Component\Console\Input\InputOption;
 class MarkMigrated extends AbstractCommand
 {
 
-    use CommandTrait;
     use ConfigurationTrait;
 
     /**
@@ -105,8 +104,7 @@ class MarkMigrated extends AbstractCommand
         $this->bootstrap($input, $output);
         $this->output($output);
 
-        $migrationPaths = $this->getConfig()->getMigrationPaths();
-        $path = array_pop($migrationPaths);
+        $path = $this->getConfig()->getMigrationPath();
 
         if ($this->invalidOnlyOrExclude()) {
             $output->writeln(

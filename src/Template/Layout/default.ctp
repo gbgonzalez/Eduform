@@ -29,7 +29,7 @@ $cakeDescription = 'Bienvenido a la plataforma educativa ';
 
     <?= $this->Html->css('styleDefault.css') ?>
     <?= $this->Html->css('bootstrap.min.css') ?>
-     <?= $this->Html->css('index.css') ?>
+    <?= $this->Html->css('index.css') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -37,7 +37,7 @@ $cakeDescription = 'Bienvenido a la plataforma educativa ';
 </head>
 <body>
     <?= $this->Flash->render() ?>
-    <div class="header-video">
+    <div class="header-video visible-lg">
         <!--<video autoplay="true" loop="true" muted="" id="header-video__teaser-video" class="header-video__teaser-video">
             <source src="http://localhost/xil/wp-content/themes/XIL/video/rest2.mp4" type="video/mp4">
         </video>-->
@@ -52,12 +52,12 @@ $cakeDescription = 'Bienvenido a la plataforma educativa ';
          ?>
         <ul class="headerMenuCook">
             <li>
-                <a href="">
+                <a href="/eduform/information">
                     Información
                 </a>
             </li>
             <li>
-                <a href="">
+                <a href="/eduform/information">
                   Contacto
                 </a>
             </li>
@@ -69,10 +69,33 @@ $cakeDescription = 'Bienvenido a la plataforma educativa ';
             
         </ul>
     </div>
+    <nav class="navbar navbar-default navbarInformation hidden-lg">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span> 
+          </button>
+          <a class="navbar-brand" href="/Eduform">Eduform</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav">
+            <li><a href="/eduform/information">Información</a></li>
+            <li><a href="/eduform/contact">Contacto</a></li> 
+            <li>
+                <a href="#" data-toggle="modal" data-target="#add">Clientes</a>
+            </li> 
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
     <div class="container clearfix">
         <?= $this->fetch('content') ?>
     </div>
-    <footer>
+    <footer class="visible-lg">
       <div class="col-md-4">
         
       </div>
@@ -92,8 +115,9 @@ $cakeDescription = 'Bienvenido a la plataforma educativa ';
           </p>
         </div>
       </div>
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
 
-        <?= $this->Html->script('//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js', array('inline' => false)); ?>
+
         <?= $this->Html->script('bootstrap.min.js') ?>
 
     </footer>

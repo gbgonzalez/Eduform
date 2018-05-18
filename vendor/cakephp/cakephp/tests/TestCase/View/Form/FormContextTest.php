@@ -111,24 +111,10 @@ class FormContextTest extends TestCase
      */
     public function testValDefault()
     {
-        $form = new Form();
-        $form->schema()->addField('name', ['default' => 'schema default']);
-        $context = new FormContext($this->request, ['entity' => $form]);
-
-        $result = $context->val('title');
-        $this->assertNull($result);
+        $context = new FormContext($this->request, ['entity' => new Form()]);
 
         $result = $context->val('title', ['default' => 'default default']);
         $this->assertEquals('default default', $result);
-
-        $result = $context->val('name');
-        $this->assertEquals('schema default', $result);
-
-        $result = $context->val('name', ['default' => 'custom default']);
-        $this->assertEquals('custom default', $result);
-
-        $result = $context->val('name', ['schemaDefault' => false]);
-        $this->assertNull($result);
     }
 
     /**

@@ -17,6 +17,7 @@ namespace Cake\Test\TestCase\Database\Schema;
 use Cake\Database\Driver\Postgres;
 use Cake\Database\Schema\Collection as SchemaCollection;
 use Cake\Database\Schema\PostgresSchema;
+use Cake\Database\Schema\Table;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
@@ -120,7 +121,7 @@ SQL;
             // Integer
             [
                 'SMALLINT',
-                ['type' => 'smallinteger', 'length' => 5]
+                ['type' => 'integer', 'length' => 5]
             ],
             [
                 'INTEGER',
@@ -351,13 +352,14 @@ SQL;
                 'comment' => null,
             ],
             'views' => [
-                'type' => 'smallinteger',
+                'type' => 'integer',
                 'null' => true,
                 'default' => 0,
                 'length' => 5,
                 'precision' => null,
                 'unsigned' => null,
                 'comment' => null,
+                'autoIncrement' => null,
             ],
             'readingtime' => [
                 'type' => 'time',
@@ -707,16 +709,6 @@ SQL;
             // Integers
             [
                 'post_id',
-                ['type' => 'tinyinteger', 'length' => 11],
-                '"post_id" SMALLINT'
-            ],
-            [
-                'post_id',
-                ['type' => 'smallinteger', 'length' => 11],
-                '"post_id" SMALLINT'
-            ],
-            [
-                'post_id',
                 ['type' => 'integer', 'length' => 11],
                 '"post_id" INTEGER'
             ],
@@ -951,7 +943,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
 
         $table = (new TableSchema('posts'))
@@ -1002,7 +994,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
 
         $table = (new TableSchema('posts'))
@@ -1053,7 +1045,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
 
         $table = (new TableSchema('schema_articles'))->addColumn('id', [
@@ -1120,7 +1112,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
         $table = (new TableSchema('schema_articles'))->addColumn('id', [
             'type' => 'integer',
@@ -1142,7 +1134,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
 
         $table = (new TableSchema('articles_tags'))
@@ -1208,7 +1200,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
 
         $table = new TableSchema('schema_articles');
@@ -1228,7 +1220,7 @@ SQL;
         $connection = $this->getMockBuilder('Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->getMock();
-        $connection->expects($this->any())->method('getDriver')
+        $connection->expects($this->any())->method('driver')
             ->will($this->returnValue($driver));
 
         $table = new TableSchema('schema_articles');
