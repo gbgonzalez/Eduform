@@ -3,7 +3,7 @@
 <h1 class="titleAdmin"> Administración de contenidos</h1>
 <?= $this->Flash->render() ?>
 
-<?php if( $current_user['role'] == 'Administrador')
+<?php if( $current_user['role'] == 'Administrador' || $current_user['role'] == 'Gestor de contenidos')
 {
 ?>
 <button class="btn btn-success" data-toggle="modal" data-target="#addContent">Añadir Contenido </button>
@@ -28,7 +28,7 @@
         <th class="visible-lg">Competencia</th>
         <th>Archivos Adjuntos</th>
         <th>Mostrar </th>
-        <?php if( $current_user['role'] == 'Administrador')
+        <?php if( $current_user['role'] == 'Administrador' || $current_user['role'] == 'Gestor de contenidos')
         {
         ?>
         <th class="visible-lg">Modificar </th>
@@ -55,7 +55,7 @@
 					<span class="hidden-lg"> · </span>
 				</button>
 			</td>
-      <?php if( $current_user['role'] == 'Administrador')
+      <?php if( $current_user['role'] == 'Administrador' || $current_user['role'] == 'Gestor de contenidos')
       {
       ?>
 			<td class="visible-lg">
@@ -83,7 +83,7 @@
         <th class="visible-lg">Competencia</th>
         <th>Archivos Adjuntos</th>
         <th>Mostrar </th>
-        <?php if( $current_user['role'] == 'Administrador')
+        <?php if( $current_user['role'] == 'Administrador' || $current_user['role'] == 'Gestor de contenidos')
         {
         ?>
         <th class="visible-lg">Modificar </th>
@@ -110,7 +110,7 @@
 					<span class="hidden-lg"> · </span>
 				</button>
 			</td>
-      <?php if( $current_user['role'] == 'Administrador')
+      <?php if( $current_user['role'] == 'Administrador' || $current_user['role'] == 'Gestor de contenidos')
       {
       ?>
 			<td class="visible-lg">
@@ -155,7 +155,7 @@
 <?php } ?>
 
 
-<?php if( $current_user['role'] == 'Administrador')
+<?php if( $current_user['role'] == 'Administrador' || $current_user['role'] == 'Gestor de contenidos')
 {
 ?>
 <!-- modal add user -->
@@ -200,7 +200,7 @@
 ?>
 
 <!-- Modal Delete-->
-<?php if( $current_user['role'] == 'Administrador')
+<?php if( $current_user['role'] == 'Administrador' || $current_user['role'] == 'Gestor de contenidos')
 {
 ?>
 <?php foreach ($contents as $content) 
@@ -238,7 +238,7 @@
 ?>
 
 <!-- Modal Update-->
-<?php if( $current_user['role'] == 'Administrador')
+<?php if( $current_user['role'] == 'Administrador' || $current_user['role'] == 'Gestor de contenidos')
 {
 ?>
 <?php foreach ($contents as $content) 
@@ -351,7 +351,7 @@
 		    	</tbody>
 		    	</table>
 		        <?php 
-		      if( $current_user['role'] == 'Administrador'){
+		      if( $current_user['role'] == 'Administrador' || $current_user['role'] == 'Gestor de contenidos'){
 
 				  	echo $this->Form->create($content, ['type'=> 'file', 'url' => '/contents/uploadFile']);
 				  	
